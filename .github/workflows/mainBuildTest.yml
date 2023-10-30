@@ -1,0 +1,77 @@
+#
+# GitHub.com configuration for their actions system
+#
+# This provides Continuous Integration services.
+#  That means with each commit and push it runs tests.
+#  The goal is to continually run tests on changes to detect errors.
+#
+#  @author Aaron S. Crandall <crandall@gonzaga.edu>
+#  @copyright 2021
+#
+
+name: Final Project CI Pipeline
+
+# Controls when the action will run.
+# This will run on pushing to any branch, creating any pull request
+#  or if you run it manually via the web interface (workflow_dispatch)
+on: [push, pull_request, workflow_dispatch]
+
+# For non-pre built yahtzee containers, this needs to be done first.
+#  run: |
+#    apt update
+#    apt install -y make
+#    make setup-dependencies
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # ****** BUILD ***************************************************************
+  # This workflow contains jobs to build this project
+  build:
+    name: "Build Source"
+    runs-on: [self-hosted, linux, CPSC224]
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build the software
+        run: make build
+      - name: Save JAR file
+        uses: actions/upload-artifact@v3
+        with:
+          name: yahtzee jar
+          path: target/*.jar
+
+  # ***** TEST **************************************************************
+  test:
+    name: "Test Project"
+    runs-on: [self-hosted, linux, CPSC224]
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test the software
+        run: make test
+
+  # ***** Spellcheck **************************************************************
+  spellcheck:
+    name: "Spellcheck"
+    runs-on: [self-hosted, linux, CPSC224]
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v3
+      - name: Spellcheck the software
+        run: make spellcheck
+
+  # ***** Javadoc **************************************************************
+  javadoc:
+    name: "Javadoc Generator"
+    runs-on: [self-hosted, linux, CPSC224]
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate javadoc
+        run: make javadoc
+      - name: Archive Documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: javadoc
+          path: target/site/apidocs/
