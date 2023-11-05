@@ -1,9 +1,15 @@
-package edu.gonzaga;
+package edu.gonzaga.events;
+
+import edu.gonzaga.MainGame;
+import edu.gonzaga.utils.SoundThread;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Random;
 
 public class HydraListener extends WindowAdapter {
@@ -15,9 +21,11 @@ public class HydraListener extends WindowAdapter {
     public static HydraListener getInstance() {
         return INSTANCE != null ? INSTANCE : new HydraListener();
     }
+    public static final SoundThread sound = SoundThread.getInstance();
+
 
     private HydraListener() {
-
+        if (!sound.isAlive()) sound.start();
     }
 
     @Override
