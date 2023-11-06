@@ -1,6 +1,5 @@
 package edu.gonzaga.utils;
 
-import edu.gonzaga.events.HydraListener;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
