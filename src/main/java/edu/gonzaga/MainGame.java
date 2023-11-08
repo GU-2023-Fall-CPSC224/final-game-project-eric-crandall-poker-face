@@ -23,7 +23,7 @@ import java.awt.*;
 /** Main program class for launching your team's program. */
 public class MainGame {
 
-    public static boolean hydra = true;
+    public static boolean hydra = false;
 
     public static final SoundThread sound = SoundThread.getInstance();
 
