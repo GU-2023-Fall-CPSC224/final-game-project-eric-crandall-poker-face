@@ -1,12 +1,13 @@
 package edu.gonzaga;
 
-//TODO: handle assigning invalid suits
+import edu.gonzaga.utils.Suit;
+
 public class Card {
     private String faceValue;
-    private String suit;
+    private Suit suit;
 
     private final String DEFAULT_FACE_VALUE = "A";
-    private final String DEFAULT_SUIT = "Spades";
+    private final Suit DEFAULT_SUIT = Suit.SPADES;
 
     public Card() {
         this.faceValue = DEFAULT_FACE_VALUE;
@@ -17,7 +18,7 @@ public class Card {
         return faceValue;
     }
 
-    public String getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 
@@ -25,7 +26,7 @@ public class Card {
         this.faceValue = faceValue;
     }
 
-    public void setSuit(String suit) {
+    public void setSuit(Suit suit) {
         this.suit = suit;
     }
 }
