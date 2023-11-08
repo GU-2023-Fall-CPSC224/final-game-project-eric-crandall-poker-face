@@ -50,4 +50,22 @@ public class CardTest {
 
         Assertions.assertEquals(expectedValue, actualValue);
     }
+
+    @Test
+    void testOrdinalValueAce() {
+        FaceValue ace = FaceValue.ACE;
+        int expected = 14;
+        int actual = ace.getValue();
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void testOrdinalValueTwo() {
+        FaceValue two = FaceValue.TWO;
+        int expected = 2;
+        int actual = two.getValue();
+
+        Assertions.assertEquals(expected, actual);
+    }
 }
