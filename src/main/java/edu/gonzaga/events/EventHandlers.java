@@ -1,6 +1,7 @@
 package edu.gonzaga.events;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class EventHandlers {
     private final ArrayList<Listener> listeners = new ArrayList<>();
@@ -16,4 +17,11 @@ public class EventHandlers {
     public boolean removeListener(Listener listener) {
         return listeners.remove(listener);
     }
+
+    public void registerAll(Collection<Listener> listeners) {
+        for (Listener listener : listeners) {
+            this.addListener(listener);
+        }
+    }
+
 }

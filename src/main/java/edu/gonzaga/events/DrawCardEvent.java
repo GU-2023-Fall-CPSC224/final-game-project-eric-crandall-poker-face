@@ -1,9 +1,21 @@
 package edu.gonzaga.events;
 
+import edu.gonzaga.items.Card;
+
 public class DrawCardEvent extends Event implements Cancellable {
 
     private boolean cancelled = false;
-    private final EventHandlers handlers = new EventHandlers();
+    private static final EventHandlers handlers = new EventHandlers();
+
+    private final Card card;
+
+    public DrawCardEvent(Card cardDrawn) {
+        this.card = cardDrawn;
+    }
+
+    public Card getDrawnCard() {
+        return this.card;
+    }
 
     @Override
     public boolean isCancelled() {
@@ -13,6 +25,10 @@ public class DrawCardEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean var) {
         this.cancelled = var;
+    }
+
+    public static EventHandlers getHandlersList() {
+        return handlers;
     }
 
     @Override

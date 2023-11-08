@@ -9,46 +9,15 @@ import java.util.logging.Logger;
 
 public class EventExecutor {
 
-    public void registerEvent(EventListener listener) {
-        Iterator iter = createListener(listener).entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<Class<? extends Event>, Set<Listener>> entry = (Map.Entry)iter.next();
-            //this.getEventListeners(this.getRegistrationClass((Class)entry.getKey())).registerAll((Collection)entry.getValue());
-        }
-    }
-
-    private EventHandlers getEventListeners(Class<? extends Event> clazz) {
-        try {
-            Method method = this.getRegistrationClass(clazz).getDeclaredMethod("getHandlers");
-            method.setAccessible(true);
-            return (EventHandlers) method.invoke((Object)null);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
-        try {
-            clazz.getDeclaredMethod("getHandlers");
-            return clazz;
-        } catch (NoSuchMethodException ex) {
-            if (clazz.getSuperclass() != null && !clazz.getSuperclass().equals(Event.class) && Event.class.isAssignableFrom(clazz.getSuperclass())) {
-                return this.getRegistrationClass(clazz.getSuperclass().asSubclass(Event.class));
-            } else {
-                throw new IllegalCallerException("Could not find getHandlers method for event class! ");
-            }
-        }
-    }
-
 
     public Map<Class<? extends Event>, Set<Listener>> createListener(EventListener listener) {
-        Map<Class<? extends Event>, Set<Listener>> ret = new HashMap();
+        Map<Class<? extends Event>, Set<Listener>> ret = new HashMap<>();
 
-        HashSet methods;
+        HashSet<Method> methods;
         try {
             Method[] publicMethods = listener.getClass().getMethods();
             Method[] privateMethods = listener.getClass().getDeclaredMethods();
-            methods = new HashSet();
+            methods = new HashSet<>();
             Method[] listenerMethods = publicMethods;
             int methodsLength = publicMethods.length;
             int i = 0;
@@ -80,7 +49,7 @@ public class EventExecutor {
             return ret;
         }
 
-        Iterator iter = methods.iterator();
+        Iterator<Method> iter = methods.iterator();
 
         while (true) {
             while (true) {
@@ -89,36 +58,30 @@ public class EventExecutor {
                 do {
                     do {
                         do {
-                            if (iter.hasNext()) {
+                            if (!iter.hasNext()) {
                                 return ret;
                             }
 
-                            method = (Method) iter.next();
-                            em = (EventMethod) method.getAnnotation(EventMethod.class);
+                            method = iter.next();
+                            em = method.getAnnotation(EventMethod.class);
                         } while (em == null);
                     } while (method.isBridge());
                 } while (method.isSynthetic());
 
-                Class checkClass;
+                Class<?> checkClass;
                 if (method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(checkClass = method.getParameterTypes()[0])) {
                     final Class<? extends Event> eventClass = checkClass.asSubclass(Event.class);
                     method.setAccessible(true);
-                    Set<Listener> eventSet = (Set) ret.get(eventClass);
-                    if (eventSet == null) {
-                        eventSet = new HashSet<>();
-                        ret.put(eventClass, eventSet);
-                    }
+                    Set<Listener> eventSet = ret.computeIfAbsent(eventClass, k -> new HashSet<>());
 
                     Method finalMethod = method;
-                    ExecuteEvents executor = new ExecuteEvents() {
-                        public void executeEvent(EventListener listener, Event event) {
-                            try {
-                                if (eventClass.isAssignableFrom(event.getClass())) {
-                                    finalMethod.invoke(listener, event);
-                                }
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
+                    ExecuteEvents executor = (listener1, event) -> {
+                        try {
+                            if (eventClass.isAssignableFrom(event.getClass())) {
+                                finalMethod.invoke(listener1, event);
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     };
                     eventSet.add(new Listener(listener, executor, em.ignoreCancelled()));

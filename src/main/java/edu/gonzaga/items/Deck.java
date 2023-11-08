@@ -1,5 +1,8 @@
 package edu.gonzaga.items;
 
+import edu.gonzaga.events.DrawCardEvent;
+import edu.gonzaga.events.EventManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 //TODO: default fill deck (final list of suits, and values possible for cards?)
@@ -32,6 +35,9 @@ public class Deck {
     }
 
     public Card drawCard() {
-        return cards.remove(0);
+        Card drawn = cards.remove(0);
+        DrawCardEvent event = new DrawCardEvent(drawn);
+        EventManager.callEvent(event);
+        return drawn;
     }
 }
