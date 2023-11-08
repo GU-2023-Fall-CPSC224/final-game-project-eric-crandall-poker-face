@@ -1,5 +1,7 @@
 package edu.gonzaga;
 
+import edu.gonzaga.utils.FaceValue;
+import edu.gonzaga.utils.Suit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +10,8 @@ public class CardTest {
     void testDefaultFaceValue() {
         Card c = new Card();
 
-        String expectedValue = "A";
-        String actualValue = c.getFaceValue();
+        FaceValue expectedValue = FaceValue.ACE;
+        FaceValue actualValue = c.getFaceValue();
 
         Assertions.assertEquals(expectedValue, actualValue);
     }
@@ -18,8 +20,8 @@ public class CardTest {
     void testDefaultSuit() {
         Card c = new Card();
 
-        String expectedValue = "Spades";
-        String actualValue = c.getSuit();
+        Suit expectedValue = Suit.SPADES;
+        Suit actualValue = c.getSuit();
 
         Assertions.assertEquals(expectedValue, actualValue);
     }
@@ -28,10 +30,10 @@ public class CardTest {
     void testAssignFaceValue() {
         Card c = new Card();
 
-        c.setFaceValue("K");
+        c.setFaceValue(FaceValue.KING);
 
-        String expectedValue = "K";
-        String actualValue = c.getFaceValue();
+        FaceValue expectedValue = FaceValue.KING;
+        FaceValue actualValue = c.getFaceValue();
 
         Assertions.assertEquals(expectedValue, actualValue);
     }
@@ -40,10 +42,10 @@ public class CardTest {
     void testAssignSuit() {
         Card c = new Card();
 
-        c.setSuit("Diamonds");
+        c.setSuit(Suit.DIAMONDS);
 
-        String expectedValue = "Diamonds";
-        String actualValue = c.getSuit();
+        Suit expectedValue = Suit.DIAMONDS;
+        Suit actualValue = c.getSuit();
 
         Assertions.assertEquals(expectedValue, actualValue);
     }
