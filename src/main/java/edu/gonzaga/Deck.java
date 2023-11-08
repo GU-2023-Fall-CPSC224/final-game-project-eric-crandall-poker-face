@@ -8,7 +8,7 @@ import java.util.Collections;
 //TODO: default fill deck (final list of suits, and values possible for cards?)
 
 public class Deck {
-    private ArrayList<Card> cards;
+    private final ArrayList<Card> cards;
 
 
     public Deck() {
@@ -17,8 +17,8 @@ public class Deck {
     }
 
     public void createDeck() {
-        for (Integer i = 0; i < Suit.values().length; i++) {
-            for (Integer j = 0; j < FaceValue.values().length - 1; j++) {
+        for (int i = 0; i < Suit.values().length; i++) {
+            for (int j = 0; j < FaceValue.values().length - 1; j++) {
                 Card c = new Card();
 
                 c.setSuit(Suit.values()[i]);
