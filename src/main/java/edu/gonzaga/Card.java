@@ -1,12 +1,13 @@
 package edu.gonzaga;
 
+import edu.gonzaga.utils.FaceValue;
 import edu.gonzaga.utils.Suit;
 
 public class Card {
-    private String faceValue;
+    private FaceValue faceValue;
     private Suit suit;
 
-    private final String DEFAULT_FACE_VALUE = "A";
+    private final FaceValue DEFAULT_FACE_VALUE = FaceValue.ACE;
     private final Suit DEFAULT_SUIT = Suit.SPADES;
 
     public Card() {
@@ -14,7 +15,7 @@ public class Card {
         this.suit = DEFAULT_SUIT;
     }
 
-    public String getFaceValue() {
+    public FaceValue getFaceValue() {
         return faceValue;
     }
 
@@ -22,7 +23,7 @@ public class Card {
         return suit;
     }
 
-    public void setFaceValue(String faceValue) {
+    public void setFaceValue(FaceValue faceValue) {
         this.faceValue = faceValue;
     }
 

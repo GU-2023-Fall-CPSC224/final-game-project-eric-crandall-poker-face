@@ -1,5 +1,8 @@
 package edu.gonzaga;
 
+import edu.gonzaga.utils.FaceValue;
+import edu.gonzaga.utils.Suit;
+
 import java.util.ArrayList;
 import java.util.Collections;
 //TODO: default fill deck (final list of suits, and values possible for cards?)
@@ -7,21 +10,19 @@ import java.util.Collections;
 public class Deck {
     private ArrayList<Card> cards;
 
-    private final String[] suits = {"Spades", "Diamonds", "Clubs", "Hearts"};
-    private final String[] faceValues = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
-    
+
     public Deck() {
         cards = new ArrayList<>(); 
         createDeck();
     }
 
     public void createDeck() {
-        for (Integer i = 0; i < suits.length; i++) {
-            for (Integer j = 0; j < faceValues.length; j++) {
+        for (Integer i = 0; i < Suit.values().length; i++) {
+            for (Integer j = 0; j < FaceValue.values().length - 1; j++) {
                 Card c = new Card();
 
-                c.setSuit(suits[i]);
-                c.setFaceValue(faceValues[j]);
+                c.setSuit(Suit.values()[i]);
+                c.setFaceValue(FaceValue.values()[j]);
 
                 cards.add(c);
             }
