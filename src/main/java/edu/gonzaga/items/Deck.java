@@ -15,7 +15,8 @@ public class Deck {
 
     public void createDeck() {
         for (int i = 0; i < Suit.values().length; i++) {
-            for (int j = 0; j < FaceValue.values().length - 1; j++) {
+            // j = 1 to skip blank, length = length - 1 to skip joker
+            for (int j = 1; j < FaceValue.values().length - 1; j++) {
                 Card c = new Card();
 
                 c.setSuit(Suit.values()[i]);

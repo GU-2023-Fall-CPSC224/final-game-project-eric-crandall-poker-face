@@ -1,7 +1,7 @@
 package edu.gonzaga.items;
 
 public enum FaceValue {
-    BLANK(null), // Helper card to fix ordinal values to be accurate to card values (TWO.ordinal() = 2)
+    BLANK(null), // Helper card to fix ordinal values to be accurate to card values (TWO.ordinal() + 1 = 2) aka "value = index + 1"
     TWO("2"),
     THREE("3"),
     FOUR("4"),
