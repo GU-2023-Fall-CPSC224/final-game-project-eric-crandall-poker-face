@@ -1,4 +1,4 @@
-package edu.gonzaga.utils;
+package edu.gonzaga.items;
 
 public enum Suit {
     SPADES("Spade"),

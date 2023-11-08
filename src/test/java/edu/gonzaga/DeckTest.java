@@ -1,7 +1,9 @@
 package edu.gonzaga;
 
-import edu.gonzaga.utils.FaceValue;
-import edu.gonzaga.utils.Suit;
+import edu.gonzaga.items.Card;
+import edu.gonzaga.items.Deck;
+import edu.gonzaga.items.FaceValue;
+import edu.gonzaga.items.Suit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

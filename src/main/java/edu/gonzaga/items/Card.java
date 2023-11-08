@@ -1,7 +1,4 @@
-package edu.gonzaga;
-
-import edu.gonzaga.utils.FaceValue;
-import edu.gonzaga.utils.Suit;
+package edu.gonzaga.items;
 
 public class Card {
     private FaceValue faceValue;
