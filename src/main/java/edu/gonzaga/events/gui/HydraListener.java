@@ -1,15 +1,11 @@
-package edu.gonzaga.events;
+package edu.gonzaga.events.gui;
 
-import edu.gonzaga.MainGame;
 import edu.gonzaga.utils.SoundThread;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Random;
 
 public class HydraListener extends WindowAdapter {

@@ -13,8 +13,10 @@
 package edu.gonzaga;
 
 
-import edu.gonzaga.events.CloseWindowListener;
-import edu.gonzaga.events.HydraListener;
+import edu.gonzaga.events.EventExecutor;
+import edu.gonzaga.events.EventManager;
+import edu.gonzaga.events.gui.CloseWindowListener;
+import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
@@ -27,8 +29,14 @@ public class MainGame {
 
     public static final SoundThread sound = SoundThread.getInstance();
 
+    public static EventManager manager;
+
 
     public static void main(String[] args) {
+
+        EventExecutor executor = new EventExecutor();
+        manager = new EventManager(executor);
+
         System.out.println("Hello Team Game");
         JFrame frame1 = new JFrame("Hydra?");
         sound.start();
