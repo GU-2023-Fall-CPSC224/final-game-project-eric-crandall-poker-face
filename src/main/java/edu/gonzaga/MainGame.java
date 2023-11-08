@@ -13,8 +13,8 @@
 package edu.gonzaga;
 
 
-import edu.gonzaga.events.CloseWindowListener;
-import edu.gonzaga.events.HydraListener;
+import edu.gonzaga.events.gui.CloseWindowListener;
+import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
