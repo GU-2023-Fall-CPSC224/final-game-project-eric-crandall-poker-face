@@ -4,8 +4,8 @@ public class Card {
     private FaceValue faceValue;
     private Suit suit;
 
-    private final FaceValue DEFAULT_FACE_VALUE = FaceValue.ACE;
-    private final Suit DEFAULT_SUIT = Suit.SPADES;
+    private static final FaceValue DEFAULT_FACE_VALUE = FaceValue.ACE;
+    private static final Suit DEFAULT_SUIT = Suit.SPADES;
 
     public Card() {
         this.faceValue = DEFAULT_FACE_VALUE;
