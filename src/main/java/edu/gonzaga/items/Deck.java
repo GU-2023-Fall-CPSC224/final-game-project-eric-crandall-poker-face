@@ -2,11 +2,9 @@ package edu.gonzaga.items;
 
 import java.util.ArrayList;
 import java.util.Collections;
-//TODO: default fill deck (final list of suits, and values possible for cards?)
 
 public class Deck {
     private final ArrayList<Card> cards;
-
 
     public Deck() {
         cards = new ArrayList<>(); 
