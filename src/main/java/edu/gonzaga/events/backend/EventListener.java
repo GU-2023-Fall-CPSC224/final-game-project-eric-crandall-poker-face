@@ -1,4 +1,4 @@
-package edu.gonzaga.events;
+package edu.gonzaga.events.backend;
 
 public interface EventListener {
 }

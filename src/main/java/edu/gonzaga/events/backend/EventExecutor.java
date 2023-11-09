@@ -1,5 +1,6 @@
-package edu.gonzaga.events;
+package edu.gonzaga.events.backend;
 
+import edu.gonzaga.events.Event;
 import edu.gonzaga.events.annotations.EventMethod;
 
 import java.lang.reflect.Method;

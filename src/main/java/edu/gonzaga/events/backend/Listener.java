@@ -1,4 +1,7 @@
-package edu.gonzaga.events;
+package edu.gonzaga.events.backend;
+
+import edu.gonzaga.events.util.Cancellable;
+import edu.gonzaga.events.Event;
 
 public class Listener {
     private final EventListener eventListener;

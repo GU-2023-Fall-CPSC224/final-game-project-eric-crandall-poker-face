@@ -1,7 +1,7 @@
 package edu.gonzaga.items;
 
 import edu.gonzaga.events.DrawCardEvent;
-import edu.gonzaga.events.EventManager;
+import edu.gonzaga.events.backend.EventManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

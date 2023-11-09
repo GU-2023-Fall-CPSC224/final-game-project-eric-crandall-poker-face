@@ -1,4 +1,4 @@
-package edu.gonzaga.events;
+package edu.gonzaga.events.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;

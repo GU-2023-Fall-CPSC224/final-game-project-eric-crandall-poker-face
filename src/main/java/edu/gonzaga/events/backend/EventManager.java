@@ -1,4 +1,6 @@
-package edu.gonzaga.events;
+package edu.gonzaga.events.backend;
+
+import edu.gonzaga.events.Event;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
