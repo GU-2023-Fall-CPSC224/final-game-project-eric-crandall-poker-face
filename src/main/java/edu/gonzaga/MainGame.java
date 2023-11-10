@@ -2,10 +2,15 @@
  * Final project main driver class
  * 
  * 
- * Project Description:
+ * Project Description: 
+ *   For our version of the game, the tentative plan is to make a two player form of texas holdem. On the start screen,
+ *   players will be able to enter their names, get assigned an icon, select the number of starting chips/cash
+ *   they wish to have, or select the number of rounds the number of rounds they wish to play (by default this
+ *   will be as many rounds as it takes for one player to gain all the chips). A standard deck of 52 cards is used
+ *   and will be shuffled after each round of play.
  * 
  * 
- * Contributors:
+ * Contributors: McEwan Bain, Jake VanZyverden, Gabriel Hoing
  * 
  * 
  * Copyright: 2023

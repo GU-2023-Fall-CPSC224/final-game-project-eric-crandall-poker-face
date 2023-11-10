@@ -1,3 +1,8 @@
+/** Enum Name: FaceValue
+ *  Desc: Enumerated Values used to deal with the face calues of cards
+ *        Methods are used to get the value and strings of a FaceValue
+ *  Notes: :]
+ */
 package edu.gonzaga.items;
 
 public enum FaceValue {
@@ -19,14 +24,25 @@ public enum FaceValue {
 
     private final String value;
 
+    /* Contrcutor for FaceValue
+     * Accepts a string and sets FaceValues value to that string
+     */
     FaceValue(String value) {
         this.value = value;
     }
 
+    /* Method Name: getString()
+     * Returns: A String
+     * Desc: Returns the string value tied to a faceValue
+     */
     public String getString() {
         return this.value;
     }
 
+    /* Method Name: getString()
+     * Returns: An Int
+     * Desc: uses ordinal values to enumerate card values and returns the proper numeric value of a card
+     */
     public int getValue() {
         return ordinal() + 1;
     }
