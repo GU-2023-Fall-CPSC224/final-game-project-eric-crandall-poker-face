@@ -25,23 +25,53 @@ public class Chips {
         this.numChips = temp;
     }
 
+    /* Method Name: getNumChips()
+     * Returns: An Integer Array
+     * Desc: Returns chips numChips array
+     * Events:
+     */
     public Integer[] getNumChips() {
         return this.numChips;
     }
+
+    /* Method Name: getChipsAt()
+     * Returns: An Integer
+     * Desc: Returns the integer value of numChips at a given index i
+     * Events:
+     */
     public Integer getChipsAt(Integer i) {
-        return 0;
+        if(0 <= i && i < DEFAULT_NUM_CHIP_TYPES) {
+            return numChips[i];
+        }
+        return -1;
     }
 
+    /* Method Name: setChipsAt
+     * Returns: N/A (Void)
+     * Desc: Accepts an idex i and an int newChips. Sets the numChips at i to newChips value
+     * Events:
+     */
     public void setChipsAt(Integer i, Integer newChips) {
-
+        numChips[i] = newChips;
     }
 
+    /* Method Name: updateChips()
+     * Returns: N/A (Void)
+     * Desc: Accepts Integers x, y, z and adds those values to numChips at 0, 1, 2 (Respectively)
+     * Events:
+     */
     public void updateChips(Integer x, Integer y, Integer z) {
-
+        this.numChips[0] += x;
+        this.numChips[1] += y;
+        this.numChips[2] += z;
     }
 
+    /* Method Name: getTotalChipsValues()
+     * Returns: an Integer
+     * Desc: Multiplys the num each type of chip by its default value and adds them together. Returns the result
+     * Events:
+     */
     public Integer getTotalChipsValues() {
-
-        return 0;
+        return (numChips[0] * DEFAULT_CHIP_VALUES[0]) + (numChips[1] * DEFAULT_CHIP_VALUES[1]) + (numChips[2] * DEFAULT_CHIP_VALUES[2]);
     }
 }

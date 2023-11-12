@@ -31,7 +31,9 @@ public class ChipsTest {
 
         Integer actual[] = chips.getNumChips();
         Integer expected[] = {25, 5, 6};
-        assertEquals(actual, expected);
+        assertEquals(actual[0], expected[0]);
+        assertEquals(actual[1], expected[1]);
+        assertEquals(actual[2], expected[2]);
     }
 
     @Test
