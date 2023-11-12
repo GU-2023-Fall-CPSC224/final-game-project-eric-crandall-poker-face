@@ -33,6 +33,7 @@ public class MainGame {
     public static EventManager manager;
 
     public static void main(String[] args) {
+        Boolean isMuted = true; //temporary button to determine if sound muted
 
         EventExecutor executor = new EventExecutor();
         manager = new EventManager(executor);
@@ -40,9 +41,8 @@ public class MainGame {
         System.out.println("Hello Team Game");
         JFrame frame1 = new JFrame("Hydra?");
 
-        // sound.start();
-
-        frame1.setSize(640, 360);
+        //don't allow resize
+        frame1.setSize(520, 360);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame1.setLocation(dim.width / 2 - frame1.getSize().width / 2, dim.height / 2 - frame1.getSize().height / 2);
         frame1.addWindowListener(CloseWindowListener.getInstance());
@@ -53,37 +53,88 @@ public class MainGame {
             frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
-        JPanel northPanel = new JPanel();
-        JMenuBar southPanel = new JMenuBar();
-        JLabel word = new JLabel("Poker");
-        JButton send = new JButton("Sound");
-        JTextField testField = new JTextField(10);
-        JMenu m1 = new JMenu("Settings");
-        JMenuItem m11 = new JMenuItem("Open");
-        JMenuItem m22 = new JMenuItem("Save as");
-        m1.add(m11);
-        m1.add(m22);
-        m1.add(testField);
+
+        //north panel
+        JPanel northPanel = new JPanel();        
+        JLabel word = new JLabel("Eric Crandall Poker");
 
         northPanel.add(word);
-        southPanel.add(send);
-        southPanel.add(testField);
-        southPanel.add(m1);
+
+
+        //south panel
+        JPanel southPanel = new JPanel(new BorderLayout());
+
+        JButton soundButton = new JButton("Sound");
+        JButton playButton = new JButton("Play Game");
+
+        JLabel playerLabel = new JLabel("Players: ");
+        JTextField playerField = new JTextField(1);
+
+        //make hidden if playing until bust
+        JLabel roundsLabel = new JLabel("Rounds: ");
+        JTextField roundsField = new JTextField(1);
+
+        JMenuBar settingsBar = new JMenuBar();
+        JMenu settingsMenu = new JMenu("Settings");
+
+        JMenuItem roundMode = new JMenuItem("Play by Rounds");
+        JMenuItem bustMode = new JMenuItem("Play Until Bust");
+
+        settingsMenu.add(roundMode);
+        settingsMenu.add(bustMode);
+        settingsBar.add(settingsMenu);
+
+        //panel for content set in center of south panel
+        JPanel southPanel2 = new JPanel();
+
+        //make playerLabel and playerField part of own panel
+        southPanel2.add(playerLabel);
+        southPanel2.add(playerField);
+
+        //make roundsLabel and roundsField part of own panel
+        southPanel2.add(roundsLabel);
+        southPanel2.add(roundsField);
+        southPanel2.add(settingsBar);
+    
+        //soundButton and playButton should have space between seld and border
+        southPanel.add(BorderLayout.WEST, soundButton);
+        southPanel.add(BorderLayout.CENTER, southPanel2);
+        southPanel.add(BorderLayout.EAST, playButton);
+
+
+        //placeholder button for center
+        JLabel centerLabel = new JLabel("placeholder");
+
+
+        //add panels to frame
         frame1.getContentPane().add(BorderLayout.NORTH, northPanel);
         frame1.getContentPane().add(BorderLayout.SOUTH, southPanel);
-
-        // Text Area at the Center
-        JLabel label1 = new JLabel("Player 1:");
-
-        //frame1.getContentPane().add(BorderLayout.CENTER, label1);
-        //frame1.getContentPane().add(BorderLayout.CENTER, testField);
+        frame1.getContentPane().add(BorderLayout.CENTER, centerLabel);
 
         frame1.setVisible(true);
 
-        send.addActionListener(new ActionListener() {
+
+        //Testing muting sound
+        soundButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                String getValue = testField.getText();
-                System.out.println(getValue);
+                if (isMuted) {
+                    sound.start();
+                } else {
+                    // Jake how do you stop sound
+                }
+            }
+        });
+
+        //when clicking playButton go to the player specify page
+        //          -> should this be its own frame or should we just replace the components of the start menu
+        //Testing taking in input
+        playButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                String playerValue = playerField.getText();
+                System.out.println(playerValue + " Players");
+
+                String roundsValue = roundsField.getText();
+                System.out.println(roundsValue + " Rounds");
             }
         });
     }
