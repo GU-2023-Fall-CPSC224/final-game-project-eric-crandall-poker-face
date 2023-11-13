@@ -16,6 +16,6 @@ public class CloseWindowListener extends WindowAdapter {
     @Override
     public void windowClosed(WindowEvent e) {
         super.windowClosed(e);
-        SoundThread.getInstance().destroyPlayer();
+        SoundThread.getInstance().stopSong();
     }
 }
