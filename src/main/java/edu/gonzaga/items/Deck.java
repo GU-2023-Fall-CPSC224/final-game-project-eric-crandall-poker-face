@@ -56,9 +56,13 @@ public class Deck {
      * Events: 
      */
     public Card drawCard() {
-        Card drawn = cards.remove(0);
+        Card drawn = cards.get(0);
         DrawCardEvent event = new DrawCardEvent(drawn);
         EventManager.callEvent(event);
-        return drawn;
+        if (!event.isCancelled()) {
+            cards.remove(0);
+            return drawn;
+        }
+        return null;
     }
 }
