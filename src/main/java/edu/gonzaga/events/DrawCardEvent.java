@@ -1,5 +1,7 @@
 package edu.gonzaga.events;
 
+import edu.gonzaga.events.backend.EventHandlers;
+import edu.gonzaga.events.util.Cancellable;
 import edu.gonzaga.items.Card;
 
 public class DrawCardEvent extends Event implements Cancellable {
