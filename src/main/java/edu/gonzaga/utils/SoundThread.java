@@ -6,6 +6,7 @@ import javazoom.jl.player.Player;
 import java.io.File;
 import java.io.IOException;
 
+@Deprecated(forRemoval = true)
 public class SoundThread extends Thread {
 
     public static SoundThread INSTANCE = null;
@@ -22,6 +23,8 @@ public class SoundThread extends Thread {
             playMP3 = new Player(file.toURI().toURL().openStream());
         } catch (JavaLayerException | IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.start();
         }
     }
 

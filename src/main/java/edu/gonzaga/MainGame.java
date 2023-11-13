@@ -32,7 +32,7 @@ public class MainGame {
 
     public static boolean hydra = false;
 
-    public static final SoundThread sound = SoundThread.getInstance();
+    public static SoundThread sound;
 
     public static EventManager manager;
 
@@ -42,10 +42,10 @@ public class MainGame {
         EventExecutor executor = new EventExecutor();
         manager = new EventManager(executor);
 
+        sound = SoundThread.getInstance();
+
         System.out.println("Hello Team Game");
         JFrame frame1 = new JFrame("Hydra?");
-        sound.start();
-
         frame1.setSize(640, 360);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame1.setLocation(dim.width/2-frame1.getSize().width/2, dim.height/2-frame1.getSize().height/2);
@@ -57,6 +57,7 @@ public class MainGame {
             frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
+        frame1.setLayout(null);
         frame1.setVisible(true);
         // Your code here. Good luck!
     }
