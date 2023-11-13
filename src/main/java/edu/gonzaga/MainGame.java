@@ -17,8 +17,8 @@
  */
 package edu.gonzaga;
 
-import edu.gonzaga.events.EventExecutor;
-import edu.gonzaga.events.EventManager;
+import edu.gonzaga.events.backend.EventExecutor;
+import edu.gonzaga.events.backend.EventManager;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
