@@ -23,12 +23,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.umjammer</groupId>
-            <artifactId>jlayer</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
         <dependency>
             <groupId>org.mockito</groupId>

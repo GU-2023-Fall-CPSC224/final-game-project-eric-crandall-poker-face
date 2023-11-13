@@ -44,6 +44,7 @@ public class MainGame {
         manager = new EventManager(executor);
 
         sound = SoundThread.getInstance();
+        sound.startSong();
 
         System.out.println("Hello Team Game");
         JFrame frame1 = new JFrame("Hydra?");

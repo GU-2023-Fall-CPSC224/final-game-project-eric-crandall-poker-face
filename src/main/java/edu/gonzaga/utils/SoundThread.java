@@ -1,12 +1,9 @@
 package edu.gonzaga.utils;
 
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
-
+import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
-@Deprecated(forRemoval = true)
 public class SoundThread extends Thread {
 
     public static SoundThread INSTANCE = null;
@@ -15,13 +12,15 @@ public class SoundThread extends Thread {
         return INSTANCE != null ? INSTANCE : new SoundThread();
     }
 
-    private final File file = new File("src/main/resources/audio/PokerFace.mp3");
-    private final Player playMP3;
+    private final File file = new File("src/main/resources/audio/PokerFace.wav");
+    private final Clip clip;
+    private final AudioInputStream ais;
 
     private SoundThread() {
         try {
-            playMP3 = new Player(file.toURI().toURL().openStream());
-        } catch (JavaLayerException | IOException e) {
+            this.clip = AudioSystem.getClip();
+            this.ais = AudioSystem.getAudioInputStream(file);
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             throw new RuntimeException(e);
         } finally {
             this.start();
@@ -31,21 +30,26 @@ public class SoundThread extends Thread {
     @Override
     public void run() {
         super.run();
-        addSong();
-    }
-
-
-    public void addSong() {
-        try {
-            playMP3.play();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (this.clip != null && ais != null) {
+            try {
+                clip.open(ais);
+            } catch (LineUnavailableException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-
     }
 
-    public void destroyPlayer() {
-        playMP3.close();
+
+    public void startSong() {
+        if (this.clip.isOpen() && !this.clip.isRunning()) {
+            this.clip.start();
+        }
+    }
+
+    public void stopSong() {
+        if (this.clip.isRunning()) {
+            this.clip.stop();
+        }
     }
 
 }
