@@ -25,8 +25,8 @@ public class Hand {
      * Desc: Accepts a card and adds the given card to the cards arrayList
      * Events: A watcher should be watching hand to see when a card is added or removed
      */
-    public void addCard() {
-        // TO-DO
+    public void addCard(Card newCard) {
+        this.cards.add(newCard);
     }
 
     /* Method Name: getCard()
@@ -35,8 +35,7 @@ public class Hand {
      * Events:
      */
     public Card getCard(int i) {
-        // TO-DO
-        return new Card();
+        return this.cards.get(i);
     }
 
     /* Method Name: setVisibilty()
@@ -45,7 +44,7 @@ public class Hand {
      * Events: Watcher/listener should react to the change of isVisible
      */
     public void setVisibilty(boolean bool) {
-        // TO-DO
+        this.isVisible = bool;
     }
 
     /* Method Name: getVisibility()
