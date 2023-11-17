@@ -55,4 +55,13 @@ public class Hand {
     public boolean getVisibility() {
         return this.isVisible;
     }
+
+    /* Method Name: getHand()
+     * Returns: ArrayList<Card>
+     * Desc: Returns hands ArrayList<Card> cards
+     * Events:
+     */
+    public ArrayList<Card> getHand() {
+        return this.cards;
+    }
 }
