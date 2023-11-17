@@ -59,9 +59,25 @@ public class Hand {
     /* Method Name: getHand()
      * Returns: ArrayList<Card>
      * Desc: Returns hands ArrayList<Card> cards
-     * Events:
+     * Events: N/A
      */
     public ArrayList<Card> getHand() {
         return this.cards;
+    }
+
+    /* Method Name: printHand()
+     * Returns: N/A (Void)
+     * Desc: Prints out hand to console, used for debugging purposes
+     * Events: N/A
+     */
+    public void printHand() {
+        Card tempCard = new Card();
+        for(int i = 0; i < this.cards.size(); i++) {
+            tempCard = this.cards.get(i);
+            System.out.print("Card " + i + ": FaceValue = ");
+            System.out.print(tempCard.getFaceValue());
+            System.out.print(", Suit = ");
+            System.out.println(tempCard.getSuit());
+        }
     }
 }
