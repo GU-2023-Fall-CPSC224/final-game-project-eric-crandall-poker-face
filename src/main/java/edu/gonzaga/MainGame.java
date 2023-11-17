@@ -22,6 +22,11 @@ import edu.gonzaga.events.backend.EventManager;
 import edu.gonzaga.items.StartFrame;
 import edu.gonzaga.utils.SoundThread;
 
+//delete
+import edu.gonzaga.items.GameFrame;
+    import java.util.ArrayList;
+    import edu.gonzaga.items.Player;
+
 /** Main program class for launching your team's program. */
 public class MainGame {
 
@@ -38,6 +43,14 @@ public class MainGame {
         sound.startSong();
 
         new StartFrame();
+
+        //delete
+        ArrayList<Player> players = new ArrayList<>();
+        Player p = new Player();
+        Player p1 = new Player();
+        players.add(p);
+        players.add(p1);
+        new GameFrame(players);
 
 
         System.out.println("Hello Team Game");

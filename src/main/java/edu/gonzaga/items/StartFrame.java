@@ -15,6 +15,16 @@ public class StartFrame {
     private final Integer DEFAULT_NUM_ROUNDS = 5;
     private final JFrame frame;
 
+    JButton soundButton = new JButton("Sound");
+    JButton playButton = new JButton("Play Game");
+
+    JLabel playersLabel = new JLabel("Players: ");
+    JTextField playersField = new JTextField(1);
+
+        // make hidden if playing until bust
+    JLabel roundsLabel = new JLabel("Rounds: ");
+    JTextField roundsField = new JTextField(1);
+
     public StartFrame() {
         numPlayers = DEFAULT_NUM_PLAYERS;
         numRounds = DEFAULT_NUM_ROUNDS;
@@ -56,6 +66,27 @@ public class StartFrame {
     // TODO: 11/13/2023 Pull object out of method and into variables with getters
     // and setters for better accessibility.
 
+    private void addPlayButtonHandler() {
+        playButton.addActionListener(ae -> {
+            String playersInput = playersField.getText();
+            updateNumPlayers(getIntegerValueOfInput(playersInput));
+
+            String roundsInput = roundsField.getText();
+            updateNumRounds(getIntegerValueOfInput(roundsInput));
+        });
+    }
+
+    private void addSoundButtonHandler() {
+        soundButton.addActionListener(ae -> {
+            SoundThread sound = SoundThread.getInstance();
+            if (sound.isPlaying()) {
+                sound.stopSong();
+            } else {
+                sound.startSong();
+            }
+        });
+    }
+
     private void initFrame(JFrame frame) {
         // don't allow resize
         frame.setSize(520, 360);
@@ -71,22 +102,12 @@ public class StartFrame {
 
         // north panel
         JPanel northPanel = new JPanel();
-        JLabel word = new JLabel("Eric Crandall Poker");
+        JLabel northLabel = new JLabel("Eric Crandall Poker");
 
-        northPanel.add(word);
+        northPanel.add(northLabel);
 
         // south panel
         JPanel southPanel = new JPanel(new BorderLayout());
-
-        JButton soundButton = new JButton("Sound");
-        JButton playButton = new JButton("Play Game");
-
-        JLabel playersLabel = new JLabel("Players: ");
-        JTextField playersField = new JTextField(1);
-
-        // make hidden if playing until bust
-        JLabel roundsLabel = new JLabel("Rounds: ");
-        JTextField roundsField = new JTextField(1);
 
         JMenuBar settingsBar = new JMenuBar();
         JMenu settingsMenu = new JMenu("Settings");
@@ -125,25 +146,11 @@ public class StartFrame {
 
         frame.setVisible(true);
 
-        // Testing muting sound
-        soundButton.addActionListener(ae -> {
-            SoundThread sound = SoundThread.getInstance();
-            if (sound.isPlaying()) {
-                sound.stopSong();
-            } else {
-                sound.startSong();
-            }
-        });
-
         // when clicking playButton go to the player specify page
         // -> should this be its own frame or should we just replace the components of
         // the start menu
-        playButton.addActionListener(ae -> {
-            String playersInput = playersField.getText();
-            updateNumPlayers(getIntegerValueOfInput(playersInput));
 
-            String roundsInput = roundsField.getText();
-            updateNumRounds(getIntegerValueOfInput(roundsInput));
-        });
+        addPlayButtonHandler();
+        addSoundButtonHandler();
     }
 }

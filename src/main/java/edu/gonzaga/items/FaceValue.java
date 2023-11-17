@@ -31,15 +31,16 @@ public enum FaceValue {
         this.value = value;
     }
 
-    /* Method Name: getString()
+    /* Method Name: toString()
      * Returns: A String
      * Desc: Returns the string value tied to a faceValue
      */
-    public String getString() {
+    @Override
+    public String toString() {
         return this.value;
     }
 
-    /* Method Name: getString()
+    /* Method Name: getValue()
      * Returns: An Int
      * Desc: uses ordinal values to enumerate card values and returns the proper numeric value of a card
      */
