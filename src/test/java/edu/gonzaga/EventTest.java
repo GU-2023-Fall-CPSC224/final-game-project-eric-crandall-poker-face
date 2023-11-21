@@ -7,6 +7,7 @@ import edu.gonzaga.events.backend.EventHandlers;
 import edu.gonzaga.events.backend.EventListener;
 import edu.gonzaga.events.backend.EventManager;
 import edu.gonzaga.events.util.Cancellable;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -74,6 +75,25 @@ class InnerTests {
         EventManager.callEvent(event);
 
         Mockito.verify(mock, Mockito.times(1)).onTestEvent(Mockito.any());
+    }
+
+
+    @Test
+    void cancelTestEvent() {
+        EventExecutor executor = new EventExecutor();
+        EventManager manager = new EventManager(executor);
+
+        TestListener listener = new TestListener();
+        manager.registerEvent(listener);
+        Assertions.assertFalse(cancelTest());
+    }
+
+
+
+    private boolean cancelTest() {
+        EventTest event = new EventTest(5);
+        EventManager.callEvent(event);
+        return !event.isCancelled();
     }
 
 }
