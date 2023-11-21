@@ -36,21 +36,34 @@ public class PlayerPanel {
 
     //make a cardbutton class (works for river and for the show cards. 
     // they're not functional buttons but when (shown) == true display assosiated card value, else show back of card image)
+
+    private boolean cardsShown = false;
     private void addShowCardButtonHandler() {
-        showCardButton.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JButton button = (JButton)e.getSource();
-                ButtonModel model = button.getModel();
-                if (model.isPressed()) {
-                    cardButtons.get(0).setText("c1");
-                    cardButtons.get(1).setText("c2");
-                } else {
-                    cardButtons.get(0).setText("hidden");
-                    cardButtons.get(1).setText("hidden");
-                }
+        showCardButton.addChangeListener(e -> {
+            JButton button = (JButton)e.getSource();
+            ButtonModel model = button.getModel();
+            if (model.isPressed()) {
+                cardsShown = !cardsShown;
+            }
+            if (cardsShown) {
+                cardButtons.get(0).setText("c1");
+                cardButtons.get(1).setText("c2");
+            } else {
+                cardButtons.get(0).setText("hidden");
+                cardButtons.get(1).setText("hidden");
             }
         });
+    }
+
+    public void toggleCardsShown(boolean showCards) {
+        cardsShown = showCards;
+        if (cardsShown) {
+            cardButtons.get(0).setText("c1");
+            cardButtons.get(1).setText("c2");
+        } else {
+            cardButtons.get(0).setText("hidden");
+            cardButtons.get(1).setText("hidden");
+        }
     }
 
     private void initFrame() {

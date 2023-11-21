@@ -3,10 +3,11 @@ package edu.gonzaga.items;
 import edu.gonzaga.MainGame;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
-import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class GameFrame {
@@ -48,6 +49,7 @@ public class GameFrame {
         // move into own method
         JPanel northPanel = new JPanel();
         PlayerPanel p = new PlayerPanel(players.get(0));
+        addShowCardKey(p);
         northPanel.add(p.getPanel());
 
         // move into own method
@@ -78,8 +80,33 @@ public class GameFrame {
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);
         frame.getContentPane().add(BorderLayout.CENTER, centerPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, southPanel);
+        frame.setFocusable(true);
 
         frame.setVisible(true);
+    }
+
+    private void addShowCardKey(PlayerPanel p) {
+        this.frame.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == 's') {
+                    p.toggleCardsShown(true);
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == 's') {
+                    p.toggleCardsShown(false);
+                }
+            }
+        });
     }
 }
 
