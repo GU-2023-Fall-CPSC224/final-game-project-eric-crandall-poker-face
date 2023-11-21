@@ -18,31 +18,42 @@ public class SoundThread extends Thread {
 
     private SoundThread() {
         try {
-            this.clip = AudioSystem.getClip();
             this.ais = AudioSystem.getAudioInputStream(file);
+            AudioFormat format = ais.getFormat();
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
+            this.clip = (Clip) AudioSystem.getLine(info);
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             throw new RuntimeException(e);
         } finally {
             this.start();
+            INSTANCE = this;
         }
     }
 
     @Override
     public void run() {
         super.run();
+        System.out.println("Thread started.");
         if (this.clip != null && ais != null) {
             try {
                 clip.open(ais);
             } catch (LineUnavailableException | IOException e) {
                 throw new RuntimeException(e);
             }
-        }
+        } else throw new RuntimeException("InputStream or Clip is null!");
     }
 
 
     public void startSong() {
-        if (this.clip.isOpen() && !this.clip.isRunning()) {
-            this.clip.start();
+        while (true) {
+            if (this.clip.isOpen() && !this.clip.isRunning()) {
+                this.clip.start();
+            } else if (this.clip.isOpen()) break;
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                this.interrupt();
+            }
         }
     }
 
