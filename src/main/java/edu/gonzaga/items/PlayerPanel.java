@@ -32,14 +32,13 @@ public class PlayerPanel {
     private void initCardButtons() {
         cardButtons = new ArrayList<>();
         for (Integer i = 0; i < 2; i++) {
-            JButton cardButton = new JButton(cardImages.getFacedownImage());
-            cardButton.setPreferredSize(new Dimension(60, 80));
+            JButton cardButton = new JButton(cardImages.getSmallFacedownImage());
+            cardButton.setPreferredSize(new Dimension(45, 60));
             cardButtons.add(cardButton);
         }
     }
 
-    //make a cardbutton class (works for river and for the show cards. 
-    // they're not functional buttons but when (shown) == true display assosiated card value, else show back of card image)
+    //implement with hand class
     private void addShowCardButtonHandler() {
         showCardButton.addChangeListener(new ChangeListener() {
             @Override
@@ -47,13 +46,13 @@ public class PlayerPanel {
                 JButton button = (JButton)e.getSource();
                 ButtonModel model = button.getModel();
                 if (model.isPressed()) {
-                    //cardButtons.get(0).setIcon(cardImages.getCardImage(player.getCardOne()));
-                    //cardButtons.get(1).setIcon(cardImages.getCardImage(player.getCardTwo()));
-                    cardButtons.get(0).setIcon(cardImages.getCardImage(player.getCardOne()));
-                    cardButtons.get(1).setIcon(cardImages.getCardImage(player.getCardTwo()));
+                    //playerhand.setVisible(true)
+                    cardButtons.get(0).setIcon(cardImages.getSmallCardImage(player.getCardOne()));
+                    cardButtons.get(1).setIcon(cardImages.getSmallCardImage(player.getCardTwo()));
                 } else {
-                    cardButtons.get(0).setIcon(cardImages.getFacedownImage());
-                    cardButtons.get(1).setIcon(cardImages.getFacedownImage());
+                    //playerhand.setVisible(false)
+                    cardButtons.get(0).setIcon(cardImages.getSmallFacedownImage());
+                    cardButtons.get(1).setIcon(cardImages.getSmallFacedownImage());
                 }
             }
         });

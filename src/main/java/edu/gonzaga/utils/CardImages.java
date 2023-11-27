@@ -17,6 +17,9 @@ public class CardImages {
     ArrayList<ImageIcon> images;
     ImageIcon facedownImage;
 
+    ArrayList<ImageIcon> smallImages;
+    ImageIcon smallFacedownImage;
+
     void loadImages(String imagesPath) {
         BufferedImage currPicture;
         for (int i = 0; i < Suit.values().length; i++) {
@@ -29,9 +32,11 @@ public class CardImages {
                     System.out.println("Loading image: " + filename);
                     currPicture = ImageIO.read(new File(filename));
                     Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
-                    //TODO: add large scaled image to one array, small scaled version of same image to another
+                    Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
                     ImageIcon scaledImage = new ImageIcon(cimg);
+                    ImageIcon smallScaledImage = new ImageIcon(smallCimg);
                     images.add(scaledImage);
+                    smallImages.add(smallScaledImage);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -47,15 +52,19 @@ public class CardImages {
             System.out.println("Loading image: " + filename);
             currPicture = ImageIO.read(new File(filename));
             Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
+            Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
             ImageIcon scaledImage = new ImageIcon(cimg);
+            ImageIcon smallScaledImage = new ImageIcon(smallCimg);
             facedownImage = scaledImage;
+            smallFacedownImage = smallScaledImage;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public CardImages(String imagesPath) {
-        images = new ArrayList<>(52);
+        images = new ArrayList<>();
+        smallImages = new ArrayList<>();
         loadImages(imagesPath);
         loadFacedownImage(imagesPath);
     }
@@ -68,7 +77,19 @@ public class CardImages {
         return images.get(index);
     }
 
+    public ImageIcon getSmallCardImage(Card card) {
+        Suit suit = card.getSuit();
+        FaceValue faceValue = card.getFaceValue();
+
+        int index = ((suit.ordinal()) * 13 ) + (faceValue.ordinal() - 1);
+        return smallImages.get(index);
+    }
+
     public ImageIcon getFacedownImage() {
         return facedownImage;
+    }
+
+    public ImageIcon getSmallFacedownImage() {
+        return smallFacedownImage;
     }
 }
