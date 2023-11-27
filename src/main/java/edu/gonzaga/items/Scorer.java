@@ -59,7 +59,7 @@ public class Scorer {
      * Events: N/A
      */
     public FaceValue getHighCardVal() {
-        return highCardVal;
+        return this.highCardVal;
     }
 
     /* Method Name: sortHand();
@@ -117,6 +117,68 @@ public class Scorer {
      */
     public Card getHandAt(int i) {
         return this.hand.get(i);
+    }
+
+    /* Method Name: getPrecedence()
+     * Returns: A Integer
+     * Desc: Returns the current value of precedence
+     * Events: N/A
+     */
+    public Integer getPrecedence() {
+        return this.precedence;
+    }
+
+    /* Method Name: getSpecialCardVal()
+     * Returns: A FaceValue
+     * Desc: Returns this.specialCardVal
+     * Events: N/A
+     */
+    public FaceValue getSpecialCardVal() {
+        return this.specialCardVal;
+    }
+
+    /* Method Name: compareScores()
+     * Returns: An Integer (0, 1, or -1)
+     * Desc: Accepts a second scorer. Compares the two scorers precedence values. If they are equal and != 9,
+     *       compares the special card. If Special Cards are equal, then compares the high card.
+     *       If still equal or if both have precedence, returns -1 (represents a tie).
+     *       If this scorer has higher precedence than the inputed scorer, returns 0.
+     *       If this scorer has lower precedence than the inputed scorer, returns 1.
+     */
+    public Integer compareScores(Scorer otherScorer) {
+        //Checking precedence
+        if(this.precedence > otherScorer.getPrecedence()) {
+            //this' precendence is higher than others precedence
+            return 0;
+        } else if(this.precedence < otherScorer.getPrecedence()) {
+            //others precendence is higher than this' precedence
+            return 1;
+        } else if(this.precedence == 9 && otherScorer.getPrecedence() == 9) {
+            //Both scorers contain royal flushes, must be a tie
+            return -1;
+        }
+
+        //Checking Special Cards value
+        // If blank, no need to compare, just compare the high card. Also note than if one is blank, the other should be as well
+        if(this.specialCardVal != FaceValue.BLANK) {
+            if(this.specialCardVal.getValue() > otherScorer.getSpecialCardVal().getValue()) {
+                //this' precendence is higher than others precedence
+                return 0;
+            } else if(this.specialCardVal.getValue() < otherScorer.getSpecialCardVal().getValue()) {
+                //others precendence is higher than this' precedence
+                return 1;
+            }
+        }
+
+        //Checking High Card Values
+        if(this.highCardVal.getValue() > otherScorer.getHighCardVal().getValue()) {
+            //this' precendence is higher than others precedence
+            return 0;
+        } else if(this.highCardVal.getValue() < otherScorer.getHighCardVal().getValue()) {
+            //others precendence is higher than this' precedence
+            return 1;
+        }
+        return -1;
     }
 
     /* Method Name: runChecks() 
