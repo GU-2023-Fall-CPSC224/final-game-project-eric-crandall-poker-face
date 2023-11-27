@@ -1,12 +1,11 @@
 package edu.gonzaga;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import edu.gonzaga.items.Scorer;
 import edu.gonzaga.items.Card;
 import edu.gonzaga.items.FaceValue;
 import edu.gonzaga.items.Suit;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class ScorerTest {
@@ -311,12 +310,14 @@ public class ScorerTest {
         temp.setFaceValue(FaceValue.TEN);
         scorer.addCardtoHand(temp);
         temp = new Card();
-        temp.setFaceValue(FaceValue.TWO);
+        temp.setFaceValue(FaceValue.QUEEN);
+        temp.setSuit(Suit.HEARTS);
         scorer.addCardtoHand(temp);
         temp = new Card();
         temp.setFaceValue(FaceValue.EIGHT);
         scorer.addCardtoHand(temp);
 
+        scorer.countDupes();
         boolean expected = true;
         boolean actual = scorer.checkRoyalFlush();
         assertEquals(expected, actual);

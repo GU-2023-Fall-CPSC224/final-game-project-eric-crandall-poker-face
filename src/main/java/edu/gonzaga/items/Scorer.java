@@ -11,15 +11,12 @@
 package edu.gonzaga.items;
 
 import java.util.ArrayList;
-import edu.gonzaga.items.Card;
-import edu.gonzaga.items.FaceValue;
-import edu.gonzaga.items.Suit;
 
 public class Scorer {
     private ArrayList<Card> hand;           // An array list of 7 cards (2 from player, 5 from community)
     private FaceValue highCardVal;          // Contains the face value of the highest card used in hand 
     private FaceValue specialCardVal;       // The face value of the highest card used in a specific combo (can be different that highCard)
-    private Integer precedence;
+    private Integer precedence;             // Precedence value of hand, higher precendence beats lower precedence.
     private Integer[] dupes;                //Has an index for each of the card values (2 = index 0, Ace = index 12) that contains how many times each card appears in hand
 
     /* Scorer Default Value Constructor
@@ -89,6 +86,35 @@ public class Scorer {
         }
     }
 
+    /* Method Name: sortHandSuits();
+     * Returns: N/A (Void)
+     * Desc: Sorts hand array list based on the ordinal values of each cards Suit, in alphabetical order (Bubble sort)
+     * Events: N/A
+     */
+    public void sortHandSuits() {
+        boolean sorted = false, swapped = false;
+        while (!sorted) {
+            for(int i = 0; i < hand.size()-1; i++) {
+                if(hand.get(i).getSuit().getString().charAt(0) > hand.get(i+1).getSuit().getString().charAt(0)) {
+                    Card tempCard = hand.get(i);
+                    hand.set(i, hand.get(i+1));
+                    hand.set(i+1, tempCard);
+                    swapped = true;
+                }
+            }
+            if(!swapped) {
+                sorted = true;
+            } else {
+                swapped = false;
+            }
+        }
+    }
+
+    /* Method Name: getHandAt()
+     * Returns: A Card
+     * Desc: Accepts an interger i and returns the card stored at index i of hand
+     * Events: N/A
+     */
     public Card getHandAt(int i) {
         return this.hand.get(i);
     }
@@ -280,6 +306,7 @@ public class Scorer {
                 numInRow++;
                 if(numInRow == 5) {
                     //TODO set special card value
+                    this.precedence = 8;
                     return true;
                 }
             } else {
@@ -293,11 +320,42 @@ public class Scorer {
 
     /* Method Name: checkRoyalFlush()
      * Returns: A Boolean confirming whether or not combo was found 
-     * Desc:
+     * Desc: Checks hand for a combo of 10, J, Q, K, A all of the same suit.
      * Events: N/A
      */
     public boolean checkRoyalFlush() {
-        //TODO
+        Suit suits[] = {Suit.CLUBS, Suit.DIAMONDS, Suit.HEARTS, Suit.SPADES, Suit.CLUBS}; //These are all placeholder suit values
+        //Check to see that 10-A are in hand
+        for(int i = 8; i < 13; i++) { //index 8 represents 10 in dupes
+            if(this.dupes[i] == 0) {
+                return false;
+            }
+        }
+
+        //sorting hand by grouping suits and numerical values
+        this.sortHand();
+        this.sortHandSuits();
+
+        //Checking suit values of 10-A
+        for(int i = 0; i < hand.size(); i++) {
+            if(this.hand.get(i).getFaceValue() == FaceValue.TEN) {
+                suits[0] = this.hand.get(i).getSuit();
+            } else if(this.hand.get(i).getFaceValue() == FaceValue.JACK) {
+                suits[1] = this.hand.get(i).getSuit();
+            } else if(this.hand.get(i).getFaceValue() == FaceValue.QUEEN) {
+                suits[2] = this.hand.get(i).getSuit();
+            } else if(this.hand.get(i).getFaceValue() == FaceValue.KING) {
+                suits[3] = this.hand.get(i).getSuit();
+            } else if(this.hand.get(i).getFaceValue() == FaceValue.ACE) {
+                suits[4] = this.hand.get(i).getSuit();
+            
+                if(suits[0] == suits[1] && suits[1] == suits[2]  && suits[2] == suits[3] && suits[3] == suits[4]) {
+                    this.precedence = 9;
+                    return true;
+                    //No special card value needed
+                }
+            }
+        }
         return false;
     }
 
