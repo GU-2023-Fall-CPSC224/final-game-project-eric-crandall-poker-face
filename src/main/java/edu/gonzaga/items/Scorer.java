@@ -119,6 +119,57 @@ public class Scorer {
         return this.hand.get(i);
     }
 
+    /* Method Name: runChecks() 
+     * Returns: N/A (void)
+     * Desc: Calls all the hand combo checks that are written below to find precedence value
+     * Events: N/A
+     */
+    public void runChecks() {
+        //Counting dupes
+        this.countDupes();
+        //Royal Flush
+        if(this.checkRoyalFlush()) {
+            this.highCardVal = FaceValue.ACE;
+            return;
+        }
+        //For the rest of these, find high card first for use in precendce tie cases
+        this.checkHighCard();
+        //Straight Flush
+        if(this.checkStraightFlush()) {
+            return;
+        }
+        //4 of a Kind
+        if(this.check4Kind()) {
+            return;
+        }
+        //Full House
+        if(this.checkFullHouse()) {
+            return;
+        }
+        //Flush
+        if(this.checkFlush()) {
+            return;
+        }
+        //Straight
+        if(this.checkStraight()) {
+            return;
+        }
+        //3 of a Kind
+        if(this.check3Kind()) {
+            return;
+        }
+        //2 pair
+        if(this.check2Pair()) {
+            return;
+        }
+        //1 pair
+        if(this.check1Pair()) {
+            return;
+        }
+        //double checking to make sure precedence is still zero if hand passed none of the above checks.
+        this.precedence = 0;
+    }
+
 /*********
  * 
  * Below this line are all the individual methods repsonsible for checking for different card combos.
