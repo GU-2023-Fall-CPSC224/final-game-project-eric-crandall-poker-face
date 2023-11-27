@@ -6,6 +6,7 @@ import javax.swing.event.ChangeListener;
 
 import java.awt.*;
 import java.util.ArrayList;
+import edu.gonzaga.utils.CardImages;
 
 public class PlayerPanel {
     private Player player;
@@ -16,9 +17,11 @@ public class PlayerPanel {
 
     //not functional buttons
     ArrayList<JButton> cardButtons;
+    CardImages cardImages;
 
-    public PlayerPanel(Player player) {
+    public PlayerPanel(Player player, CardImages cardImages) {
         this.player = player;
+        this.cardImages = cardImages;
         initFrame();
     }
 
@@ -29,7 +32,8 @@ public class PlayerPanel {
     private void initCardButtons() {
         cardButtons = new ArrayList<>();
         for (Integer i = 0; i < 2; i++) {
-            JButton cardButton = new JButton("hidden");
+            JButton cardButton = new JButton(cardImages.getFacedownImage());
+            cardButton.setPreferredSize(new Dimension(60, 80));
             cardButtons.add(cardButton);
         }
     }
@@ -43,11 +47,13 @@ public class PlayerPanel {
                 JButton button = (JButton)e.getSource();
                 ButtonModel model = button.getModel();
                 if (model.isPressed()) {
-                    cardButtons.get(0).setText("c1");
-                    cardButtons.get(1).setText("c2");
+                    //cardButtons.get(0).setIcon(cardImages.getCardImage(player.getCardOne()));
+                    //cardButtons.get(1).setIcon(cardImages.getCardImage(player.getCardTwo()));
+                    cardButtons.get(0).setIcon(cardImages.getCardImage(player.getCardOne()));
+                    cardButtons.get(1).setIcon(cardImages.getCardImage(player.getCardTwo()));
                 } else {
-                    cardButtons.get(0).setText("hidden");
-                    cardButtons.get(1).setText("hidden");
+                    cardButtons.get(0).setIcon(cardImages.getFacedownImage());
+                    cardButtons.get(1).setIcon(cardImages.getFacedownImage());
                 }
             }
         });

@@ -13,7 +13,7 @@ public enum Suit {
 
     private final String value;
 
-    /* Contrcutor for Suit
+    /* Constructor for Suit
      * Accepts a string and sets Suits value to that string
      */
     Suit(String value) {

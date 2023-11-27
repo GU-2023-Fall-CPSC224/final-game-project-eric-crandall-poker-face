@@ -4,12 +4,16 @@ import edu.gonzaga.MainGame;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
+import edu.gonzaga.utils.CardImages;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class GameFrame {
+    //we need to move images and stuff like players, cards, etc.. to a main class where we impliment everything
+    CardImages cardImages = new CardImages("media/");
+
     private ArrayList<Player> players;
     private Deck deck = new Deck();
 
@@ -47,25 +51,24 @@ public class GameFrame {
 
         // move into own method
         JPanel northPanel = new JPanel();
-        PlayerPanel p = new PlayerPanel(players.get(0));
+        PlayerPanel p = new PlayerPanel(players.get(0), cardImages);
         northPanel.add(p.getPanel());
 
         // move into own method
-        JPanel centerPanel = new JPanel(new GridLayout(3, 1));
+        JPanel centerPanel = new JPanel();
         JPanel cardsPanel = new JPanel(new GridLayout(1, 7, 2, 1));
         JButton potButton = new JButton("Pot");
         JButton deckButton = new JButton("Deck");
-        centerPanel.add(new JPanel());
         cardsPanel.add(potButton);
         cardsPanel.add(deckButton);
         for (Integer index = 0; index < 5; index++) {
             Card card = deck.drawCard();
-            JButton cardButton = new JButton(card.toString());
+            JButton cardButton = new JButton(cardImages.getCardImage(card));
+            cardButton.setPreferredSize(new Dimension(60, 80));
             cardsPanel.add(cardButton);
             tempCards.add(card);
         }
         centerPanel.add(cardsPanel);
-        centerPanel.add(new JPanel());
 
         // move into own method
         Player tempPlayer = players.get(0);

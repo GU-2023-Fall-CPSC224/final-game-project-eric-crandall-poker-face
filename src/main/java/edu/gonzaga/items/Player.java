@@ -15,6 +15,8 @@ public class Player {
      */
     public Player() {
         this.name = "Uknown Player";
+        this.c1 = new Card();
+        this.c2 = new Card();
         this.chips = new Chips();
     }
 
