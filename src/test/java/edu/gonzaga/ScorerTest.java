@@ -116,7 +116,7 @@ public class ScorerTest {
         temp.setFaceValue(FaceValue.FOUR);
         scorer.addCardtoHand(temp);
         temp = new Card();
-        temp.setFaceValue(FaceValue.THREE);
+        temp.setFaceValue(FaceValue.NINE);
         scorer.addCardtoHand(temp);
         scorer.addCardtoHand(temp); //And 2 threes
 
@@ -281,7 +281,7 @@ public class ScorerTest {
         temp.setFaceValue(FaceValue.EIGHT);
         scorer.addCardtoHand(temp);
         temp = new Card();
-        temp.setFaceValue(FaceValue.EIGHT);
+        temp.setFaceValue(FaceValue.SIX);
         scorer.addCardtoHand(temp);
 
         scorer.countDupes();

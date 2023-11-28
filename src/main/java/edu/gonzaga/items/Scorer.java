@@ -13,6 +13,7 @@ package edu.gonzaga.items;
 import java.util.ArrayList;
 
 public class Scorer {
+    //Realizing now I prob should have just made hand a Hand, but I'm not gonna go back to change it 
     private ArrayList<Card> hand;           // An array list of 7 cards (2 from player, 5 from community)
     private FaceValue highCardVal;          // Contains the face value of the highest card used in hand 
     private FaceValue specialCardVal;       // The face value of the highest card used in a specific combo (can be different that highCard)
@@ -262,7 +263,7 @@ public class Scorer {
     public boolean check1Pair() {
         for(int i = 0; i < 13; i++) {
             if(this.dupes[i] == 2) {
-                //TODO set special card
+                this.specialCardVal = FaceValue.intToFaceVal(i+2);
                 this.precedence = 1;
                 return true;
             }
@@ -279,13 +280,18 @@ public class Scorer {
         boolean found1 = false;
         for(int i = 0; i < 13; i++) {
             if(this.dupes[i] == 2 && found1 == true) {
-                //TODO set special card
+                if(this.specialCardVal == FaceValue.BLANK) {
+                    this.specialCardVal = FaceValue.intToFaceVal(i+2);
+                } else if(this.specialCardVal.getValue() < i+2) {
+                    this.specialCardVal = FaceValue.intToFaceVal(i+2);
+                }
                 this.precedence = 2;
                 return true;
             } else if(this.dupes[i] == 2) {
                 found1 = true;
             }
         }
+        this.specialCardVal = FaceValue.BLANK;
         return false;
     }
 
@@ -297,7 +303,7 @@ public class Scorer {
     public boolean check3Kind() {
         for(int i = 0; i < 13; i++) {
             if(this.dupes[i] == 3) {
-                //TODO set special card
+                this.specialCardVal = FaceValue.intToFaceVal(i+2);
                 this.precedence = 3;
                 return true;
             }
@@ -316,7 +322,7 @@ public class Scorer {
             if(dupes[i] > 0) {
                 numInRow++;
                 if(numInRow == 5) {
-                    //TODO add special card val
+                    this.specialCardVal = FaceValue.intToFaceVal(i+2);
                     this.precedence = 4;
                     return true;
                 }
@@ -324,6 +330,7 @@ public class Scorer {
                 numInRow = 0;
             }
         }
+        this.specialCardVal = FaceValue.BLANK;
         return false;
     }
 
@@ -369,15 +376,16 @@ public class Scorer {
         for(int i = 0; i < 13; i++) {
             if(dupes[i] == 3 && trips == false) { //There will be some cases where there a two trips in hand instead of a pair and a trips. this check is to account for that case.
                 trips = true;
+                this.specialCardVal = FaceValue.intToFaceVal(i+2);
             } else if (dupes[i] >= 2) {
                 pair = true;
             }
         }
         if(pair && trips) {
-        //TODO Special card values
             this.precedence = 6;
             return true;
         }
+        this.specialCardVal = FaceValue.BLANK;
         return false;
     }
 
@@ -389,7 +397,7 @@ public class Scorer {
     public boolean check4Kind() {
         for(int i = 0; i < 13; i++) {
             if(this.dupes[i] == 4) {
-                //TODO set special card
+                this.specialCardVal = FaceValue.intToFaceVal(i+2);
                 this.precedence = 7;
                 return true;
             }
@@ -410,6 +418,7 @@ public class Scorer {
         }
         //Sort hand
         this.sortHand();
+        this.sortHandSuits();
 
         Suit currSuit = hand.get(0).getSuit();
         Integer prevFaceValue = hand.get(0).getFaceValue().getValue();
@@ -418,10 +427,12 @@ public class Scorer {
                 prevFaceValue++;
                 numInRow++;
                 if(numInRow == 5) {
-                    //TODO set special card value
+                    this.specialCardVal = hand.get(i).getFaceValue();
                     this.precedence = 8;
                     return true;
                 }
+            } else if (hand.get(i).getSuit() == currSuit && hand.get(i).getFaceValue().getValue() == prevFaceValue) {
+                //Nohtin
             } else {
                 currSuit = hand.get(i).getSuit();
                 prevFaceValue = hand.get(i).getFaceValue().getValue();
