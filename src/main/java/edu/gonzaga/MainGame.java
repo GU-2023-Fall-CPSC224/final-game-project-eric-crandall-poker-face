@@ -41,7 +41,6 @@ public class MainGame {
         manager = new EventManager(executor);
         sound = SoundThread.getInstance();
         sound.startSong();
-
         new StartFrame();
 
         //delete

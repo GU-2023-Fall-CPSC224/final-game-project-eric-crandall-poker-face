@@ -11,17 +11,21 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class GameFrame {
-    //we need to move images and stuff like players, cards, etc.. to a main class where we impliment everything
+    // we need to move images and stuff like players, cards, etc.. to a main class
+    // where we impliment everything
     CardImages cardImages = new CardImages("media/");
 
     private ArrayList<Player> players;
     private Deck deck = new Deck();
 
     private ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
-
-    //make its own object "displayCards, flop, river..."
     private ArrayList<Card> tempCards = new ArrayList<Card>();
 
+    JPanel northPanel;
+    JPanel centerPanel;
+    JPanel southPanel;
+
+    JPanel cardsPanel;
     private final JFrame frame;
 
     // TODO: handle number rounds/bustmode
@@ -49,30 +53,45 @@ public class GameFrame {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
+        // temporary adding cards to players
+        for (int i = 0; i < players.size(); i++) {
+            Card c1 = deck.drawCard();
+            Card c2 = deck.drawCard();
+            Player p = players.get(i);
+            p.setCards(c1, c2);
+        }
+
         // move into own method
-        JPanel northPanel = new JPanel();
-        PlayerPanel p = new PlayerPanel(players.get(0), cardImages);
+        for (int i = 0; i < players.size(); i++) {
+            PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
+            playerPanels.add(panel);
+        }
+
+        // move into own method
+        northPanel = new JPanel();
+        PlayerPanel p = playerPanels.get(0);
         northPanel.add(p.getPanel());
 
         // move into own method
-        JPanel centerPanel = new JPanel();
-        JPanel cardsPanel = new JPanel(new GridLayout(1, 7, 2, 1));
+        centerPanel = new JPanel();
+        cardsPanel = new JPanel(new GridLayout(1, 8, 2, 1));
         JButton potButton = new JButton("Pot");
-        JButton deckButton = new JButton("Deck");
+        JButton deckButton = new JButton(cardImages.getFacedownImage());
+        deckButton.setPreferredSize(new Dimension(60, 80));
         cardsPanel.add(potButton);
         cardsPanel.add(deckButton);
         for (Integer index = 0; index < 5; index++) {
             Card card = deck.drawCard();
-            JButton cardButton = new JButton(cardImages.getCardImage(card));
-            cardButton.setPreferredSize(new Dimension(60, 80));
-            cardsPanel.add(cardButton);
+            JLabel cardLabel = new JLabel(cardImages.getCardImage(card));
+            cardLabel.setPreferredSize(new Dimension(60, 80));
+            cardsPanel.add(cardLabel);
             tempCards.add(card);
         }
         centerPanel.add(cardsPanel);
 
         // move into own method
         Player tempPlayer = players.get(0);
-        JPanel southPanel = new JPanel();
+        southPanel = new JPanel();
         JLabel playerNameLabel = new JLabel(tempPlayer.getName());
         JLabel playerChipsLabel = new JLabel("" + tempPlayer.getScore() + " chips");
         southPanel.add(playerNameLabel);
@@ -85,4 +104,3 @@ public class GameFrame {
         frame.setVisible(true);
     }
 }
-

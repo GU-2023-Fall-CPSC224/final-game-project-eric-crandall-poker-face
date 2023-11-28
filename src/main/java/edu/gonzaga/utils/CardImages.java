@@ -47,8 +47,7 @@ public class CardImages {
     void loadFacedownImage(String imagesPath) {
         try {
             BufferedImage currPicture;
-            // TODO: change from joker location to specific facedown
-            String filename = imagesPath + "red_joker.png";
+            String filename = imagesPath + "card_back.png";
             System.out.println("Loading image: " + filename);
             currPicture = ImageIO.read(new File(filename));
             Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
