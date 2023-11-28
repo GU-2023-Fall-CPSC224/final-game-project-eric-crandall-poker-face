@@ -3,6 +3,8 @@ package edu.gonzaga.items;
 import edu.gonzaga.MainGame;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
+
+//TODO: add mute button 
 import edu.gonzaga.utils.SoundThread;
 import edu.gonzaga.utils.CardImages;
 
@@ -13,19 +15,23 @@ import java.util.ArrayList;
 public class GameFrame {
     // we need to move images and stuff like players, cards, etc.. to a main class
     // where we impliment everything
-    CardImages cardImages = new CardImages("media/");
-
     private ArrayList<Player> players;
     private Deck deck = new Deck();
 
-    private ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
-    private ArrayList<Card> tempCards = new ArrayList<Card>();
+    CardImages cardImages = new CardImages("media/");
+    ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
+    ArrayList<Card> tempCards = new ArrayList<Card>();
+
+    //temp for testing purposes
+    JButton deckButton;
+    private int currentPlayerWatched = 0;
 
     JPanel northPanel;
     JPanel centerPanel;
     JPanel southPanel;
 
     JPanel cardsPanel;
+
     private final JFrame frame;
 
     // TODO: handle number rounds/bustmode
@@ -39,8 +45,26 @@ public class GameFrame {
         return this.frame;
     }
 
-    private void initFrame(JFrame frame) {
-        deck.shuffle();
+    //testing switching player panels, delete eventually
+    private void addTempCallbackHandler() {
+        deckButton.addActionListener(ae -> {
+            //remove previous panel
+            PlayerPanel p = playerPanels.get(currentPlayerWatched);
+            northPanel.remove(p.getPanel());
+
+            //change player being "watched"
+            currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
+            
+            //add new panel 
+            p = playerPanels.get(currentPlayerWatched);
+            northPanel.add(p.getPanel());
+
+            frame.validate();
+            frame.repaint();
+        });
+    }
+
+    private void setupFrame() {
         // don't allow resize
         frame.setSize(520, 360);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,33 +77,47 @@ public class GameFrame {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
-        // temporary adding cards to players
-        for (int i = 0; i < players.size(); i++) {
-            Card c1 = deck.drawCard();
-            Card c2 = deck.drawCard();
-            Player p = players.get(i);
-            p.setCards(c1, c2);
-        }
+        this.northPanel = genNorthPanel();
+        this.centerPanel = genCenterPanel();
+        this.southPanel = genSouthPanel();
 
-        // move into own method
+        frame.getContentPane().add(BorderLayout.NORTH, northPanel);
+        frame.getContentPane().add(BorderLayout.CENTER, centerPanel);
+        frame.getContentPane().add(BorderLayout.SOUTH, southPanel);
+    }
+
+    private JPanel genNorthPanel() {
+        JPanel newPanel = new JPanel();
+
+        // temporary, eventually move or delete
         for (int i = 0; i < players.size(); i++) {
             PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
             playerPanels.add(panel);
         }
-
-        // move into own method
-        northPanel = new JPanel();
+        
+        //also temporary
         PlayerPanel p = playerPanels.get(0);
-        northPanel.add(p.getPanel());
 
-        // move into own method
-        centerPanel = new JPanel();
+        newPanel.add(p.getPanel());
+
+        return newPanel;
+    }
+
+    private JPanel genCenterPanel() {
+        JPanel newPanel = new JPanel();
+
         cardsPanel = new JPanel(new GridLayout(1, 8, 2, 1));
+
         JButton potButton = new JButton("Pot");
-        JButton deckButton = new JButton(cardImages.getFacedownImage());
+        potButton.setPreferredSize(new Dimension(60, 80));
+
+        deckButton = new JButton(cardImages.getFacedownImage());
         deckButton.setPreferredSize(new Dimension(60, 80));
+
         cardsPanel.add(potButton);
         cardsPanel.add(deckButton);
+
+        // redo when integrating with hand class
         for (Integer index = 0; index < 5; index++) {
             Card card = deck.drawCard();
             JLabel cardLabel = new JLabel(cardImages.getCardImage(card));
@@ -87,19 +125,43 @@ public class GameFrame {
             cardsPanel.add(cardLabel);
             tempCards.add(card);
         }
-        centerPanel.add(cardsPanel);
 
-        // move into own method
+        newPanel.add(cardsPanel);
+
+        return newPanel;
+    }
+
+    // temporary, replace with betting/turn options
+    private JPanel genSouthPanel() {
+        JPanel newPanel = new JPanel();
+
         Player tempPlayer = players.get(0);
-        southPanel = new JPanel();
+
         JLabel playerNameLabel = new JLabel(tempPlayer.getName());
         JLabel playerChipsLabel = new JLabel("" + tempPlayer.getScore() + " chips");
-        southPanel.add(playerNameLabel);
-        southPanel.add(playerChipsLabel);
 
-        frame.getContentPane().add(BorderLayout.NORTH, northPanel);
-        frame.getContentPane().add(BorderLayout.CENTER, centerPanel);
-        frame.getContentPane().add(BorderLayout.SOUTH, southPanel);
+        newPanel.add(playerNameLabel);
+        newPanel.add(playerChipsLabel);
+
+        return newPanel;
+    }
+
+    private void initFrame(JFrame frame) {
+        // move somewhere down the road
+        deck.shuffle();
+
+        // temporary adding cards to players, delete eventualy
+        for (int i = 0; i < players.size(); i++) {
+            Card c1 = deck.drawCard();
+            Card c2 = deck.drawCard();
+            Player p = players.get(i);
+            p.setCards(c1, c2);
+        }
+
+        setupFrame();
+
+        //delete eventually
+        addTempCallbackHandler();
 
         frame.setVisible(true);
     }
