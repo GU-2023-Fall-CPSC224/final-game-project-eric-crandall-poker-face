@@ -6,25 +6,26 @@
 package edu.gonzaga.items;
 
 public enum Suit {
-    SPADES("Spade"),
-    CLUBS("Club"),
-    HEARTS("Heart"),
-    DIAMONDS("Diamond");
+    SPADES("Spades"),
+    CLUBS("Clubs"),
+    HEARTS("Hearts"),
+    DIAMONDS("Diamonds");
 
     private final String value;
 
-    /* Contrcutor for Suit
+    /* Constructor for Suit
      * Accepts a string and sets Suits value to that string
      */
     Suit(String value) {
         this.value = value;
     }
 
-    /* Method Name: getString()
+    /* Method Name: toString()
      * Returns: A String
      * Desc: Returns the string value tied to a Suit
      */
-    public String getString() {
+    @Override
+    public String toString() {
         return this.value;
     }
 }

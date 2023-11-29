@@ -52,4 +52,9 @@ public class SoundThread extends Thread {
         }
     }
 
+
+    public boolean isPlaying() {
+        return this.clip.isRunning();
+    }
+
 }

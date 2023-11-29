@@ -16,11 +16,11 @@ public enum FaceValue {
     EIGHT("8"),
     NINE("9"),
     TEN("10"),
-    JACK("J"),
-    QUEEN("Q"),
-    KING("K"),
-    ACE("A"),
-    JOKER("O");
+    JACK("Jack"),
+    QUEEN("Queen"),
+    KING("King"),
+    ACE("Ace"),
+    JOKER("Joker");
 
     private final String value;
 
@@ -31,15 +31,16 @@ public enum FaceValue {
         this.value = value;
     }
 
-    /* Method Name: getString()
+    /* Method Name: toString()
      * Returns: A String
      * Desc: Returns the string value tied to a faceValue
      */
-    public String getString() {
+    @Override
+    public String toString() {
         return this.value;
     }
 
-    /* Method Name: getString()
+    /* Method Name: getValue()
      * Returns: An Int
      * Desc: uses ordinal values to enumerate card values and returns the proper numeric value of a card
      */
