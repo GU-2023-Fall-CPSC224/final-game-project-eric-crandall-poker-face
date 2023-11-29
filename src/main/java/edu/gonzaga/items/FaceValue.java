@@ -46,4 +46,41 @@ public enum FaceValue {
     public int getValue() {
         return ordinal() + 1;
     }
+
+    /* Method Name: intToFaceVal() 
+     * Returns: FaceValue
+     * Desc: Accepts an integer and converts it to its corresponding faceValue
+     */
+    public static FaceValue intToFaceVal(Integer x) {
+        switch (x) {
+            case 14:
+                return FaceValue.ACE;
+            case 13:
+                return FaceValue.KING;
+            case 12:
+                return FaceValue.QUEEN;
+            case 11:
+                return FaceValue.JACK;
+            case 10:
+                return FaceValue.TEN;
+            case 9:
+                return FaceValue.NINE;
+            case 8:
+                return FaceValue.EIGHT;
+            case 7:
+                return FaceValue.SEVEN;
+            case 6:
+                return FaceValue.SIX;
+            case 5:
+                return FaceValue.FIVE;
+            case 4:
+                return FaceValue.FOUR;
+            case 3:
+                return FaceValue.THREE;
+            case 2:
+                return FaceValue.TWO;
+            default:
+                return FaceValue.BLANK;
+        }
+    }
 }
