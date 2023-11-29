@@ -9,7 +9,112 @@ import edu.gonzaga.items.Suit;
 import org.junit.jupiter.api.Test;
 
 public class ScorerTest {
-    
+    @Test
+    void compareScoresTieTest() {
+        Scorer scorer = new Scorer();
+        Card temp = new Card();
+
+        scorer.addCardtoHand(temp);
+        temp = new Card();
+        temp.setFaceValue(FaceValue.SIX);
+        scorer.addCardtoHand(temp);
+        scorer.addCardtoHand(temp); //Should have 3 sixes
+        scorer.addCardtoHand(temp);
+        temp = new Card();
+        temp.setFaceValue(FaceValue.FOUR);
+        scorer.addCardtoHand(temp);
+        temp = new Card();
+        temp.setFaceValue(FaceValue.THREE);
+        scorer.addCardtoHand(temp);
+        temp = new Card();
+        temp.setFaceValue(FaceValue.EIGHT);
+        scorer.addCardtoHand(temp);
+
+        scorer.runChecks();
+        Integer expected = -1;
+        Integer actual = scorer.compareScores(scorer);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void compareScoresSpecialCardTieBreak() {
+        Scorer scorer = new Scorer();
+        Scorer scorer2 = new Scorer();
+        Card temp = new Card();
+
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.SIX);
+        temp.setSuit(Suit.CLUBS);
+        scorer.addCardtoHand(temp);
+        scorer.addCardtoHand(temp); //Should have 3 sixes
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.FOUR);
+        temp.setSuit(Suit.DIAMONDS);
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        scorer2.addCardtoHand(temp); //
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.THREE);
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.EIGHT);
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+
+        scorer.runChecks();
+        scorer2.runChecks();
+        Integer expected = 0;
+        Integer actual = scorer.compareScores(scorer2);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void compareScoresHighCardTieBreakTest() {
+        Scorer scorer = new Scorer();
+        Scorer scorer2 = new Scorer();
+        Card temp = new Card();
+
+        temp.setFaceValue(FaceValue.TWO);
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.SIX);
+        temp.setSuit(Suit.CLUBS);
+        scorer.addCardtoHand(temp);
+        scorer.addCardtoHand(temp); //Should have 3 sixes
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        scorer2.addCardtoHand(temp); //
+        scorer2.addCardtoHand(temp);
+        temp = new Card();
+        temp.setFaceValue(FaceValue.FOUR);
+        temp.setSuit(Suit.DIAMONDS);
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.THREE);
+        scorer.addCardtoHand(temp);
+        scorer2.addCardtoHand(temp); //
+        temp = new Card();
+        temp.setFaceValue(FaceValue.SEVEN);
+        scorer.addCardtoHand(temp);
+        temp = new Card();
+        temp.setFaceValue(FaceValue.EIGHT);
+        scorer2.addCardtoHand(temp); //
+
+        scorer.runChecks();
+        scorer2.runChecks();
+        Integer expected = 1;
+        Integer actual = scorer.compareScores(scorer2);
+        assertEquals(expected, actual);
+    }
+
     @Test
     void sortHandTest() {
         Scorer scorer = new Scorer();
