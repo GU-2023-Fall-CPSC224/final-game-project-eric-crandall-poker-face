@@ -12,9 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+//TODO: load images faster
 public class GameFrame {
-    // we need to move images and stuff like players, cards, etc.. to a main class
-    // where we impliment everything
+    
     private ArrayList<Player> players;
     private Deck deck = new Deck();
 

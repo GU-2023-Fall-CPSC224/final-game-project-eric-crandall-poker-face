@@ -22,7 +22,7 @@ public class PlayerPanel {
     public PlayerPanel(Player player, CardImages cardImages) {
         this.player = player;
         this.cardImages = cardImages;
-        initFrame();
+        genPanel();
     }
 
     public JPanel getPanel() {
@@ -58,7 +58,7 @@ public class PlayerPanel {
         });
     }
 
-    private void initFrame() {
+    private void genPanel() {
         playerLabel = new JLabel(player.getName());
         showCardButton = new JButton("Show Cards");
         initCardButtons();

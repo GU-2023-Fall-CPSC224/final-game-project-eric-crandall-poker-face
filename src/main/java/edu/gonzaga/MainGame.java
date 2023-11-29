@@ -41,21 +41,20 @@ public class MainGame {
         manager = new EventManager(executor);
         sound = SoundThread.getInstance();
         sound.startSong();
-        new StartFrame();
 
-        //delete
         ArrayList<Player> players = new ArrayList<>();
+
+        /*
         Player p = new Player();
         p.setName("Cartman");
         Player p1 = new Player();
         p1.setName("Butters");
         players.add(p);
         players.add(p1);
-        new GameFrame(players);
+        */
 
-
+        new StartFrame(players);
+        
         System.out.println("Hello Team Game");
-
-
     }
 }
