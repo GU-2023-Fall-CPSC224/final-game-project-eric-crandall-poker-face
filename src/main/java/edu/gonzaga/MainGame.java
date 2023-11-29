@@ -46,7 +46,9 @@ public class MainGame {
         //delete
         ArrayList<Player> players = new ArrayList<>();
         Player p = new Player();
+        p.setName("Cartman");
         Player p1 = new Player();
+        p1.setName("Butters");
         players.add(p);
         players.add(p1);
         new GameFrame(players);

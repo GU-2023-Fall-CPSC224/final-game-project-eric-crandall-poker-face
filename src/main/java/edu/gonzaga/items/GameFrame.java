@@ -23,8 +23,14 @@ public class GameFrame {
     ArrayList<Card> tempCards = new ArrayList<Card>();
 
     //temp for testing purposes
-    JButton deckButton;
     private int currentPlayerWatched = 0;
+
+    JButton cycleButton;
+    JButton potButton;
+    JButton deckButton;
+
+    JLabel playerNameLabel;
+    JLabel playerChipsLabel;
 
     JPanel northPanel;
     JPanel centerPanel;
@@ -47,7 +53,7 @@ public class GameFrame {
 
     //testing switching player panels, delete eventually
     private void addTempCallbackHandler() {
-        deckButton.addActionListener(ae -> {
+        cycleButton.addActionListener(ae -> {
             //remove previous panel
             PlayerPanel p = playerPanels.get(currentPlayerWatched);
             northPanel.remove(p.getPanel());
@@ -58,6 +64,11 @@ public class GameFrame {
             //add new panel 
             p = playerPanels.get(currentPlayerWatched);
             northPanel.add(p.getPanel());
+
+            //set player information on bottom
+            Player player = players.get(currentPlayerWatched);
+            playerNameLabel.setText(player.getName());
+            playerChipsLabel.setText("" + player.getScore() + " chips");
 
             frame.validate();
             frame.repaint();
@@ -108,12 +119,17 @@ public class GameFrame {
 
         cardsPanel = new JPanel(new GridLayout(1, 8, 2, 1));
 
-        JButton potButton = new JButton("Pot");
+        //TODO: add location (top left of center area?)
+        cycleButton = new JButton("Next");
+        cycleButton.setPreferredSize(new Dimension(60, 80));
+
+        potButton = new JButton("Pot");
         potButton.setPreferredSize(new Dimension(60, 80));
 
         deckButton = new JButton(cardImages.getFacedownImage());
         deckButton.setPreferredSize(new Dimension(60, 80));
 
+        cardsPanel.add(cycleButton);
         cardsPanel.add(potButton);
         cardsPanel.add(deckButton);
 
@@ -135,10 +151,10 @@ public class GameFrame {
     private JPanel genSouthPanel() {
         JPanel newPanel = new JPanel();
 
-        Player tempPlayer = players.get(0);
+        Player player = players.get(currentPlayerWatched);
 
-        JLabel playerNameLabel = new JLabel(tempPlayer.getName());
-        JLabel playerChipsLabel = new JLabel("" + tempPlayer.getScore() + " chips");
+        playerNameLabel = new JLabel(player.getName());
+        playerChipsLabel = new JLabel("" + player.getScore() + " chips");
 
         newPanel.add(playerNameLabel);
         newPanel.add(playerChipsLabel);
