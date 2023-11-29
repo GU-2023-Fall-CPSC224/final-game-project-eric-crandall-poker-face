@@ -96,7 +96,7 @@ public class Scorer {
         boolean sorted = false, swapped = false;
         while (!sorted) {
             for(int i = 0; i < hand.size()-1; i++) {
-                if(hand.get(i).getSuit().getString().charAt(0) > hand.get(i+1).getSuit().getString().charAt(0)) {
+                if(hand.get(i).getSuit().toString().charAt(0) > hand.get(i+1).getSuit().toString().charAt(0)) {
                     Card tempCard = hand.get(i);
                     hand.set(i, hand.get(i+1));
                     hand.set(i+1, tempCard);
