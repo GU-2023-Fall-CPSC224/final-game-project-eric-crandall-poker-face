@@ -6,6 +6,8 @@ import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -14,8 +16,12 @@ import java.util.ArrayList;
 public class StartFrame {
     private Integer numPlayers;
     private Integer numRounds;
+    private Boolean isRoundMode;
+
     private final Integer DEFAULT_NUM_PLAYERS = 2;
     private final Integer DEFAULT_NUM_ROUNDS = 5;
+    private final Boolean DEFAULT_ROUND_MODE = true;
+
     private final JFrame frame;
 
     JPanel northPanel;
@@ -28,7 +34,9 @@ public class StartFrame {
 
     JLabel northLabel = new JLabel("Eric Crandall Poker");
 
-    JButton soundButton = new JButton("Sound");
+    JPanel settingsPanel;
+    JMenuItem roundMode;
+    JMenuItem bustMode;
 
     JButton nextButton = new JButton("Next");
     JButton playButton = new JButton("Play Game");
@@ -44,11 +52,12 @@ public class StartFrame {
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
     // TODO: 12/1/2023 Add this to frame...
-    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL,35, 100, (int) SoundThread.DEFAULT_VOLUME);
+    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL,0, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     public StartFrame(ArrayList<Player> players) {
-        numPlayers = DEFAULT_NUM_PLAYERS;
-        numRounds = DEFAULT_NUM_ROUNDS;
+        this.numPlayers = DEFAULT_NUM_PLAYERS;
+        this.numRounds = DEFAULT_NUM_ROUNDS;
+        this.isRoundMode = DEFAULT_ROUND_MODE;
         this.players = players;
         frame = new JFrame("Eric Crandall Poker");
         initFrame(frame);
@@ -114,6 +123,7 @@ public class StartFrame {
         return newPanel;
     }
 
+    //TODO: add image for center of start frame
     private JPanel genStartCenterPanel() {
         JPanel newPanel = new JPanel();
         JLabel centerLabel = new JLabel("placeholder");
@@ -123,7 +133,7 @@ public class StartFrame {
         return newPanel;
     }
 
-    // TODO: add image for center of start frame
+    // TODO: have panels display top down instead of evenly displaced
     private JPanel genNameCenterPanel() {
         JPanel newPanel = new JPanel(new GridLayout(0, 1));
         for (int i = 0; i < numPlayers; i++) {
@@ -140,38 +150,39 @@ public class StartFrame {
 
         JMenuBar settingsBar = new JMenuBar();
         JMenu settingsMenu = new JMenu("Settings");
-
-        JMenuItem roundMode = new JMenuItem("Play by Rounds");
-        JMenuItem bustMode = new JMenuItem("Play Until Bust");
+        roundMode = new JMenuItem("Play by Rounds");
+        bustMode = new JMenuItem("Play Until Bust");
 
         settingsMenu.add(roundMode);
         settingsMenu.add(bustMode);
         settingsBar.add(settingsMenu);
 
-        // panel for content set in center of south panel
-        JPanel panel = new JPanel();
+        volumeSlider.setPreferredSize(new Dimension(100, 16));
+        volumeSlider.setBorder(BorderFactory.createLineBorder(Color.gray));
 
-        // TODO: make playerLabel and playerField part of own panel
-        panel.add(playersLabel);
-        panel.add(playersField);
+        settingsPanel = new JPanel();
+        settingsPanel.add(settingsBar);
+        settingsPanel.add(playersLabel);
+        settingsPanel.add(playersField);
+        settingsPanel.add(roundsLabel);
+        settingsPanel.add(roundsField);
+        settingsPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
+        
+        nextButton.setPreferredSize(new Dimension(100, 26));
+        nextButton.setBorder(BorderFactory.createLineBorder(Color.gray));
 
-        // TODO: make roundsLabel and roundsField part of own panel
-        panel.add(roundsLabel);
-        panel.add(roundsField);
-        panel.add(settingsBar);
-
-        // TODO: soundButton and playButton should have space between self and border
-        newPanel.add(BorderLayout.WEST, soundButton);
-        newPanel.add(BorderLayout.CENTER, panel);
+        newPanel.add(BorderLayout.WEST, volumeSlider);
+        newPanel.add(BorderLayout.CENTER, settingsPanel);
         newPanel.add(BorderLayout.EAST, nextButton);
 
         return newPanel;
     }
 
+    // TODO: stylize
     private JPanel genNameSouthPanel() {
         JPanel newPanel = new JPanel();
 
-        newPanel.add(soundButton);
+        newPanel.add(volumeSlider);
         newPanel.add(playButton);
 
         return newPanel;
@@ -202,7 +213,7 @@ public class StartFrame {
         }
     }
 
-    private void addVolumeSlider() {
+    private void addVolumeSliderHandler() {
         volumeSlider.addChangeListener(e -> {
             JSlider slider = (JSlider) e.getSource();
             if (slider.getValue() == slider.getMinimum()) {
@@ -210,6 +221,30 @@ public class StartFrame {
                 return;
             }
             SoundThread.getInstance().setVolume(slider.getValue());
+        });
+    }
+
+    private void addRoundModeHandler() {
+        roundMode.addActionListener(ae -> {
+            if (!isRoundMode) {
+                isRoundMode = true;
+                settingsPanel.add(roundsLabel);
+                settingsPanel.add(roundsField);
+                frame.validate();
+                frame.repaint();
+            }
+        });
+    }
+
+    private void addBustModeHandler() {
+        bustMode.addActionListener(ae -> {
+            if (isRoundMode) {
+                isRoundMode = false;
+                settingsPanel.remove(roundsLabel);
+                settingsPanel.remove(roundsField);
+                frame.validate();
+                frame.repaint();
+            }
         });
     }
 
@@ -228,6 +263,7 @@ public class StartFrame {
         });
     }
 
+    /*
     private void addSoundButtonHandler() {
         soundButton.addActionListener(ae -> {
             SoundThread sound = SoundThread.getInstance();
@@ -238,6 +274,7 @@ public class StartFrame {
             }
         });
     }
+    */
 
     private void addPlayButtonHandler() {
         playButton.addActionListener(ae -> {
@@ -253,11 +290,13 @@ public class StartFrame {
     private void initFrame(JFrame frame) {
         setupStartFrame();
 
+        addRoundModeHandler();
+        addBustModeHandler();
+
         addNextButtonHandler();
-        addSoundButtonHandler();
 
         addPlayButtonHandler();
-        addVolumeSlider();
+        addVolumeSliderHandler();
 
         frame.setVisible(true);
     }
