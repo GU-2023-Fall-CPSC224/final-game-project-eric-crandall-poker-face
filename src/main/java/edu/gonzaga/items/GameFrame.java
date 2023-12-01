@@ -171,6 +171,7 @@ public class GameFrame {
     private void addExitButtonListener() {
         this.exitButton.addActionListener(e -> {
             frame.dispose();
+            System.exit(0);
         });
     }
 
