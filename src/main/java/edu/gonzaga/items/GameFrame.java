@@ -22,6 +22,8 @@ public class GameFrame {
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
     ArrayList<Card> tempCards = new ArrayList<Card>();
 
+    Dimension cardDimension = new Dimension(60, 80);
+
     //temp for testing purposes
     private int currentPlayerWatched = 0;
 
@@ -124,13 +126,13 @@ public class GameFrame {
 
         //TODO: add location (top left of center area?)
         cycleButton = new JButton("Next");
-        cycleButton.setPreferredSize(new Dimension(60, 80));
+        cycleButton.setPreferredSize(cardDimension);
 
         potButton = new JButton("Pot");
-        potButton.setPreferredSize(new Dimension(60, 80));
+        potButton.setPreferredSize(cardDimension);
 
         deckButton = new JButton(cardImages.getFacedownImage());
-        deckButton.setPreferredSize(new Dimension(60, 80));
+        deckButton.setPreferredSize(cardDimension);
 
         cardsPanel.add(cycleButton);
         cardsPanel.add(potButton);
@@ -140,7 +142,7 @@ public class GameFrame {
         for (Integer index = 0; index < 5; index++) {
             Card card = deck.drawCard();
             JLabel cardLabel = new JLabel(cardImages.getCardImage(card));
-            cardLabel.setPreferredSize(new Dimension(60, 80));
+            cardLabel.setPreferredSize(cardDimension);
             cardsPanel.add(cardLabel);
             tempCards.add(card);
         }

@@ -6,11 +6,8 @@ import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import java.awt.*;
-import java.util.ArrayList;
-
 import java.util.ArrayList;
 
 public class StartFrame {
@@ -39,6 +36,7 @@ public class StartFrame {
     JMenuItem bustMode;
 
     JButton nextButton = new JButton("Next");
+    JButton backButton = new JButton("Back");
     JButton playButton = new JButton("Play Game");
 
     JLabel playersLabel = new JLabel("Players: ");
@@ -52,7 +50,7 @@ public class StartFrame {
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
     // TODO: 12/1/2023 Add this to frame...
-    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL,0, 100, (int) SoundThread.DEFAULT_VOLUME);
+    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     public StartFrame(ArrayList<Player> players) {
         this.numPlayers = DEFAULT_NUM_PLAYERS;
@@ -91,7 +89,11 @@ public class StartFrame {
         frame.getContentPane().add(BorderLayout.SOUTH, startSouthPanel);
     }
 
+    // TODO: preserve player data when going back
     private void setupNameFrame() {
+        players = new ArrayList<>();
+        startPlayerPanels = new ArrayList<>();
+
         for (int i = 0; i < numPlayers; i++) {
             Player player = new Player();
 
@@ -123,7 +125,7 @@ public class StartFrame {
         return newPanel;
     }
 
-    //TODO: add image for center of start frame
+    // TODO: add image for center of start frame
     private JPanel genStartCenterPanel() {
         JPanel newPanel = new JPanel();
         JLabel centerLabel = new JLabel("placeholder");
@@ -144,7 +146,6 @@ public class StartFrame {
         return newPanel;
     }
 
-    // TODO: add functionality for settings buttons
     private JPanel genStartSouthPanel() {
         JPanel newPanel = new JPanel(new BorderLayout());
 
@@ -161,13 +162,15 @@ public class StartFrame {
         volumeSlider.setBorder(BorderFactory.createLineBorder(Color.gray));
 
         settingsPanel = new JPanel();
+
         settingsPanel.add(settingsBar);
         settingsPanel.add(playersLabel);
         settingsPanel.add(playersField);
         settingsPanel.add(roundsLabel);
         settingsPanel.add(roundsField);
+
         settingsPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
-        
+
         nextButton.setPreferredSize(new Dimension(100, 26));
         nextButton.setBorder(BorderFactory.createLineBorder(Color.gray));
 
@@ -175,22 +178,36 @@ public class StartFrame {
         newPanel.add(BorderLayout.CENTER, settingsPanel);
         newPanel.add(BorderLayout.EAST, nextButton);
 
+        Dimension d = newPanel.getPreferredSize();
+        newPanel.setPreferredSize(new Dimension(d.width, 35));
+
         return newPanel;
     }
 
-    // TODO: stylize
     private JPanel genNameSouthPanel() {
-        JPanel newPanel = new JPanel();
+        JPanel newPanel = new JPanel(new BorderLayout());
 
-        newPanel.add(volumeSlider);
-        newPanel.add(playButton);
+        JPanel playButtonPanel = new JPanel();
+        playButton.setPreferredSize(new Dimension(150, 26));
+        playButtonPanel.add(playButton);
+        playButtonPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
+
+        backButton.setPreferredSize(new Dimension(100, 26));
+        backButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+
+        newPanel.add(BorderLayout.WEST, volumeSlider);
+        newPanel.add(BorderLayout.CENTER, playButtonPanel);
+        newPanel.add(BorderLayout.EAST, backButton);
+
+        Dimension d = newPanel.getPreferredSize();
+        newPanel.setPreferredSize(new Dimension(d.width, 35));
 
         return newPanel;
     }
 
     public void updateNumPlayers(Integer playersValue) {
         // TODO: add upper bounds
-        if (playersValue > DEFAULT_NUM_PLAYERS) {
+        if (playersValue >= DEFAULT_NUM_PLAYERS) {
             this.numPlayers = playersValue;
         }
     }
@@ -263,18 +280,34 @@ public class StartFrame {
         });
     }
 
-    /*
-    private void addSoundButtonHandler() {
-        soundButton.addActionListener(ae -> {
-            SoundThread sound = SoundThread.getInstance();
-            if (sound.isPlaying()) {
-                sound.stopSong();
-            } else {
-                sound.startSong();
-            }
+    private void addBackButtonHandler() {
+        backButton.addActionListener(ae -> {
+            startCenterPanel = genStartCenterPanel();
+            startSouthPanel = genStartSouthPanel();
+
+            frame.getContentPane().remove(nameCenterPanel);
+            frame.getContentPane().remove(nameSouthPanel);
+
+            frame.getContentPane().add(BorderLayout.CENTER, startCenterPanel);
+            frame.getContentPane().add(BorderLayout.SOUTH, startSouthPanel);
+
+            frame.validate();
+            frame.repaint();
         });
     }
-    */
+
+    /*
+     * private void addSoundButtonHandler() {
+     * soundButton.addActionListener(ae -> {
+     * SoundThread sound = SoundThread.getInstance();
+     * if (sound.isPlaying()) {
+     * sound.stopSong();
+     * } else {
+     * sound.startSong();
+     * }
+     * });
+     * }
+     */
 
     private void addPlayButtonHandler() {
         playButton.addActionListener(ae -> {
@@ -290,13 +323,13 @@ public class StartFrame {
     private void initFrame(JFrame frame) {
         setupStartFrame();
 
+        addVolumeSliderHandler();
         addRoundModeHandler();
         addBustModeHandler();
 
         addNextButtonHandler();
-
+        addBackButtonHandler();
         addPlayButtonHandler();
-        addVolumeSliderHandler();
 
         frame.setVisible(true);
     }
