@@ -7,6 +7,7 @@ import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 import java.util.ArrayList;
 
@@ -42,11 +43,13 @@ public class StartFrame {
     ArrayList<Player> players;
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
-    public StartFrame(ArrayList<Player> players) {
-        this.numPlayers = DEFAULT_NUM_PLAYERS;
-        this.numRounds = DEFAULT_NUM_ROUNDS;
+    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL,35, 100, (int) SoundThread.DEFAULT_VOLUME);
+
+    public StartFrame() {
+        numPlayers = DEFAULT_NUM_PLAYERS;
+        numRounds = DEFAULT_NUM_ROUNDS;
         this.players = players;
-        this.frame = new JFrame("Eric Crandall Poker");
+        frame = new JFrame("Eric Crandall Poker");
         initFrame(frame);
     }
 
@@ -197,6 +200,17 @@ public class StartFrame {
         catch (NumberFormatException er) {
             return -1;
         }
+    }
+
+    private void addVolumeSlider() {
+        volumeSlider.addChangeListener(e -> {
+            JSlider slider = (JSlider) e.getSource();
+            if (slider.getValue() == slider.getMinimum()) {
+                SoundThread.getInstance().setVolume(0);
+                return;
+            }
+            SoundThread.getInstance().setVolume(slider.getValue());
+        });
     }
 
     // TODO: 11/13/2023 Pull object out of method and into variables with getters
