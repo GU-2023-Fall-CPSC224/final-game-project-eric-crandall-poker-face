@@ -38,13 +38,16 @@ public class GameFrame {
 
     JPanel cardsPanel;
 
+    JButton exitButton;
+
     private final JFrame frame;
 
     // TODO: handle number rounds/bustmode
-    public GameFrame(ArrayList<Player> players) {
+    public GameFrame(ArrayList<Player> players, StartFrame startFrame) {
         this.players = players;
         frame = new JFrame("Eric Crandall Poker");
         initFrame(frame);
+        startFrame.getFrame().setVisible(false);
     }
 
     public JFrame getFrame() {
@@ -155,11 +158,21 @@ public class GameFrame {
 
         playerNameLabel = new JLabel(player.getName());
         playerChipsLabel = new JLabel("" + player.getScore() + " chips");
+        exitButton = new JButton("Exit Game");
+        addExitButtonListener();
 
         newPanel.add(playerNameLabel);
         newPanel.add(playerChipsLabel);
+        newPanel.add(exitButton);
 
         return newPanel;
+    }
+
+    private void addExitButtonListener() {
+        this.exitButton.addActionListener(e -> {
+            frame.dispose();
+            System.exit(0);
+        });
     }
 
     private void initFrame(JFrame frame) {
@@ -179,6 +192,9 @@ public class GameFrame {
         //delete eventually
         addTempCallbackHandler();
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
         frame.setVisible(true);
+
     }
 }
