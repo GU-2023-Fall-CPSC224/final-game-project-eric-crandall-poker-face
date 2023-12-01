@@ -43,9 +43,10 @@ public class StartFrame {
     ArrayList<Player> players;
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
+    // TODO: 12/1/2023 Add this to frame...
     JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL,35, 100, (int) SoundThread.DEFAULT_VOLUME);
 
-    public StartFrame() {
+    public StartFrame(ArrayList<Player> players) {
         numPlayers = DEFAULT_NUM_PLAYERS;
         numRounds = DEFAULT_NUM_ROUNDS;
         this.players = players;
@@ -257,6 +258,7 @@ public class StartFrame {
         addSoundButtonHandler();
 
         addPlayButtonHandler();
+        addVolumeSlider();
 
         frame.setVisible(true);
     }
