@@ -247,7 +247,7 @@ public class StartFrame {
                 panel.updatePlayerName();
             }
 
-            new GameFrame(players);
+            new GameFrame(players, this);
         });
     }
 

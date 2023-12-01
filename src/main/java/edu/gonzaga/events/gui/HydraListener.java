@@ -21,7 +21,7 @@ public class HydraListener extends WindowAdapter {
 
 
     private HydraListener() {
-        if (!sound.isAlive()) sound.start();
+
     }
 
     @Override
