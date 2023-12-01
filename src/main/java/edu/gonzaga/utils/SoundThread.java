@@ -14,6 +14,8 @@ public class SoundThread extends Thread {
 
     public static SoundThread INSTANCE = null;
 
+    public static float DEFAULT_VOLUME = 35.0F;
+
     public static SoundThread getInstance() {
         return INSTANCE != null ? INSTANCE : new SoundThread();
     }
@@ -40,6 +42,7 @@ public class SoundThread extends Thread {
         if (this.clip != null && ais != null) {
             try {
                 clip.open(ais);
+                setVolume(DEFAULT_VOLUME);
             } catch (LineUnavailableException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -81,6 +84,20 @@ public class SoundThread extends Thread {
 
     public boolean isPlaying() {
         return this.clip.isRunning();
+    }
+
+    public void setVolume(float v) {
+        FloatControl gc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        float range = gc.getMaximum() - gc.getMinimum();
+        float gain = (range * v / 100.0F) + gc.getMinimum();
+        gc.setValue(gain);
+    }
+
+    public float getVolume() {
+        FloatControl gc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        float range = gc.getMaximum() - gc.getMinimum();
+        float volume = (gc.getValue() - gc.getMinimum()) / range;
+        return volume;
     }
 
 }

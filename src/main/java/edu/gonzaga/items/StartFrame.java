@@ -25,6 +25,8 @@ public class StartFrame {
     JLabel roundsLabel = new JLabel("Rounds: ");
     JTextField roundsField = new JTextField(1);
 
+    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL,35, 100, (int) SoundThread.DEFAULT_VOLUME);
+
     public StartFrame() {
         numPlayers = DEFAULT_NUM_PLAYERS;
         numRounds = DEFAULT_NUM_ROUNDS;
@@ -61,6 +63,17 @@ public class StartFrame {
         catch (NumberFormatException er) {
             return -1;
         }
+    }
+
+    private void addVolumeSlider() {
+        volumeSlider.addChangeListener(e -> {
+            JSlider slider = (JSlider) e.getSource();
+            if (slider.getValue() == slider.getMinimum()) {
+                SoundThread.getInstance().setVolume(0);
+                return;
+            }
+            SoundThread.getInstance().setVolume(slider.getValue());
+        });
     }
 
     // TODO: 11/13/2023 Pull object out of method and into variables with getters
@@ -125,7 +138,6 @@ public class StartFrame {
         // make playerLabel and playerField part of own panel
         southPanel2.add(playersLabel);
         southPanel2.add(playersField);
-
         // make roundsLabel and roundsField part of own panel
         southPanel2.add(roundsLabel);
         southPanel2.add(roundsField);
@@ -137,12 +149,15 @@ public class StartFrame {
         southPanel.add(BorderLayout.EAST, playButton);
 
         // placeholder button for center
+        JPanel centerPanel = new JPanel(new BorderLayout());
         JLabel centerLabel = new JLabel("placeholder");
+        centerPanel.add(centerLabel);
+        centerPanel.add(volumeSlider);
 
         // add panels to frame
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, southPanel);
-        frame.getContentPane().add(BorderLayout.CENTER, centerLabel);
+        frame.getContentPane().add(BorderLayout.CENTER, centerPanel);
 
         frame.setVisible(true);
 
@@ -152,5 +167,6 @@ public class StartFrame {
 
         addPlayButtonHandler();
         addSoundButtonHandler();
+        addVolumeSlider();
     }
 }
