@@ -1,6 +1,7 @@
 package edu.gonzaga.items;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class StartPlayerPanel {
     private Player player;
@@ -36,10 +37,13 @@ public class StartPlayerPanel {
         playerNameField = new JTextField(15);
         playerNameField.setText(player.getName());
 
+        JPanel playerNamePanel = new JPanel();
+        playerNamePanel.add(playerNumberLabel);
+        playerNamePanel.add(playerNameField);
+
         placeholderPlayerIcon = new JButton("Icon");
 
-        newPanel.add(playerNumberLabel);
-        newPanel.add(playerNameField);
+        newPanel.add(playerNamePanel);
         newPanel.add(placeholderPlayerIcon);
 
         return newPanel;

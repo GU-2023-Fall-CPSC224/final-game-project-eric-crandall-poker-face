@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.Flow;
 
 public class StartFrame {
     private Integer numPlayers;
@@ -17,6 +18,7 @@ public class StartFrame {
 
     private final Integer DEFAULT_NUM_PLAYERS = 2;
     private final Integer DEFAULT_NUM_ROUNDS = 5;
+    private final Integer MAX_NUM_PLAYERS = 7;
     private final Boolean DEFAULT_ROUND_MODE = true;
 
     private final JFrame frame;
@@ -137,7 +139,13 @@ public class StartFrame {
 
     // TODO: have panels display top down instead of evenly displaced
     private JPanel genNameCenterPanel() {
-        JPanel newPanel = new JPanel(new GridLayout(0, 1));
+        int vgap = 15;
+        if (numPlayers > 5) {
+            vgap = 5;
+        }
+
+        JPanel newPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, vgap));
+        //JPanel newPanel = new JPanel(new GridLayout(MAX_NUM_PLAYERS, 1));
         for (int i = 0; i < numPlayers; i++) {
             StartPlayerPanel panel = startPlayerPanels.get(i);
             newPanel.add(panel.getPanel());
@@ -206,9 +214,12 @@ public class StartFrame {
     }
 
     public void updateNumPlayers(Integer playersValue) {
-        // TODO: add upper bounds
-        if (playersValue >= DEFAULT_NUM_PLAYERS) {
+        if (playersValue > MAX_NUM_PLAYERS) {
+            this.numPlayers = MAX_NUM_PLAYERS;
+        } else if (playersValue >= DEFAULT_NUM_PLAYERS) {
             this.numPlayers = playersValue;
+        } else {
+            this.numPlayers = DEFAULT_NUM_PLAYERS;
         }
     }
 
@@ -316,7 +327,8 @@ public class StartFrame {
                 panel.updatePlayerName();
             }
 
-            new GameFrame(players, this);
+            frame.setVisible(false);
+            new GameFrame(players);
         });
     }
 
