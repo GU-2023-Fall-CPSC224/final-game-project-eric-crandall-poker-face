@@ -79,7 +79,6 @@ public class StartFrame {
     }
 
     private void setupNameFrame() {
-        // TODO: move?
         for (int i = 0; i < numPlayers; i++) {
             Player player = new Player();
 
