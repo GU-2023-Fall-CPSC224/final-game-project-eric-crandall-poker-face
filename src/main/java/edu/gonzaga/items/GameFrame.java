@@ -16,6 +16,9 @@ import java.util.ArrayList;
 public class GameFrame {
     
     private ArrayList<Player> players;
+    private Boolean isRoundMode;
+    private Integer numRounds;
+
     private Deck deck = new Deck();
 
     CardImages cardImages;
@@ -41,12 +44,15 @@ public class GameFrame {
     JPanel cardsPanel;
 
     JButton exitButton;
+    JButton tempEndButton;
 
     private final JFrame frame;
 
-    // TODO: handle number rounds/bustmode
-    public GameFrame(ArrayList<Player> players, StartFrame startFrame) {
-        this.players = players;
+    public GameFrame(StartFrame startFrame) {
+        this.players = startFrame.getPlayers();
+        this.isRoundMode = startFrame.getIsRoundMode();
+        this.numRounds = startFrame.getNumRounds();
+
         frame = new JFrame("Eric Crandall Poker");
         startFrame.getFrame().setVisible(false);
         initPlayerCards();
@@ -61,6 +67,10 @@ public class GameFrame {
 
     public JFrame getFrame() {
         return this.frame;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return this.players;
     }
 
     //testing switching player panels, delete eventually
@@ -168,10 +178,13 @@ public class GameFrame {
         playerNameLabel = new JLabel(player.getName());
         playerChipsLabel = new JLabel("" + player.getScore() + " chips");
         exitButton = new JButton("Exit Game");
+        tempEndButton = new JButton("Test End Game");
         addExitButtonListener();
+        addTempEndButtonListener();
 
         newPanel.add(playerNameLabel);
         newPanel.add(playerChipsLabel);
+        newPanel.add(tempEndButton);
         newPanel.add(exitButton);
 
         return newPanel;
@@ -181,6 +194,13 @@ public class GameFrame {
         this.exitButton.addActionListener(e -> {
             frame.dispose();
             System.exit(0);
+        });
+    }
+
+    private void addTempEndButtonListener() {
+        this.tempEndButton.addActionListener(e -> {
+            frame.setVisible(false);
+            new EndFrame(this);
         });
     }
 
@@ -204,8 +224,16 @@ public class GameFrame {
         for (Player player : players) {
             Card c1 = deck.drawCard();
             Card c2 = deck.drawCard();
-            Player p = player;
-            p.setCards(c1, c2);
+            player.setCards(c1, c2);
         }
+
+        setupFrame();
+
+        //delete eventually
+        addTempCallbackHandler();
+
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
+        frame.setVisible(true);
     }
 }
