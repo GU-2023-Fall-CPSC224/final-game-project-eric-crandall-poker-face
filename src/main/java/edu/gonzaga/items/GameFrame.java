@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-//TODO: load images faster
+//TODO: add table of all player names and chips
 public class GameFrame {
 
     private ArrayList<Player> players;
@@ -28,10 +28,11 @@ public class GameFrame {
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
     ArrayList<Card> tempCards = new ArrayList<Card>();
 
-    Dimension cardDimension = new Dimension(60, 80);
+    Dimension cardDimension;
     Dimension turnButtonDimension = new Dimension(80,25);
 
     //temp for testing purposes
+    // TODO: finalize
     private int currentPlayerWatched = 0;
 
     JButton callButton;
@@ -40,14 +41,13 @@ public class GameFrame {
     JButton potButton;
     JButton deckButton;
 
-    JLabel playerNameLabel;
-    JLabel playerChipsLabel;
-
     JPanel northPanel;
     JPanel centerPanel;
     JPanel southPanel;
 
     JPanel cardsPanel;
+    JLabel playerChipsLabel;
+    JLabel playerNameLabel;
 
     JButton exitButton;
     JButton tempEndButton;
@@ -67,7 +67,9 @@ public class GameFrame {
             cards.add(p.getCardOne());
             cards.add(p.getCardTwo());
         }
+
         this.cardImages = new CardImages("media/", cards);
+        this.cardDimension = cardImages.getImageDimension();
         initFrame(frame);
         SoundThread.getInstance().restartAudio();
     }
@@ -106,7 +108,6 @@ public class GameFrame {
     }
 
     private void setupFrame() {
-        // don't allow resize
         frame.setSize(520, 360);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
@@ -128,8 +129,6 @@ public class GameFrame {
     }
 
     private JPanel genNorthPanel() {
-        JPanel newPanel = new JPanel();
-
         // temporary, eventually move or delete
         for (int i = 0; i < players.size(); i++) {
             PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
@@ -139,9 +138,7 @@ public class GameFrame {
         //also temporary
         PlayerPanel p = playerPanels.get(0);
 
-        newPanel.add(p.getPanel());
-
-        return newPanel;
+        return p.getPanel();
     }
 
     private JPanel genCenterPanel() {
@@ -180,6 +177,7 @@ public class GameFrame {
         }
 
         newPanel.add(cardsPanel);
+        newPanel.setBackground(new Color(0x35654d));
 
         return newPanel;
     }
@@ -201,6 +199,12 @@ public class GameFrame {
         newPanel.add(playerChipsLabel);
         newPanel.add(tempEndButton);
         newPanel.add(exitButton);
+
+        Dimension d = newPanel.getPreferredSize();
+        newPanel.setPreferredSize(new Dimension(d.width, 60));
+
+        newPanel.setBackground(new Color(0x643e36));
+        newPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         return newPanel;
     }
