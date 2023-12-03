@@ -44,6 +44,8 @@ public class GameFrame {
     JButton exitButton;
     JButton tempEndButton;
 
+    private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) SoundThread.DEFAULT_VOLUME);
+
     private final JFrame frame;
 
     public GameFrame(StartFrame startFrame) {
@@ -163,15 +165,20 @@ public class GameFrame {
 
     // temporary, replace with betting/turn options
     private JPanel genSouthPanel() {
-        JPanel newPanel = new JPanel();
+        JPanel newPanel = new JPanel(new BorderLayout());
+
+        JPanel buttonPanel = new JPanel();
 
         exitButton = new JButton("Exit Game");
         tempEndButton = new JButton("Test End Game");
         addExitButtonListener();
         addTempEndButtonListener();
 
-        newPanel.add(tempEndButton);
-        newPanel.add(exitButton);
+        buttonPanel.add(tempEndButton);
+        buttonPanel.add(exitButton);
+
+        newPanel.add(BorderLayout.WEST, volumeSlider);
+        newPanel.add(BorderLayout.EAST, buttonPanel);
 
         Dimension d = newPanel.getPreferredSize();
         newPanel.setPreferredSize(new Dimension(d.width, 60));
