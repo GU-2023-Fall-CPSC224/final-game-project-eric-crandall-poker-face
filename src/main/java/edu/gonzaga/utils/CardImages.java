@@ -12,15 +12,17 @@ import edu.gonzaga.items.Suit;
 
 import javax.imageio.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CardImages {
-    ArrayList<ImageIcon> images;
+    Map<Card, ImageIcon> images;
     ImageIcon facedownImage;
 
-    ArrayList<ImageIcon> smallImages;
+    Map<Card, ImageIcon> smallImages;
     ImageIcon smallFacedownImage;
 
-    void loadImages(String imagesPath) {
+    private void loadImages(String imagesPath) {
         BufferedImage currPicture;
         for (int i = 0; i < Suit.values().length; i++) {
             // j = 1 to skip blank, length = length - 1 to skip joker
@@ -29,17 +31,55 @@ public class CardImages {
                     String suit = Suit.values()[i].toString();
                     String faceValue = FaceValue.values()[j].toString();
                     String filename = imagesPath + faceValue.toLowerCase() + "_of_" + suit.toLowerCase() + ".png";
-                    System.out.println("Loading image: " + filename);
+                    Card card = new Card();
+                    card.setFaceValue(FaceValue.values()[j]);
+                    card.setSuit(Suit.values()[i]);
+                    if (getSmallCardImage(card) != null) {
+                        System.out.println("Skipping already loaded card...");
+                        continue;
+                    }
+                    System.out.println("Silent loading image: " + filename);
                     currPicture = ImageIO.read(new File(filename));
                     Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
                     Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
                     ImageIcon scaledImage = new ImageIcon(cimg);
                     ImageIcon smallScaledImage = new ImageIcon(smallCimg);
-                    images.add(scaledImage);
-                    smallImages.add(smallScaledImage);
+                    images.put(card, scaledImage);
+                    smallImages.put(card, smallScaledImage);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    void loadImportantImages(String imagesPath, ArrayList<Card> importantCards) {
+        BufferedImage currPicture;
+        for (Card card: importantCards) {
+            try {
+                String suit = card.getSuit().toString().toLowerCase();
+                String faceValue = card.getFaceValue().toString().toLowerCase();
+                String filename = imagesPath + faceValue + "_of_" + suit + ".png";
+                System.out.println("Loading important card: " + filename);
+                currPicture = ImageIO.read(new File(filename));
+                Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
+                Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
+                ImageIcon scaledImage = new ImageIcon(cimg);
+                ImageIcon smallScaledImage = new ImageIcon(smallCimg);
+                images.put(card, scaledImage);
+                smallImages.put(card, smallScaledImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                loadFacedownImage(imagesPath);
+                new Thread("LoadImages") {
+                    @Override
+                    public void run() {
+                        super.run();
+                        loadImages(imagesPath);
+                        this.interrupt();
+                    }
+                }.start();
             }
         }
     }
@@ -61,27 +101,24 @@ public class CardImages {
         }
     }
 
-    public CardImages(String imagesPath) {
-        images = new ArrayList<>();
-        smallImages = new ArrayList<>();
-        loadImages(imagesPath);
-        loadFacedownImage(imagesPath);
+    public CardImages(String imagesPath, ArrayList<Card> importantCards) {
+        images = new HashMap<>();
+        smallImages = new HashMap<>();
+        loadImportantImages(imagesPath, importantCards);
     }
 
     public ImageIcon getCardImage(Card card) {
-        Suit suit = card.getSuit();
-        FaceValue faceValue = card.getFaceValue();
-
-        int index = ((suit.ordinal()) * 13 ) + (faceValue.ordinal() - 1);
-        return images.get(index);
+        for (Card c : images.keySet()) {
+            if (c.getFaceValue() == card.getFaceValue() && c.getSuit() == card.getSuit()) return images.get(c);
+        }
+        return null;
     }
 
     public ImageIcon getSmallCardImage(Card card) {
-        Suit suit = card.getSuit();
-        FaceValue faceValue = card.getFaceValue();
-
-        int index = ((suit.ordinal()) * 13 ) + (faceValue.ordinal() - 1);
-        return smallImages.get(index);
+        for (Card c : smallImages.keySet()) {
+            if (c.getFaceValue() == card.getFaceValue() && c.getSuit() == card.getSuit()) return smallImages.get(c);
+        }
+        return null;
     }
 
     public ImageIcon getFacedownImage() {

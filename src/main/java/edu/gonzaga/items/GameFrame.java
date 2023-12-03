@@ -18,7 +18,7 @@ public class GameFrame {
     private ArrayList<Player> players;
     private Deck deck = new Deck();
 
-    CardImages cardImages = new CardImages("media/");
+    CardImages cardImages;
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
     ArrayList<Card> tempCards = new ArrayList<Card>();
 
@@ -48,8 +48,15 @@ public class GameFrame {
     public GameFrame(ArrayList<Player> players, StartFrame startFrame) {
         this.players = players;
         frame = new JFrame("Eric Crandall Poker");
-        initFrame(frame);
         startFrame.getFrame().setVisible(false);
+        initPlayerCards();
+        ArrayList<Card> cards = new ArrayList<>();
+        for (Player p : players) {
+            cards.add(p.getCardOne());
+            cards.add(p.getCardTwo());
+        }
+        this.cardImages = new CardImages("media/", cards);
+        initFrame(frame);
     }
 
     public JFrame getFrame() {
@@ -140,11 +147,11 @@ public class GameFrame {
 
         // redo when integrating with hand class
         for (Integer index = 0; index < 5; index++) {
-            Card card = deck.drawCard();
-            JLabel cardLabel = new JLabel(cardImages.getCardImage(card));
+            //Card card = deck.drawCard();
+            JLabel cardLabel = new JLabel(cardImages.getFacedownImage());
             cardLabel.setPreferredSize(cardDimension);
             cardsPanel.add(cardLabel);
-            tempCards.add(card);
+            //tempCards.add(card);
         }
 
         newPanel.add(cardsPanel);
@@ -178,17 +185,6 @@ public class GameFrame {
     }
 
     private void initFrame(JFrame frame) {
-        // move somewhere down the road
-        deck.shuffle();
-
-        // temporary adding cards to players, delete eventualy
-        for (int i = 0; i < players.size(); i++) {
-            Card c1 = deck.drawCard();
-            Card c2 = deck.drawCard();
-            Player p = players.get(i);
-            p.setCards(c1, c2);
-        }
-
         setupFrame();
 
         //delete eventually
@@ -198,5 +194,18 @@ public class GameFrame {
         frame.setUndecorated(true);
         frame.setVisible(true);
 
+    }
+
+    private void initPlayerCards() {
+        // move somewhere down the road
+        deck.shuffle();
+
+        // temporary adding cards to players, delete eventualy
+        for (Player player : players) {
+            Card c1 = deck.drawCard();
+            Card c2 = deck.drawCard();
+            Player p = player;
+            p.setCards(c1, c2);
+        }
     }
 }
