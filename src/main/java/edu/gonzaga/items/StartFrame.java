@@ -50,7 +50,7 @@ public class StartFrame {
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
     // TODO: 12/1/2023 Add this to frame...
-    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) SoundThread.DEFAULT_VOLUME);
+    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     public StartFrame(ArrayList<Player> players) {
         this.numPlayers = DEFAULT_NUM_PLAYERS;

@@ -22,7 +22,7 @@ public class CardImages {
     Map<Card, ImageIcon> smallImages;
     ImageIcon smallFacedownImage;
 
-    private void loadImages(String imagesPath) {
+    void loadImages(String imagesPath) {
         BufferedImage currPicture;
         for (int i = 0; i < Suit.values().length; i++) {
             // j = 1 to skip blank, length = length - 1 to skip joker

@@ -57,6 +57,7 @@ public class GameFrame {
         }
         this.cardImages = new CardImages("media/", cards);
         initFrame(frame);
+        SoundThread.getInstance().restartAudio();
     }
 
     public JFrame getFrame() {
@@ -204,8 +205,7 @@ public class GameFrame {
         for (Player player : players) {
             Card c1 = deck.drawCard();
             Card c2 = deck.drawCard();
-            Player p = player;
-            p.setCards(c1, c2);
+            player.setCards(c1, c2);
         }
     }
 }

@@ -14,7 +14,7 @@ public class SoundThread extends Thread {
 
     public static SoundThread INSTANCE = null;
 
-    public static float DEFAULT_VOLUME = 35.0F;
+    public static float DEFAULT_VOLUME = (100.0F + 35.0F) / 2;
 
     public static SoundThread getInstance() {
         return INSTANCE != null ? INSTANCE : new SoundThread();
@@ -98,6 +98,10 @@ public class SoundThread extends Thread {
         float range = gc.getMaximum() - gc.getMinimum();
         float volume = (gc.getValue() - gc.getMinimum()) / range;
         return volume;
+    }
+
+    public void restartAudio() {
+        this.clip.setFramePosition(0);
     }
 
 }
