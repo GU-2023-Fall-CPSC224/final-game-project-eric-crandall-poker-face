@@ -5,11 +5,6 @@
  */
 package edu.gonzaga.items;
 
-import edu.gonzaga.MainGame;
-import edu.gonzaga.events.PlayerChipChangeEvent;
-import edu.gonzaga.events.backend.EventExecutor;
-import edu.gonzaga.events.backend.EventManager;
-
 public class Player {
     private String name;
     private Card c1;
@@ -104,8 +99,6 @@ public class Player {
     private boolean decrementChips(int amt) {
         if (amt <= 0) return false;
         if (amt > this.chips) return false;
-        PlayerChipChangeEvent event = new PlayerChipChangeEvent(this, this.chips, (this.chips -= amt));
-        EventManager.callEvent(event);
         this.chips -= amt;
         return true;
     }
@@ -117,8 +110,6 @@ public class Player {
      */
     private boolean incrementChips(int amt) {
         if (amt <= 0) return false;
-        PlayerChipChangeEvent event = new PlayerChipChangeEvent(this, this.chips, (this.chips += amt));
-        EventManager.callEvent(event);
         this.chips += amt;
         return true;
     }
