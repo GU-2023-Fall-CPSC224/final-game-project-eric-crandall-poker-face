@@ -335,6 +335,8 @@ public class GameFrame {
 
         //add new panel
         p = playerPanels.get(currentPlayerWatched);
+        p.updateScoreLabel();
+
         northPanel = p.getPanel();
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);
 

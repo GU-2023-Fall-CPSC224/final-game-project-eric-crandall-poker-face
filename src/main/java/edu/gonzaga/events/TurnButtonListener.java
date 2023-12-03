@@ -25,7 +25,7 @@ public class TurnButtonListener implements EventListener {
             case FOLD_BUTTON:
                 handleFoldButton(frame);
             case RAISE_BUTTON:
-                boolean success = handleRaiseButton(frame, 50);
+                boolean success = handleRaiseButton(frame, 5);
                 if (!success) event.setCancelled(true);
         }
     }

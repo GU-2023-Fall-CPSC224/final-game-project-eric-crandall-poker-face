@@ -12,6 +12,7 @@ public class PlayerPanel {
     private Player player;
 
     private JPanel panel = new JPanel();
+    private JLabel scoreLabel;
     private JButton showCardButton;
 
     // not functional buttons
@@ -29,6 +30,10 @@ public class PlayerPanel {
 
     public JPanel getPanel() {
         return panel;
+    }
+
+    public void updateScoreLabel() {
+        scoreLabel.setText("Score: " + player.getChips() + " Chips");
     }
 
     private void initCardLabels() {
@@ -68,7 +73,7 @@ public class PlayerPanel {
         JLabel playerLabel = new JLabel(player.getName());
         playerLabel.setFont(playerLabel.getFont().deriveFont(28.0f));
 
-        JLabel scoreLabel = new JLabel("Score: " + player.getChips() + " Chips");
+        scoreLabel = new JLabel("Score: " + player.getChips() + " Chips");
         scoreLabel.setFont(scoreLabel.getFont().deriveFont(22.0f));
 
         playerInfoPanel.add(playerLabel);
