@@ -70,7 +70,7 @@ public class EndFrame {
     }
 
     private JPanel genCenterPanel() {
-        JPanel newPanel = new JPanel(new GridLayout(9, 1));
+        JPanel newPanel = new JPanel(new GridLayout(7, 1));
 
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
