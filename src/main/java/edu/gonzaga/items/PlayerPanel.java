@@ -11,46 +11,48 @@ import edu.gonzaga.utils.CardImages;
 public class PlayerPanel {
     private Player player;
 
-    JPanel panel = new JPanel();
-    JLabel playerLabel;
-    JButton showCardButton;
+    private JPanel panel = new JPanel();
+    private JButton showCardButton;
 
-    //not functional buttons
-    ArrayList<JLabel> cardLabels;
-    CardImages cardImages;
+    // not functional buttons
+    private ArrayList<JLabel> cardLabels;
+    private CardImages cardImages;
+    private Dimension smallCardDimension;
 
     public PlayerPanel(Player player, CardImages cardImages) {
         this.player = player;
         this.cardImages = cardImages;
+        this.smallCardDimension = cardImages.getSmallImageDimension();
         genPanel();
+        
     }
 
     public JPanel getPanel() {
         return panel;
     }
 
-    private void initCardButtons() {
+    private void initCardLabels() {
         cardLabels = new ArrayList<>();
         for (Integer i = 0; i < 2; i++) {
             JLabel cardLabel = new JLabel(cardImages.getSmallFacedownImage());
-            cardLabel.setPreferredSize(new Dimension(45, 60));
+            cardLabel.setPreferredSize(smallCardDimension);
             cardLabels.add(cardLabel);
         }
     }
 
-    //implement with hand class
+    // implement with hand class
     private void addShowCardButtonHandler() {
         showCardButton.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                JButton button = (JButton)e.getSource();
+                JButton button = (JButton) e.getSource();
                 ButtonModel model = button.getModel();
                 if (model.isPressed()) {
-                    //playerhand.setVisible(true)
+                    // playerhand.setVisible(true)
                     cardLabels.get(0).setIcon(cardImages.getSmallCardImage(player.getCardOne()));
                     cardLabels.get(1).setIcon(cardImages.getSmallCardImage(player.getCardTwo()));
                 } else {
-                    //playerhand.setVisible(false)
+                    // playerhand.setVisible(false)
                     cardLabels.get(0).setIcon(cardImages.getSmallFacedownImage());
                     cardLabels.get(1).setIcon(cardImages.getSmallFacedownImage());
                 }
@@ -59,14 +61,40 @@ public class PlayerPanel {
     }
 
     private void genPanel() {
-        playerLabel = new JLabel(player.getName());
-        showCardButton = new JButton("Show Cards");
-        initCardButtons();
+        panel = new JPanel(new BorderLayout());
 
-        panel.add(playerLabel);
-        panel.add(showCardButton);
-        panel.add(cardLabels.get(0));
-        panel.add(cardLabels.get(1));
+        JPanel playerInfoPanel = new JPanel(new GridLayout(2, 1));
+
+        JLabel playerLabel = new JLabel(player.getName());
+        playerLabel.setFont(playerLabel.getFont().deriveFont(28.0f));
+
+        JLabel scoreLabel = new JLabel("Score: " + player.getScore() + " Chips");
+        scoreLabel.setFont(scoreLabel.getFont().deriveFont(22.0f));
+
+        playerInfoPanel.add(playerLabel);
+        playerInfoPanel.add(scoreLabel);
+
+        playerInfoPanel.setPreferredSize(new Dimension(220, smallCardDimension.height));
+
+        showCardButton = new JButton("Show");
+        showCardButton.setFont(showCardButton.getFont().deriveFont(20.0f));
+        initCardLabels();
+
+        JPanel cardPanel = new JPanel();
+        cardPanel.add(showCardButton);
+        cardPanel.add(cardLabels.get(0));
+        cardPanel.add(cardLabels.get(1));
+
+        playerInfoPanel.setBackground(new Color(0x643e36));
+        cardPanel.setBackground(new Color(0x643e36));
+
+        playerInfoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        cardPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        panel.add(BorderLayout.WEST, playerInfoPanel);
+        panel.add(BorderLayout.EAST, cardPanel);
+
+        panel.setBackground(new Color(0x35654d));
 
         addShowCardButtonHandler();
     }

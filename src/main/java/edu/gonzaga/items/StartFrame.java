@@ -52,7 +52,6 @@ public class StartFrame {
 
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
-    // TODO: 12/1/2023 Add this to frame...
     JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     public StartFrame(ArrayList<Player> players) {
@@ -135,6 +134,7 @@ public class StartFrame {
 
     private JPanel genNorthPanel() {
         JPanel newPanel = new JPanel();
+        northLabel.setFont(northLabel.getFont().deriveFont(18.0f));
         newPanel.add(northLabel);
 
         return newPanel;
@@ -152,12 +152,8 @@ public class StartFrame {
 
     // TODO: have panels display top down instead of evenly displaced
     private JPanel genNameCenterPanel() {
-        int vgap = 15;
-        if (numPlayers > 5) {
-            vgap = 5;
-        }
 
-        JPanel newPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, vgap));
+        JPanel newPanel = new JPanel(new GridLayout(7, 1));
         //JPanel newPanel = new JPanel(new GridLayout(MAX_NUM_PLAYERS, 1));
         for (int i = 0; i < numPlayers; i++) {
             StartPlayerPanel panel = startPlayerPanels.get(i);

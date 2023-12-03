@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-//TODO: load images faster
+//TODO: add table of all player names and chips
 public class GameFrame {
     
     private ArrayList<Player> players;
@@ -25,17 +25,15 @@ public class GameFrame {
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
     ArrayList<Card> tempCards = new ArrayList<Card>();
 
-    Dimension cardDimension = new Dimension(60, 80);
+    Dimension cardDimension;
 
     //temp for testing purposes
+    // TODO: finalize
     private int currentPlayerWatched = 0;
 
     JButton cycleButton;
     JButton potButton;
     JButton deckButton;
-
-    JLabel playerNameLabel;
-    JLabel playerChipsLabel;
 
     JPanel northPanel;
     JPanel centerPanel;
@@ -45,6 +43,8 @@ public class GameFrame {
 
     JButton exitButton;
     JButton tempEndButton;
+
+    private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     private final JFrame frame;
 
@@ -61,7 +61,9 @@ public class GameFrame {
             cards.add(p.getCardOne());
             cards.add(p.getCardTwo());
         }
+
         this.cardImages = new CardImages("media/", cards);
+        this.cardDimension = cardImages.getImageDimension();
         initFrame(frame);
     }
 
@@ -87,18 +89,13 @@ public class GameFrame {
             p = playerPanels.get(currentPlayerWatched);
             northPanel.add(p.getPanel());
 
-            //set player information on bottom
-            Player player = players.get(currentPlayerWatched);
-            playerNameLabel.setText(player.getName());
-            playerChipsLabel.setText("" + player.getScore() + " chips");
-
             frame.validate();
             frame.repaint();
         });
     }
 
     private void setupFrame() {
-        // don't allow resize
+
         frame.setSize(520, 360);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
@@ -120,8 +117,6 @@ public class GameFrame {
     }
 
     private JPanel genNorthPanel() {
-        JPanel newPanel = new JPanel();
-
         // temporary, eventually move or delete
         for (int i = 0; i < players.size(); i++) {
             PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
@@ -131,9 +126,7 @@ public class GameFrame {
         //also temporary
         PlayerPanel p = playerPanels.get(0);
 
-        newPanel.add(p.getPanel());
-
-        return newPanel;
+        return p.getPanel();
     }
 
     private JPanel genCenterPanel() {
@@ -165,27 +158,33 @@ public class GameFrame {
         }
 
         newPanel.add(cardsPanel);
+        newPanel.setBackground(new Color(0x35654d));
 
         return newPanel;
     }
 
     // temporary, replace with betting/turn options
     private JPanel genSouthPanel() {
-        JPanel newPanel = new JPanel();
+        JPanel newPanel = new JPanel(new BorderLayout());
 
-        Player player = players.get(currentPlayerWatched);
+        JPanel buttonPanel = new JPanel();
 
-        playerNameLabel = new JLabel(player.getName());
-        playerChipsLabel = new JLabel("" + player.getScore() + " chips");
         exitButton = new JButton("Exit Game");
         tempEndButton = new JButton("Test End Game");
         addExitButtonListener();
         addTempEndButtonListener();
 
-        newPanel.add(playerNameLabel);
-        newPanel.add(playerChipsLabel);
-        newPanel.add(tempEndButton);
-        newPanel.add(exitButton);
+        buttonPanel.add(tempEndButton);
+        buttonPanel.add(exitButton);
+
+        newPanel.add(BorderLayout.WEST, volumeSlider);
+        newPanel.add(BorderLayout.EAST, buttonPanel);
+
+        Dimension d = newPanel.getPreferredSize();
+        newPanel.setPreferredSize(new Dimension(d.width, 60));
+
+        newPanel.setBackground(new Color(0x643e36));
+        newPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         return newPanel;
     }
@@ -211,7 +210,8 @@ public class GameFrame {
         addTempCallbackHandler();
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
+        frame.setUndecorated(false);
+
         frame.setVisible(true);
 
     }

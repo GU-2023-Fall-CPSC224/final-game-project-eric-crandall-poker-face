@@ -22,6 +22,17 @@ public class CardImages {
     Map<Card, ImageIcon> smallImages;
     ImageIcon smallFacedownImage;
 
+    Dimension smallImageDimension = new Dimension(75, 105);
+    Dimension imageDimension = new Dimension(120, 168);
+
+    public Dimension getSmallImageDimension() {
+        return smallImageDimension;
+    }
+
+    public Dimension getImageDimension() {
+        return imageDimension;
+    }
+
     private void loadImages(String imagesPath) {
         BufferedImage currPicture;
         for (int i = 0; i < Suit.values().length; i++) {
@@ -47,8 +58,8 @@ public class CardImages {
                     }
                     System.out.println("Silent loading image: " + filename);
                     currPicture = ImageIO.read(new File(filename));
-                    Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
-                    Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
+                    Image cimg = currPicture.getScaledInstance(imageDimension.width, imageDimension.height, Image.SCALE_SMOOTH);
+                    Image smallCimg = currPicture.getScaledInstance(smallImageDimension.width, smallImageDimension.height, Image.SCALE_SMOOTH);
                     ImageIcon scaledImage = new ImageIcon(cimg);
                     ImageIcon smallScaledImage = new ImageIcon(smallCimg);
                     images.put(card, scaledImage);
@@ -70,8 +81,8 @@ public class CardImages {
                 String filename = imagesPath + faceValue + "_of_" + suit + ".png";
                 System.out.println("Loading important card: " + filename);
                 currPicture = ImageIO.read(new File(filename));
-                Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
-                Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
+                Image cimg = currPicture.getScaledInstance(imageDimension.width, imageDimension.height, Image.SCALE_SMOOTH);
+                Image smallCimg = currPicture.getScaledInstance(smallImageDimension.width, smallImageDimension.height, Image.SCALE_SMOOTH);
                 ImageIcon scaledImage = new ImageIcon(cimg);
                 ImageIcon smallScaledImage = new ImageIcon(smallCimg);
                 images.put(card, scaledImage);
@@ -97,8 +108,8 @@ public class CardImages {
             String filename = imagesPath + "card_back.png";
             System.out.println("Loading image: " + filename);
             currPicture = ImageIO.read(new File(filename));
-            Image cimg = currPicture.getScaledInstance(60, 80, Image.SCALE_SMOOTH);
-            Image smallCimg = currPicture.getScaledInstance(45, 60, Image.SCALE_SMOOTH);
+            Image cimg = currPicture.getScaledInstance(imageDimension.width, imageDimension.height, Image.SCALE_SMOOTH);
+            Image smallCimg = currPicture.getScaledInstance(smallImageDimension.width, smallImageDimension.height, Image.SCALE_SMOOTH);
             ImageIcon scaledImage = new ImageIcon(cimg);
             ImageIcon smallScaledImage = new ImageIcon(smallCimg);
             facedownImage = scaledImage;
