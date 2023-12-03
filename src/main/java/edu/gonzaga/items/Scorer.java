@@ -162,7 +162,6 @@ public class Scorer {
 
         //Checking Special Cards value
         // If blank, no need to compare, just compare the high card. Also note than if one is blank, the other should be as well
-        System.out.println(this.specialCardVal);
         if(this.specialCardVal != FaceValue.BLANK) {
             if(this.specialCardVal.getValue() > otherScorer.getSpecialCardVal().getValue()) {
                 //this' precendence is higher than others precedence
