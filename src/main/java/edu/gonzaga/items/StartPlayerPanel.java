@@ -1,14 +1,23 @@
 package edu.gonzaga.items;
 
+import edu.gonzaga.utils.PlayerIcons;
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.awt.*;
 
 public class StartPlayerPanel {
     private Player player;
+    private PlayerIcons playerIcons;
 
     JPanel panel;
 
-    JLabel playerNumberLabel;
+    // TODO: either this panel or the player itself knows which player number it is
+    JLabel playerIconLabel;
+    JLabel playerNumberLabel = new JLabel("Player x:");
     JTextField playerNameField;
 
     // TODO: place in right of screen and when clicked, cycle through a list of available icons
@@ -42,10 +51,15 @@ public class StartPlayerPanel {
         playerNamePanel.add(playerNumberLabel);
         playerNamePanel.add(playerNameField);
 
-        placeholderPlayerIcon = new JButton("Icon");
+       
+        BufferedImage newIcon = this.player.getIcon();
+        Image Cimg = newIcon.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon scaledImage = new ImageIcon(Cimg);
 
+        playerIconLabel = new JLabel(scaledImage);
+
+        newPanel.add(playerIconLabel);
         newPanel.add(playerNamePanel);
-        newPanel.add(placeholderPlayerIcon);
 
         return newPanel;
     }

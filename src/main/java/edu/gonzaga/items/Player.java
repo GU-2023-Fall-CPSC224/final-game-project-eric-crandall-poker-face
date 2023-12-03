@@ -5,10 +5,14 @@
  */
 package edu.gonzaga.items;
 
+import java.awt.image.BufferedImage;
+import edu.gonzaga.utils.PlayerIcons;
+
 public class Player {
     private String name;
     private Card c1;
     private Card c2;
+    private BufferedImage icon;
 
     private int escrowChips = 0;
 
@@ -35,6 +39,7 @@ public class Player {
         this.c1 = new Card();
         this.c2 = new Card();
         this.chips = 100;
+        this.icon = null;
     }
  
     /* Method Name: getName()
@@ -146,6 +151,22 @@ public class Player {
 
     public boolean isAllIn() {
         return this.isAllIn;
+    }
+
+    /* Method Name: getIcon()
+     * Returns: BufferedImage
+     * Desc: Returns Players Icon
+     */
+    public BufferedImage getIcon() {
+        return this.icon;
+    }
+
+     /* Method Name: setIcon()
+     * Returns: N/A (Void)
+     * Desc: Sets Players Icon
+     */
+    public void setIcon(BufferedImage newImage) {
+        this.icon = newImage;
     }
 
     public void resetRound() {
