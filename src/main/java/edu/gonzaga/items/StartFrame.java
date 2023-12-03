@@ -5,9 +5,13 @@ import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
 import edu.gonzaga.utils.SoundThread;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Flow;
 
@@ -142,8 +146,14 @@ public class StartFrame {
 
     // TODO: add image for center of start frame
     private JPanel genStartCenterPanel() {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File("media/playerIcons/EricCrandall.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         JPanel newPanel = new JPanel();
-        JLabel centerLabel = new JLabel("placeholder");
+        JLabel centerLabel = new JLabel(new ImageIcon(image));
 
         newPanel.add(centerLabel);
 
