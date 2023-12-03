@@ -16,6 +16,9 @@ import java.util.ArrayList;
 public class GameFrame {
     
     private ArrayList<Player> players;
+    private Boolean isRoundMode;
+    private Integer numRounds;
+
     private Deck deck = new Deck();
 
     CardImages cardImages = new CardImages("media/");
@@ -45,15 +48,21 @@ public class GameFrame {
 
     private final JFrame frame;
 
-    // TODO: handle number rounds/bustmode
-    public GameFrame(ArrayList<Player> players) {
-        this.players = players;
+    public GameFrame(StartFrame startFrame) {
+        this.players = startFrame.getPlayers();
+        this.isRoundMode = startFrame.getIsRoundMode();
+        this.numRounds = startFrame.getNumRounds();
+
         frame = new JFrame("Eric Crandall Poker");
         initFrame(frame);
     }
 
     public JFrame getFrame() {
         return this.frame;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return this.players;
     }
 
     //testing switching player panels, delete eventually
@@ -183,7 +192,7 @@ public class GameFrame {
     private void addTempEndButtonListener() {
         this.tempEndButton.addActionListener(e -> {
             frame.setVisible(false);
-            new EndFrame(players);
+            new EndFrame(this);
         });
     }
 

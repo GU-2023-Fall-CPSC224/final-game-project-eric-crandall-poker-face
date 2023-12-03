@@ -28,8 +28,8 @@ public class EndFrame {
     JButton exitButton = new JButton("Exit");
 
     // TODO: handle number rounds/bustmode
-    public EndFrame(ArrayList<Player> players) {
-        this.players = players;
+    public EndFrame(GameFrame gameFrame) {
+        this.players = gameFrame.getPlayers();
         frame = new JFrame("Eric Crandall Poker");
         initFrame(frame);
     }

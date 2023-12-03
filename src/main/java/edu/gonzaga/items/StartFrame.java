@@ -13,8 +13,10 @@ import java.util.concurrent.Flow;
 
 public class StartFrame {
     private Integer numPlayers;
+
     private Integer numRounds;
     private Boolean isRoundMode;
+    ArrayList<Player> players;
 
     private final Integer DEFAULT_NUM_PLAYERS = 2;
     private final Integer DEFAULT_NUM_ROUNDS = 5;
@@ -48,7 +50,6 @@ public class StartFrame {
     JLabel roundsLabel = new JLabel("Rounds: ");
     JTextField roundsField = new JTextField(1);
 
-    ArrayList<Player> players;
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
     // TODO: 12/1/2023 Add this to frame...
@@ -65,6 +66,18 @@ public class StartFrame {
 
     public JFrame getFrame() {
         return this.frame;
+    }
+
+    public Integer getNumRounds() {
+        return this.numRounds;
+    }
+
+    public Boolean getIsRoundMode() {
+        return this.isRoundMode;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return this.players;
     }
 
     private void setupStartFrame() {
@@ -328,7 +341,7 @@ public class StartFrame {
             }
 
             frame.setVisible(false);
-            new GameFrame(players);
+            new GameFrame(this);
         });
     }
 
