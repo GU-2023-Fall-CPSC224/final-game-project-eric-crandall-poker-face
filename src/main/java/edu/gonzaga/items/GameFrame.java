@@ -226,14 +226,5 @@ public class GameFrame {
             Card c2 = deck.drawCard();
             player.setCards(c1, c2);
         }
-
-        setupFrame();
-
-        //delete eventually
-        addTempCallbackHandler();
-
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
-        frame.setVisible(true);
     }
 }
