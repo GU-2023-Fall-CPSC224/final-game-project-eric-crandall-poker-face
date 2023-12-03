@@ -19,13 +19,11 @@ package edu.gonzaga;
 
 import edu.gonzaga.events.backend.EventExecutor;
 import edu.gonzaga.events.backend.EventManager;
+import edu.gonzaga.items.Player;
 import edu.gonzaga.items.StartFrame;
 import edu.gonzaga.utils.SoundThread;
 
-//delete
-import edu.gonzaga.items.GameFrame;
-    import java.util.ArrayList;
-    import edu.gonzaga.items.Player;
+import java.util.ArrayList;
 
 /** Main program class for launching your team's program. */
 public class MainGame {
