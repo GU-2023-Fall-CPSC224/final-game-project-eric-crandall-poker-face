@@ -26,7 +26,6 @@ public class StartPlayerPanel {
     public StartPlayerPanel(Player player) {
         this.player = player;
         panel = genPanel();
-        this.playerIcons = new PlayerIcons();
     }
 
     public JPanel getPanel() {

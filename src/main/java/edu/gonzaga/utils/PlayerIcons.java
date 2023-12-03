@@ -28,6 +28,7 @@ package edu.gonzaga.utils;
       * Desc: Loads icons from media folder into icons arrayList, hardcoding the number of player for now
       */
      public void loadIcons() {
+         if (!this.icons.isEmpty()) return;
          int temp = 0;
          for(int i = 0; i < 7; i++) {
              temp = i + 1;
