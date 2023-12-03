@@ -2,14 +2,11 @@ package edu.gonzaga.items;
 
 import edu.gonzaga.MainGame;
 import edu.gonzaga.events.TurnButtonEvent;
-import edu.gonzaga.events.backend.EventExecutor;
 import edu.gonzaga.events.backend.EventManager;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
-
-//TODO: add mute button 
-import edu.gonzaga.utils.SoundThread;
 import edu.gonzaga.utils.CardImages;
+import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,10 +23,13 @@ public class GameFrame {
 
     CardImages cardImages;
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
-    ArrayList<Card> tempCards = new ArrayList<Card>();
+
+    ArrayList<JLabel> cardsList = new ArrayList<>();
+
+    ArrayList<Card> tableCards = new ArrayList<>();
 
     Dimension cardDimension;
-    Dimension turnButtonDimension = new Dimension(80,25);
+    Dimension turnButtonDimension = new Dimension(80, 25);
 
     private int currentPlayerWatched = 0;
     private int currentBet = 0;
@@ -39,9 +39,6 @@ public class GameFrame {
     JButton callButton;
     JButton foldButton;
     JButton raiseButton;
-
-    JButton potButton;
-    JButton deckButton;
 
     JPanel northPanel;
     JPanel centerPanel;
@@ -150,11 +147,10 @@ public class GameFrame {
         cardsPanel = new JPanel(new GridLayout(1, 5, 2, 1));
 
         for (Integer index = 0; index < 5; index++) {
-            //Card card = deck.drawCard();
             JLabel cardLabel = new JLabel(cardImages.getFacedownImage());
             cardLabel.setPreferredSize(cardDimension);
             cardsPanel.add(cardLabel);
-            //tempCards.add(card);
+            cardsList.add(cardLabel);
         }
 
         newPanel.add(cardsPanel);
@@ -183,7 +179,7 @@ public class GameFrame {
         raiseField.setHorizontalAlignment(SwingConstants.CENTER);
         raiseField.setFont(raiseField.getFont().deriveFont(16.0f));
         raiseField.setPreferredSize(new Dimension(60, 32));
-        
+
         callButton = new JButton("Call");
         callButton.setPreferredSize(new Dimension(100, 32));
         callButton.setFont(betLabel.getFont().deriveFont(16.0f));
@@ -287,10 +283,6 @@ public class GameFrame {
         return playerPanels;
     }
 
-    public ArrayList<Card> getTempCards() {
-        return tempCards;
-    }
-
     public Dimension getCardDimension() {
         return cardDimension;
     }
@@ -313,14 +305,6 @@ public class GameFrame {
 
     public JButton getRaiseButton() {
         return raiseButton;
-    }
-
-    public JButton getPotButton() {
-        return potButton;
-    }
-
-    public JButton getDeckButton() {
-        return deckButton;
     }
 
     public JPanel getNorthPanel() {
@@ -351,17 +335,47 @@ public class GameFrame {
         this.currentPlayerWatched = currentPlayerWatched;
     }
 
+    private void doFlop() {
+        new Thread() {
+            @Override
+            public void run() {
+                long cooldown = 500;
+                long start = System.currentTimeMillis();
+                for (int i = 0; i < 3;) {
+                    if (System.currentTimeMillis() - start < cooldown) continue;
+                    start = System.currentTimeMillis();
+                    JLabel l = cardsList.get(i);
+                    Card card = deck.drawCard();
+                    tableCards.add(card);
+                    l.setIcon(cardImages.getCardImage(card));
+                    i++;
+                }
+                interrupt();
+            }
+        }.start();
+    }
+
+    private void doTurn() {
+
+    }
+
+    private void doRiver() {
+
+    }
+
 
     private void endPlayerTurn() {
         PlayerPanel p = playerPanels.get(currentPlayerWatched);
         frame.getContentPane().remove(p.getPanel());
+        p.updateScoreLabel();
 
         //change player being "watched"
-        currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
+        do {
+            currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
 
-        //add new panel
-        p = playerPanels.get(currentPlayerWatched);
-        p.updateScoreLabel();
+            //add new panel
+            p = playerPanels.get(currentPlayerWatched);
+        } while (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn());
 
         northPanel = p.getPanel();
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);

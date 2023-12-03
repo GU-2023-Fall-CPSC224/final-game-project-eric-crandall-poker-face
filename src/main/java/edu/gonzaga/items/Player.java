@@ -149,9 +149,7 @@ public class Player {
     }
 
     public void resetRound() {
-        if (this.chips == 0) {
-            this.isFolded = true;
-        } else this.isFolded = false;
+        this.isFolded = this.chips == 0;
         this.isAllIn = false;
     }
 

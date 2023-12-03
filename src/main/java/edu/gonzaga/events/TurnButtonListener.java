@@ -22,11 +22,14 @@ public class TurnButtonListener implements EventListener {
         switch (event.getButtonType()) {
             case CALL_BUTTON:
                 handleCallButton(frame, 0);
+                break;
             case FOLD_BUTTON:
                 handleFoldButton(frame);
+                break;
             case RAISE_BUTTON:
                 boolean success = handleRaiseButton(frame, 5);
                 if (!success) event.setCancelled(true);
+                break;
         }
     }
 
