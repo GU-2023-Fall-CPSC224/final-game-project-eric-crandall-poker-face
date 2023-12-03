@@ -31,13 +31,15 @@ public class GameFrame {
     Dimension cardDimension;
     Dimension turnButtonDimension = new Dimension(80,25);
 
-    //temp for testing purposes
-    // TODO: finalize
     private int currentPlayerWatched = 0;
+    private int currentBet = 0;
 
+    JLabel betLabel;
+    JTextField raiseField;
     JButton callButton;
     JButton foldButton;
     JButton raiseButton;
+
     JButton potButton;
     JButton deckButton;
 
@@ -46,9 +48,12 @@ public class GameFrame {
     JPanel southPanel;
 
     JPanel cardsPanel;
+    JPanel actionPanel;
 
     JButton exitButton;
     JButton tempEndButton;
+
+    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     private final JFrame frame;
 
@@ -142,30 +147,8 @@ public class GameFrame {
     private JPanel genCenterPanel() {
         JPanel newPanel = new JPanel();
 
-        cardsPanel = new JPanel(new GridLayout(1, 8, 2, 1));
+        cardsPanel = new JPanel(new GridLayout(1, 5, 2, 1));
 
-        //TODO: add location (top left of center area?)
-        callButton = new JButton("Call");
-        callButton.setPreferredSize(turnButtonDimension);
-
-        foldButton = new JButton("Fold");
-        foldButton.setPreferredSize(turnButtonDimension);
-
-        raiseButton = new JButton("Raise");
-        raiseButton.setPreferredSize(turnButtonDimension);
-
-
-        potButton = new JButton("Pot");
-        potButton.setPreferredSize(cardDimension);
-
-        deckButton = new JButton(cardImages.getFacedownImage());
-        deckButton.setPreferredSize(cardDimension);
-
-        cardsPanel.add(callButton);
-        cardsPanel.add(foldButton);
-        cardsPanel.add(raiseButton);
-
-        // redo when integrating with hand class
         for (Integer index = 0; index < 5; index++) {
             //Card card = deck.drawCard();
             JLabel cardLabel = new JLabel(cardImages.getFacedownImage());
@@ -182,23 +165,63 @@ public class GameFrame {
 
     // temporary, replace with betting/turn options
     private JPanel genSouthPanel() {
-        JPanel newPanel = new JPanel();
+        JPanel newPanel = new JPanel(new BorderLayout());
 
         Player player = players.get(currentPlayerWatched);
 
+        volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
+        volumeSlider.setBackground(new Color(0x643e36));
+        volumeSlider.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setHgap(10);
+        actionPanel = new JPanel(flowLayout);
+        betLabel = new JLabel("Current bet: " + currentBet);
+        betLabel.setFont(betLabel.getFont().deriveFont(18.0f));
+
+        raiseField = new JTextField(5);
+        raiseField.setHorizontalAlignment(SwingConstants.CENTER);
+        raiseField.setFont(raiseField.getFont().deriveFont(16.0f));
+        raiseField.setPreferredSize(new Dimension(60, 32));
+        
+        callButton = new JButton("Call");
+        callButton.setPreferredSize(new Dimension(100, 32));
+        callButton.setFont(betLabel.getFont().deriveFont(16.0f));
+
+        foldButton = new JButton("Fold");
+        foldButton.setPreferredSize(new Dimension(100, 32));
+        foldButton.setFont(betLabel.getFont().deriveFont(16.0f));
+
+        raiseButton = new JButton("Raise");
+        raiseButton.setPreferredSize(new Dimension(100, 32));
+        raiseButton.setFont(betLabel.getFont().deriveFont(16.0f));
+
+        actionPanel.add(betLabel);
+        actionPanel.add(callButton);
+        actionPanel.add(foldButton);
+        actionPanel.add(raiseButton);
+        actionPanel.add(raiseField);
+
+        actionPanel.setBackground(new Color(0x643e36));
+        actionPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JPanel tempButtonPanel = new JPanel();
+
         exitButton = new JButton("Exit Game");
         tempEndButton = new JButton("Test End Game");
-        addExitButtonListener();
-        addTempEndButtonListener();
 
-        newPanel.add(tempEndButton);
-        newPanel.add(exitButton);
+        tempButtonPanel.add(tempEndButton);
+        tempButtonPanel.add(exitButton);
+
+        tempButtonPanel.setBackground(new Color(0x643e36));
+        tempButtonPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        newPanel.add(BorderLayout.WEST, volumeSlider);
+        newPanel.add(BorderLayout.CENTER, actionPanel);
+        newPanel.add(BorderLayout.EAST, tempButtonPanel);
 
         Dimension d = newPanel.getPreferredSize();
         newPanel.setPreferredSize(new Dimension(d.width, 60));
-
-        newPanel.setBackground(new Color(0x643e36));
-        newPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         return newPanel;
     }
@@ -222,6 +245,9 @@ public class GameFrame {
 
         //delete eventually
         addTurnButtonEvents();
+
+        addExitButtonListener();
+        addTempEndButtonListener();
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(false);
