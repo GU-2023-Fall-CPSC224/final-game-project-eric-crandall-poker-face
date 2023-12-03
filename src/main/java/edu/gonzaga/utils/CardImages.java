@@ -1,17 +1,17 @@
 package edu.gonzaga.utils;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.swing.*;
-
 import edu.gonzaga.items.Card;
 import edu.gonzaga.items.FaceValue;
 import edu.gonzaga.items.Suit;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +34,14 @@ public class CardImages {
                     Card card = new Card();
                     card.setFaceValue(FaceValue.values()[j]);
                     card.setSuit(Suit.values()[i]);
-                    if (getSmallCardImage(card) != null) {
+                    ImageIcon icon = null;
+                    try {
+                        icon = getSmallCardImage(card);
+                    } catch (ConcurrentModificationException ignored) {
+                        System.out.println("Skipping already loaded card...");
+                        continue;
+                    }
+                    if (icon != null) {
                         System.out.println("Skipping already loaded card...");
                         continue;
                     }
@@ -55,7 +62,8 @@ public class CardImages {
 
     void loadImportantImages(String imagesPath, ArrayList<Card> importantCards) {
         BufferedImage currPicture;
-        for (Card card: importantCards) {
+        loadFacedownImage(imagesPath);
+        for (Card card : importantCards) {
             try {
                 String suit = card.getSuit().toString().toLowerCase();
                 String faceValue = card.getFaceValue().toString().toLowerCase();
@@ -71,7 +79,6 @@ public class CardImages {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                loadFacedownImage(imagesPath);
                 new Thread("LoadImages") {
                     @Override
                     public void run() {
