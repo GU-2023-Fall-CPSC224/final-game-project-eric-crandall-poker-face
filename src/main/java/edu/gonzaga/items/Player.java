@@ -5,11 +5,15 @@
  */
 package edu.gonzaga.items;
 
+import java.awt.image.BufferedImage;
+import edu.gonzaga.utils.PlayerIcons;
+
 public class Player {
     private String name;
     private Chips chips;
     private Card c1;
     private Card c2;
+    private BufferedImage icon;
 
     /* Default Value Constructor For Player
      * By default, sets players name to "Unknown Player", and creates new cards and chips for player.
@@ -19,6 +23,7 @@ public class Player {
         this.c1 = new Card();
         this.c2 = new Card();
         this.chips = new Chips();
+        this.icon = null;
     }
  
     /* Method Name: getName()
@@ -66,9 +71,25 @@ public class Player {
     public Card getCardTwo() {
         return c2;
     }
-
+    
     //temporary for testing purposes
     public Integer getScore() {
         return chips.getTotalChipsValues();
+    }
+
+    /* Method Name: getIcon()
+     * Returns: BufferedImage
+     * Desc: Returns Players Icon
+     */
+    public BufferedImage getIcon() {
+        return this.icon;
+    }
+
+     /* Method Name: setIcon()
+     * Returns: N/A (Void)
+     * Desc: Sets Players Icon
+     */
+    public void setIcon(BufferedImage newImage) {
+        this.icon = newImage;
     }
 }

@@ -15,7 +15,6 @@ public class StartPlayerPanel {
 
     JPanel panel;
 
-    JLabel playerNumberLabel;
     // TODO: either this panel or the player itself knows which player number it is
     JLabel playerIconLabel;
     JLabel playerNumberLabel = new JLabel("Player x:");
@@ -55,13 +54,13 @@ public class StartPlayerPanel {
 
         placeholderPlayerIcon = new JButton("Icon");
        
-        // BufferedImage newIcon = this.playerIcons.getIcons().get(0);
-        // Image Cimg = newIcon.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        // ImageIcon scaledImage = new ImageIcon(Cimg);
+        BufferedImage newIcon = this.player.getIcon();
+        Image Cimg = newIcon.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon scaledImage = new ImageIcon(Cimg);
 
-        // playerIconLabel = new JLabel(scaledImage);
+        playerIconLabel = new JLabel(scaledImage);
 
-        // newPanel.add(playerIconLabel);
+        newPanel.add(playerIconLabel);
         newPanel.add(playerNamePanel);
         newPanel.add(placeholderPlayerIcon);
 

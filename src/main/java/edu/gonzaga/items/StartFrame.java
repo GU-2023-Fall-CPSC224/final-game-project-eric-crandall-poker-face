@@ -3,6 +3,7 @@ package edu.gonzaga.items;
 import edu.gonzaga.MainGame;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
+import edu.gonzaga.utils.PlayerIcons;
 import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
@@ -107,10 +108,12 @@ public class StartFrame {
     private void setupNameFrame() {
         players = new ArrayList<>();
         startPlayerPanels = new ArrayList<>();
+        PlayerIcons icons = new PlayerIcons();
 
         for (int i = 0; i < numPlayers; i++) {
             Player player = new Player();
-
+            
+            player.setIcon(icons.getIcons().get(i));
             // TODO: change to randomly generated name
             player.setName("Player " + (i + 1));
             players.add(player);
