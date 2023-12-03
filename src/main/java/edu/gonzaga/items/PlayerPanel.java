@@ -67,6 +67,7 @@ public class PlayerPanel {
         panel.add(showCardButton);
         panel.add(cardLabels.get(0));
         panel.add(cardLabels.get(1));
+
         addShowCardButtonHandler();
     }
 }
