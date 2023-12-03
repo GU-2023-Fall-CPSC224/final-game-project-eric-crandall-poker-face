@@ -52,7 +52,6 @@ public class StartPlayerPanel {
         playerNamePanel.add(playerNumberLabel);
         playerNamePanel.add(playerNameField);
 
-        placeholderPlayerIcon = new JButton("Icon");
        
         BufferedImage newIcon = this.player.getIcon();
         Image Cimg = newIcon.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -62,7 +61,6 @@ public class StartPlayerPanel {
 
         newPanel.add(playerIconLabel);
         newPanel.add(playerNamePanel);
-        newPanel.add(placeholderPlayerIcon);
 
         return newPanel;
     }
