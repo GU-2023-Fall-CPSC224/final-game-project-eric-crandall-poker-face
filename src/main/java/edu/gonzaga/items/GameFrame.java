@@ -202,7 +202,6 @@ public class GameFrame {
         actionPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         JPanel tempButtonPanel = new JPanel();
-        JPanel buttonPanel = new JPanel();
 
         exitButton = new JButton("Exit Game");
         tempEndButton = new JButton("Test End Game");
@@ -210,11 +209,7 @@ public class GameFrame {
         tempButtonPanel.add(tempEndButton);
         tempButtonPanel.add(exitButton);
 
-        buttonPanel.add(tempEndButton);
-        buttonPanel.add(exitButton);
-
         newPanel.add(BorderLayout.WEST, volumeSlider);
-        newPanel.add(BorderLayout.EAST, buttonPanel);
         tempButtonPanel.setBackground(new Color(0x643e36));
         tempButtonPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
