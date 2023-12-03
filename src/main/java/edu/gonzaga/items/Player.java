@@ -7,9 +7,25 @@ package edu.gonzaga.items;
 
 public class Player {
     private String name;
-    private Chips chips;
     private Card c1;
     private Card c2;
+
+    private int escrowChips = 0;
+
+    private boolean isAllIn = false;
+
+    private int chips;
+
+    private boolean isFolded = false;
+
+
+    public boolean isFolded() {
+        return this.isFolded;
+    }
+
+    public void setFolded(boolean isFolded) {
+        this.isFolded = isFolded;
+    }
 
     /* Default Value Constructor For Player
      * By default, sets players name to "Unknown Player", and creates new cards and chips for player.
@@ -18,7 +34,7 @@ public class Player {
         this.name = "Uknown Player";
         this.c1 = new Card();
         this.c2 = new Card();
-        this.chips = new Chips();
+        this.chips = 100;
     }
  
     /* Method Name: getName()
@@ -67,8 +83,76 @@ public class Player {
         return c2;
     }
 
-    //temporary for testing purposes
-    public Integer getScore() {
-        return chips.getTotalChipsValues();
+    public int getChips() {
+        return this.chips;
     }
+
+    public void setChips(int chips) {
+        this.chips = chips;
+    }
+
+    /**
+     *
+     * @param amt
+     * @return false if amt is invalid
+     */
+    private boolean decrementChips(int amt) {
+        if (amt <= 0) return false;
+        if (amt > this.chips) return false;
+        this.chips -= amt;
+        return true;
+    }
+
+    /**
+     *
+     * @param amt
+     * @return false if amt is invalid
+     */
+    private boolean incrementChips(int amt) {
+        if (amt <= 0) return false;
+        this.chips += amt;
+        return true;
+    }
+
+    /**
+     *
+     * @param amt
+     * @return false if amt is invalid
+     */
+    private boolean decrementEscrow(int amt) {
+        if (amt <= 0) return false;
+        if (amt > this.escrowChips) return false;
+        this.escrowChips -= amt;
+        return true;
+    }
+
+    /**
+     *
+     * @param amt
+     * @return false if amt is invalid
+     */
+    private boolean incrementEscrow(int amt) {
+        if (amt <= 0) return false;
+        this.escrowChips += amt;
+        return true;
+    }
+
+    public boolean incrementEscrowChips(int amt)  {
+        boolean decrement = decrementChips(amt);
+        boolean increment = incrementEscrow(amt);
+        if (this.chips == 0) isAllIn = true;
+        return decrement && increment;
+    }
+
+    public boolean isAllIn() {
+        return this.isAllIn;
+    }
+
+    public void resetRound() {
+        if (this.chips == 0) {
+            this.isFolded = true;
+        } else this.isFolded = false;
+        this.isAllIn = false;
+    }
+
 }

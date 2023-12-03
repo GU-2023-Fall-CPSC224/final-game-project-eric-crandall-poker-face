@@ -17,6 +17,7 @@
  */
 package edu.gonzaga;
 
+import edu.gonzaga.events.TurnButtonListener;
 import edu.gonzaga.events.backend.EventExecutor;
 import edu.gonzaga.events.backend.EventManager;
 import edu.gonzaga.items.Player;
@@ -32,10 +33,20 @@ public class MainGame {
 
     public static SoundThread sound;
 
-    public static EventManager manager;
+    public static EventManager getManager() {
+        return manager;
+    }
+
+    private static EventManager manager;
+
+    public static EventExecutor getExecutor() {
+        return executor;
+    }
+
+    private static EventExecutor executor;
 
     public static void main(String[] args) {
-        EventExecutor executor = new EventExecutor();
+        executor = new EventExecutor();
         manager = new EventManager(executor);
         sound = SoundThread.getInstance();
         sound.startSong();
@@ -52,6 +63,7 @@ public class MainGame {
         */
 
         new StartFrame(players);
+        new TurnButtonListener();
         
         System.out.println("Hello Team Game");
     }

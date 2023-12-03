@@ -76,7 +76,7 @@ public class EndFrame {
             Player p = players.get(i);
 
             JPanel panel = new JPanel();
-            JLabel playerLabel = new JLabel(p.getName() + ": " + p.getScore());
+            JLabel playerLabel = new JLabel(p.getName() + ": " + p.getChips());
 
             panel.add(playerLabel);
             newPanel.add(panel);

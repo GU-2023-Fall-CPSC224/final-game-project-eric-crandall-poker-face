@@ -1,6 +1,9 @@
 package edu.gonzaga.items;
 
 import edu.gonzaga.MainGame;
+import edu.gonzaga.events.TurnButtonEvent;
+import edu.gonzaga.events.backend.EventExecutor;
+import edu.gonzaga.events.backend.EventManager;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
 
@@ -14,7 +17,7 @@ import java.util.ArrayList;
 
 //TODO: load images faster
 public class GameFrame {
-    
+
     private ArrayList<Player> players;
     private Boolean isRoundMode;
     private Integer numRounds;
@@ -26,11 +29,14 @@ public class GameFrame {
     ArrayList<Card> tempCards = new ArrayList<Card>();
 
     Dimension cardDimension = new Dimension(60, 80);
+    Dimension turnButtonDimension = new Dimension(80,25);
 
     //temp for testing purposes
     private int currentPlayerWatched = 0;
 
-    JButton cycleButton;
+    JButton callButton;
+    JButton foldButton;
+    JButton raiseButton;
     JButton potButton;
     JButton deckButton;
 
@@ -75,26 +81,27 @@ public class GameFrame {
     }
 
     //testing switching player panels, delete eventually
-    private void addTempCallbackHandler() {
-        cycleButton.addActionListener(ae -> {
-            //remove previous panel
-            PlayerPanel p = playerPanels.get(currentPlayerWatched);
-            northPanel.remove(p.getPanel());
-
-            //change player being "watched"
-            currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
-            
-            //add new panel 
-            p = playerPanels.get(currentPlayerWatched);
-            northPanel.add(p.getPanel());
-
-            //set player information on bottom
-            Player player = players.get(currentPlayerWatched);
-            playerNameLabel.setText(player.getName());
-            playerChipsLabel.setText("" + player.getScore() + " chips");
-
-            frame.validate();
-            frame.repaint();
+    private void addTurnButtonEvents() {
+        callButton.addActionListener(ae -> {
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.CALL_BUTTON);
+            EventManager.callEvent(event);
+            if (!event.isCancelled()) {
+                endPlayerTurn();
+            }
+        });
+        foldButton.addActionListener(ae -> {
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.FOLD_BUTTON);
+            EventManager.callEvent(event);
+            if (!event.isCancelled()) {
+                endPlayerTurn();
+            }
+        });
+        raiseButton.addActionListener(ae -> {
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.RAISE_BUTTON);
+            EventManager.callEvent(event);
+            if (!event.isCancelled()) {
+                endPlayerTurn();
+            } else System.out.println("No end turn.");
         });
     }
 
@@ -128,7 +135,7 @@ public class GameFrame {
             PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
             playerPanels.add(panel);
         }
-        
+
         //also temporary
         PlayerPanel p = playerPanels.get(0);
 
@@ -143,8 +150,15 @@ public class GameFrame {
         cardsPanel = new JPanel(new GridLayout(1, 8, 2, 1));
 
         //TODO: add location (top left of center area?)
-        cycleButton = new JButton("Next");
-        cycleButton.setPreferredSize(cardDimension);
+        callButton = new JButton("Call");
+        callButton.setPreferredSize(turnButtonDimension);
+
+        foldButton = new JButton("Fold");
+        foldButton.setPreferredSize(turnButtonDimension);
+
+        raiseButton = new JButton("Raise");
+        raiseButton.setPreferredSize(turnButtonDimension);
+
 
         potButton = new JButton("Pot");
         potButton.setPreferredSize(cardDimension);
@@ -152,9 +166,9 @@ public class GameFrame {
         deckButton = new JButton(cardImages.getFacedownImage());
         deckButton.setPreferredSize(cardDimension);
 
-        cardsPanel.add(cycleButton);
-        cardsPanel.add(potButton);
-        cardsPanel.add(deckButton);
+        cardsPanel.add(callButton);
+        cardsPanel.add(foldButton);
+        cardsPanel.add(raiseButton);
 
         // redo when integrating with hand class
         for (Integer index = 0; index < 5; index++) {
@@ -177,7 +191,7 @@ public class GameFrame {
         Player player = players.get(currentPlayerWatched);
 
         playerNameLabel = new JLabel(player.getName());
-        playerChipsLabel = new JLabel("" + player.getScore() + " chips");
+        playerChipsLabel = new JLabel("" + player.getChips() + " chips");
         exitButton = new JButton("Exit Game");
         tempEndButton = new JButton("Test End Game");
         addExitButtonListener();
@@ -209,10 +223,10 @@ public class GameFrame {
         setupFrame();
 
         //delete eventually
-        addTempCallbackHandler();
+        addTurnButtonEvents();
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
+        frame.setUndecorated(false);
         frame.setVisible(true);
 
     }
@@ -227,5 +241,118 @@ public class GameFrame {
             Card c2 = deck.drawCard();
             player.setCards(c1, c2);
         }
+    }
+
+    public Boolean isRoundMode() {
+        return this.isRoundMode;
+    }
+
+    public Integer getNumRounds() {
+        return numRounds;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public CardImages getCardImages() {
+        return cardImages;
+    }
+
+    public ArrayList<PlayerPanel> getPlayerPanels() {
+        return playerPanels;
+    }
+
+    public ArrayList<Card> getTempCards() {
+        return tempCards;
+    }
+
+    public Dimension getCardDimension() {
+        return cardDimension;
+    }
+
+    public Dimension getTurnButtonDimension() {
+        return turnButtonDimension;
+    }
+
+    public int getCurrentPlayerWatched() {
+        return currentPlayerWatched;
+    }
+
+    public JButton getCallButton() {
+        return callButton;
+    }
+
+    public JButton getFoldButton() {
+        return foldButton;
+    }
+
+    public JButton getRaiseButton() {
+        return raiseButton;
+    }
+
+    public JButton getPotButton() {
+        return potButton;
+    }
+
+    public JButton getDeckButton() {
+        return deckButton;
+    }
+
+    public JLabel getPlayerNameLabel() {
+        return playerNameLabel;
+    }
+
+    public JLabel getPlayerChipsLabel() {
+        return playerChipsLabel;
+    }
+
+    public JPanel getNorthPanel() {
+        return northPanel;
+    }
+
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public JPanel getSouthPanel() {
+        return southPanel;
+    }
+
+    public JPanel getCardsPanel() {
+        return cardsPanel;
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
+    }
+
+    public JButton getTempEndButton() {
+        return tempEndButton;
+    }
+
+    public void setCurrentPlayerWatched(int currentPlayerWatched) {
+        this.currentPlayerWatched = currentPlayerWatched;
+    }
+
+
+    private void endPlayerTurn() {
+        PlayerPanel p = playerPanels.get(currentPlayerWatched);
+        northPanel.remove(p.getPanel());
+
+        //change player being "watched"
+        currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
+
+        //add new panel
+        p = playerPanels.get(currentPlayerWatched);
+        northPanel.add(p.getPanel());
+
+        //set player information on bottom
+        Player player = players.get(currentPlayerWatched);
+        playerNameLabel.setText(player.getName());
+        playerChipsLabel.setText("" + player.getChips() + " chips");
+
+        frame.validate();
+        frame.repaint();
     }
 }
