@@ -46,8 +46,6 @@ public class GameFrame {
     JPanel southPanel;
 
     JPanel cardsPanel;
-    JLabel playerChipsLabel;
-    JLabel playerNameLabel;
 
     JButton exitButton;
     JButton tempEndButton;
@@ -188,15 +186,11 @@ public class GameFrame {
 
         Player player = players.get(currentPlayerWatched);
 
-        playerNameLabel = new JLabel(player.getName());
-        playerChipsLabel = new JLabel("" + player.getChips() + " chips");
         exitButton = new JButton("Exit Game");
         tempEndButton = new JButton("Test End Game");
         addExitButtonListener();
         addTempEndButtonListener();
 
-        newPanel.add(playerNameLabel);
-        newPanel.add(playerChipsLabel);
         newPanel.add(tempEndButton);
         newPanel.add(exitButton);
 
@@ -303,14 +297,6 @@ public class GameFrame {
         return deckButton;
     }
 
-    public JLabel getPlayerNameLabel() {
-        return playerNameLabel;
-    }
-
-    public JLabel getPlayerChipsLabel() {
-        return playerChipsLabel;
-    }
-
     public JPanel getNorthPanel() {
         return northPanel;
     }
@@ -342,19 +328,15 @@ public class GameFrame {
 
     private void endPlayerTurn() {
         PlayerPanel p = playerPanels.get(currentPlayerWatched);
-        northPanel.remove(p.getPanel());
+        frame.getContentPane().remove(p.getPanel());
 
         //change player being "watched"
         currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
 
         //add new panel
         p = playerPanels.get(currentPlayerWatched);
-        northPanel.add(p.getPanel());
-
-        //set player information on bottom
-        Player player = players.get(currentPlayerWatched);
-        playerNameLabel.setText(player.getName());
-        playerChipsLabel.setText("" + player.getChips() + " chips");
+        northPanel = p.getPanel();
+        frame.getContentPane().add(BorderLayout.NORTH, northPanel);
 
         frame.validate();
         frame.repaint();

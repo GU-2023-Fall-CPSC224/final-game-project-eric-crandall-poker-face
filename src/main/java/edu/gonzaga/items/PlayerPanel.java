@@ -68,7 +68,7 @@ public class PlayerPanel {
         JLabel playerLabel = new JLabel(player.getName());
         playerLabel.setFont(playerLabel.getFont().deriveFont(28.0f));
 
-        JLabel scoreLabel = new JLabel("Score: " + player.getScore() + " Chips");
+        JLabel scoreLabel = new JLabel("Score: " + player.getChips() + " Chips");
         scoreLabel.setFont(scoreLabel.getFont().deriveFont(22.0f));
 
         playerInfoPanel.add(playerLabel);
