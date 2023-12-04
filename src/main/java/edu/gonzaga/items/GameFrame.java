@@ -386,8 +386,8 @@ public class GameFrame {
         }
         if (gameStage == 2) {
             service.schedule(this::doRiver, 0L, TimeUnit.MILLISECONDS);
-
-        } else {
+        }
+        if (gameStage == 3) {
             service.schedule(this::doEndRound, 0L, TimeUnit.MILLISECONDS);
         }
     }
