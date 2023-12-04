@@ -465,7 +465,7 @@ public class GameFrame {
             currentPlayerWatched = 0;
             do {
                 currentPlayerWatched++;
-            } while (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn());
+            } while (currentPlayerWatched < players.size() && (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn()));
             currentPlayerWatched = 0;
             p = playerPanels.get(currentPlayerWatched);
         }
