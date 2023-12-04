@@ -106,8 +106,11 @@ public class Player {
      * @return false if amt is invalid
      */
     private boolean decrementChips(int amt) {
-        if (amt <= 0) return false;
-        if (amt > this.chips) return false;
+        if (amt < 0) return false;
+        if (amt > this.chips) {
+            this.chips = 0;
+            return true;
+        };
         this.chips -= amt;
         return true;
     }
@@ -141,15 +144,22 @@ public class Player {
      * @return false if amt is invalid
      */
     private boolean incrementEscrow(int amt) {
-        if (amt <= 0) return false;
+        if (amt < 0) return false;
+        if (this.chips < amt) {
+            this.escrowChips += this.chips;
+            return true;
+        }
         this.escrowChips += amt;
         return true;
     }
 
     public boolean incrementEscrowChips(int amt)  {
-        boolean decrement = decrementChips(amt);
         boolean increment = incrementEscrow(amt);
-        if (this.chips == 0) isAllIn = true;
+        boolean decrement = decrementChips(amt);
+        if (this.chips == 0) {
+            isAllIn = true;
+            GameFrame.incrementAllIn();
+        }
         return decrement && increment;
     }
 

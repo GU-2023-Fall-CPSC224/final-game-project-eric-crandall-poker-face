@@ -11,6 +11,9 @@ import edu.gonzaga.utils.SoundThread;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 //TODO: add table of all player names and chips
 public class GameFrame {
@@ -55,6 +58,11 @@ public class GameFrame {
     private final JFrame frame;
     private int numChecks = 0;
     private int foldedPlayers = 0;
+    private static int allInPlayers = 0;
+
+    public static void incrementAllIn() {
+        allInPlayers++;
+    }
 
     public GameFrame(StartFrame startFrame) {
         this.players = startFrame.getPlayers();
@@ -90,9 +98,11 @@ public class GameFrame {
             TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.CALL_BUTTON);
             EventManager.callEvent(event);
             if (!event.isCancelled()) {
-                numChecks++;
+                if (!players.get(currentPlayerWatched).isAllIn()) {
+                    numChecks++;
+                }
                 endPlayerTurn();
-            }
+            } else System.out.println("Check cancelled");
         });
         foldButton.addActionListener(ae -> {
             TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.FOLD_BUTTON);
@@ -361,28 +371,21 @@ public class GameFrame {
     }
 
     int gameStage = 0;
+    private ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
 
     private void advanceGame() {
-        new Thread() {
-            @Override
-            public void run() {
-                if (gameStage == 0)  {
-                    doFlop();
-                    interrupt();
-                }
-                if (gameStage == 1){
-                    doTurn();
-                    interrupt();
-                }
-                if (gameStage == 2) {
-                    doRiver();
-                    interrupt();
-                } else {
-                    doEndRound();
-                    interrupt();
-                }
-            }
-        }.start();
+        if (gameStage == 0) {
+            service.schedule(this::doFlop, 0L, TimeUnit.MILLISECONDS);
+        }
+        if (gameStage == 1) {
+            service.schedule(this::doTurn, 0L, TimeUnit.MILLISECONDS);
+        }
+        if (gameStage == 2) {
+            service.schedule(this::doRiver, 0L, TimeUnit.MILLISECONDS);
+
+        } else {
+            service.schedule(this::doEndRound, 0L, TimeUnit.MILLISECONDS);
+        }
     }
 
     private void doFlop() {
@@ -398,6 +401,7 @@ public class GameFrame {
             i++;
         }
         gameStage++;
+        endPlayerTurn();
     }
 
     private void doTurn() {
@@ -411,6 +415,7 @@ public class GameFrame {
         tableCards.add(card);
         l.setIcon(cardImages.getCardImage(card));
         gameStage++;
+        endPlayerTurn();
     }
 
     private void doRiver() {
@@ -424,6 +429,7 @@ public class GameFrame {
         tableCards.add(card);
         l.setIcon(cardImages.getCardImage(card));
         gameStage++;
+        endPlayerTurn();
     }
 
     private void doEndRound() {
@@ -438,13 +444,13 @@ public class GameFrame {
 
         //change player being "watched"
         do {
+            if (numChecks + foldedPlayers + allInPlayers >= players.size()) break;
             currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
-
             //add new panel
             p = playerPanels.get(currentPlayerWatched);
         } while (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn());
 
-        if (numChecks + foldedPlayers == players.size()) {
+        if (numChecks + foldedPlayers + allInPlayers >= players.size()) {
             advanceGame();
             numChecks = 0;
             currentPlayerWatched = 0;

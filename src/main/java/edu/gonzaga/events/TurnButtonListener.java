@@ -22,7 +22,7 @@ public class TurnButtonListener implements EventListener {
         Player p = frame.getPlayers().get(frame.getCurrentPlayerWatched());
         switch (event.getButtonType()) {
             case CALL_BUTTON:
-                event.setCancelled(handleCallButton(frame, frame.getCurrentBet() - p.getEscrowChips()));
+                event.setCancelled(!handleCallButton(frame, frame.getCurrentBet() - p.getEscrowChips()));
                 break;
             case FOLD_BUTTON:
                 handleFoldButton(frame);
