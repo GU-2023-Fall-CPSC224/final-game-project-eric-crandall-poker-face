@@ -19,9 +19,10 @@ public class TurnButtonListener implements EventListener {
     public void onTurnButtonPressed(TurnButtonEvent event) {
         System.out.println("Event! ButtonType: " + event.getButtonType().name());
         GameFrame frame = event.getGameFrame();
+        Player p = frame.getPlayers().get(frame.getCurrentPlayerWatched());
         switch (event.getButtonType()) {
             case CALL_BUTTON:
-                handleCallButton(frame, 0);
+                event.setCancelled(handleCallButton(frame, frame.getCurrentBet() - p.getEscrowChips()));
                 break;
             case FOLD_BUTTON:
                 handleFoldButton(frame);
@@ -33,8 +34,9 @@ public class TurnButtonListener implements EventListener {
         }
     }
 
-    private void handleCallButton(GameFrame gameFrame, int amt) {
-
+    private boolean handleCallButton(GameFrame gameFrame, int amt) {
+        Player p = gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched());
+        return p.incrementEscrowChips(amt);
     }
 
     private void handleFoldButton(GameFrame gameFrame) {

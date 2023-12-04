@@ -53,6 +53,8 @@ public class GameFrame {
     JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     private final JFrame frame;
+    private int numChecks = 0;
+    private int foldedPlayers = 0;
 
     public GameFrame(StartFrame startFrame) {
         this.players = startFrame.getPlayers();
@@ -88,6 +90,7 @@ public class GameFrame {
             TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.CALL_BUTTON);
             EventManager.callEvent(event);
             if (!event.isCancelled()) {
+                numChecks++;
                 endPlayerTurn();
             }
         });
@@ -95,6 +98,7 @@ public class GameFrame {
             TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.FOLD_BUTTON);
             EventManager.callEvent(event);
             if (!event.isCancelled()) {
+                foldedPlayers++;
                 endPlayerTurn();
             }
         });
@@ -102,8 +106,9 @@ public class GameFrame {
             TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.RAISE_BUTTON);
             EventManager.callEvent(event);
             if (!event.isCancelled()) {
+                numChecks = 0;
                 endPlayerTurn();
-            } else System.out.println("No end turn.");
+            }
         });
     }
 
@@ -180,8 +185,8 @@ public class GameFrame {
         raiseField.setFont(raiseField.getFont().deriveFont(16.0f));
         raiseField.setPreferredSize(new Dimension(60, 32));
         raiseField.setText("0");
-        
-        callButton = new JButton("Call");
+
+        callButton = new JButton("Check");
         callButton.setPreferredSize(new Dimension(100, 32));
         callButton.setFont(betLabel.getFont().deriveFont(16.0f));
 
@@ -274,8 +279,12 @@ public class GameFrame {
         return numRounds;
     }
 
-    public Integer getRaiseAmount() {
+    public Integer getRaiseAmount() throws NumberFormatException {
         return Integer.parseInt(raiseField.getText());
+    }
+
+    public int getCurrentBet() {
+        return this.currentBet;
     }
 
     public Deck getDeck() {
@@ -351,31 +360,73 @@ public class GameFrame {
         betLabel.setText("Current Bet: " + currentBet);
     }
 
-    private void doFlop() {
+    int gameStage = 0;
+
+    private void advanceGame() {
         new Thread() {
             @Override
             public void run() {
-                long cooldown = 500;
-                long start = System.currentTimeMillis();
-                for (int i = 0; i < 3;) {
-                    if (System.currentTimeMillis() - start < cooldown) continue;
-                    start = System.currentTimeMillis();
-                    JLabel l = cardsList.get(i);
-                    Card card = deck.drawCard();
-                    tableCards.add(card);
-                    l.setIcon(cardImages.getCardImage(card));
-                    i++;
+                if (gameStage == 0)  {
+                    doFlop();
+                    interrupt();
                 }
-                interrupt();
+                if (gameStage == 1){
+                    doTurn();
+                    interrupt();
+                }
+                if (gameStage == 2) {
+                    doRiver();
+                    interrupt();
+                } else {
+                    doEndRound();
+                    interrupt();
+                }
             }
         }.start();
     }
 
-    private void doTurn() {
+    private void doFlop() {
+        long cooldown = 500;
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 3; ) {
+            if (System.currentTimeMillis() - start < cooldown) continue;
+            start = System.currentTimeMillis();
+            JLabel l = cardsList.get(i);
+            Card card = deck.drawCard();
+            tableCards.add(card);
+            l.setIcon(cardImages.getCardImage(card));
+            i++;
+        }
+        gameStage++;
+    }
 
+    private void doTurn() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        JLabel l = cardsList.get(3);
+        Card card = deck.drawCard();
+        tableCards.add(card);
+        l.setIcon(cardImages.getCardImage(card));
+        gameStage++;
     }
 
     private void doRiver() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        JLabel l = cardsList.get(4);
+        Card card = deck.drawCard();
+        tableCards.add(card);
+        l.setIcon(cardImages.getCardImage(card));
+        gameStage++;
+    }
+
+    private void doEndRound() {
 
     }
 
@@ -393,7 +444,16 @@ public class GameFrame {
             p = playerPanels.get(currentPlayerWatched);
         } while (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn());
 
+        if (numChecks + foldedPlayers == players.size()) {
+            advanceGame();
+            numChecks = 0;
+            currentPlayerWatched = 0;
+            p = playerPanels.get(currentPlayerWatched);
+        }
+
+        Player player = players.get(currentPlayerWatched);
         raiseField.setText("0");
+        callButton.setText(player.getEscrowChips() >= currentBet ? "Check" : ((player.getEscrowChips() + player.getChips()) <= currentBet ? "All In!" : "Call: " + (currentBet - player.getEscrowChips())));
 
         northPanel = p.getPanel();
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);

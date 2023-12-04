@@ -92,6 +92,10 @@ public class Player {
         return this.chips;
     }
 
+    public int getEscrowChips() {
+        return this.escrowChips;
+    }
+
     public void setChips(int chips) {
         this.chips = chips;
     }
