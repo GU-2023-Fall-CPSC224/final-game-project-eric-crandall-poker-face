@@ -35,7 +35,6 @@ public class TurnButtonEvent extends Event implements Cancellable {
         this.type = type;
     }
 
-
     @Override
     public boolean isCancelled() {
         return this.cancelled;
