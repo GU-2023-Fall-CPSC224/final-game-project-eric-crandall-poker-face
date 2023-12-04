@@ -110,6 +110,10 @@ public class GameFrame {
             if (!event.isCancelled()) {
                 foldedPlayers++;
                 endPlayerTurn();
+            } else {
+                endPlayerTurn();
+                gameStage = 3;
+                advanceGame();
             }
         });
         raiseButton.addActionListener(ae -> {
@@ -433,6 +437,11 @@ public class GameFrame {
     }
 
     private void doEndRound() {
+        callButton.setEnabled(false);
+        raiseButton.setEnabled(false);
+        foldButton.setEnabled(false);
+        foldedPlayers = 0;
+        numChecks = 0;
 
     }
 
@@ -453,6 +462,10 @@ public class GameFrame {
         if (numChecks + foldedPlayers + allInPlayers >= players.size()) {
             advanceGame();
             numChecks = 0;
+            currentPlayerWatched = 0;
+            do {
+                currentPlayerWatched++;
+            } while (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn());
             currentPlayerWatched = 0;
             p = playerPanels.get(currentPlayerWatched);
         }
