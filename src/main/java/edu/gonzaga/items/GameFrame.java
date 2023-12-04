@@ -171,18 +171,19 @@ public class GameFrame {
 
         volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
         volumeSlider.setBackground(new Color(0x643e36));
-        volumeSlider.setBorder(BorderFactory.createLineBorder(Color.black));
+        volumeSlider.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setHgap(10);
         actionPanel = new JPanel(flowLayout);
-        betLabel = new JLabel("Current bet: " + currentBet);
+        betLabel = new JLabel("Current Bet: " + currentBet);
         betLabel.setFont(betLabel.getFont().deriveFont(18.0f));
 
         raiseField = new JTextField(5);
         raiseField.setHorizontalAlignment(SwingConstants.CENTER);
         raiseField.setFont(raiseField.getFont().deriveFont(16.0f));
         raiseField.setPreferredSize(new Dimension(60, 32));
+        raiseField.setText("0");
         
         callButton = new JButton("Call");
         callButton.setPreferredSize(new Dimension(100, 32));
@@ -203,7 +204,7 @@ public class GameFrame {
         actionPanel.add(raiseField);
 
         actionPanel.setBackground(new Color(0x643e36));
-        actionPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        actionPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         JPanel tempButtonPanel = new JPanel();
 
@@ -214,7 +215,7 @@ public class GameFrame {
         tempButtonPanel.add(exitButton);
 
         tempButtonPanel.setBackground(new Color(0x643e36));
-        tempButtonPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        tempButtonPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         newPanel.add(BorderLayout.WEST, volumeSlider);
         newPanel.add(BorderLayout.CENTER, actionPanel);
@@ -222,6 +223,7 @@ public class GameFrame {
 
         Dimension d = newPanel.getPreferredSize();
         newPanel.setPreferredSize(new Dimension(d.width, 60));
+        newPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         return newPanel;
     }
@@ -273,6 +275,10 @@ public class GameFrame {
 
     public Integer getNumRounds() {
         return numRounds;
+    }
+
+    public Integer getRaiseAmount() {
+        return Integer.parseInt(raiseField.getText());
     }
 
     public Deck getDeck() {
@@ -347,10 +353,18 @@ public class GameFrame {
         return tempEndButton;
     }
 
+    public JTextField getRaiseField() {
+        return raiseField;
+    }
+
     public void setCurrentPlayerWatched(int currentPlayerWatched) {
         this.currentPlayerWatched = currentPlayerWatched;
     }
 
+    public void raiseBetAmount(int betAmount) {
+        currentBet += betAmount;
+        betLabel.setText("Current Bet: " + currentBet);
+    }
 
     private void endPlayerTurn() {
         PlayerPanel p = playerPanels.get(currentPlayerWatched);
@@ -362,6 +376,8 @@ public class GameFrame {
         //add new panel
         p = playerPanels.get(currentPlayerWatched);
         p.updateScoreLabel();
+
+        raiseField.setText("0");
 
         northPanel = p.getPanel();
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);

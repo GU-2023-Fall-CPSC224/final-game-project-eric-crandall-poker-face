@@ -93,8 +93,8 @@ public class PlayerPanel {
         playerInfoPanel.setBackground(new Color(0x643e36));
         cardPanel.setBackground(new Color(0x643e36));
 
-        playerInfoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        cardPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        playerInfoPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+        cardPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         panel.add(BorderLayout.WEST, playerInfoPanel);
         panel.add(BorderLayout.EAST, cardPanel);

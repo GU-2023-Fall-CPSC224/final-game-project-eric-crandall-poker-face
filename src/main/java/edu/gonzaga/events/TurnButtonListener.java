@@ -25,8 +25,12 @@ public class TurnButtonListener implements EventListener {
             case FOLD_BUTTON:
                 handleFoldButton(frame);
             case RAISE_BUTTON:
-                boolean success = handleRaiseButton(frame, 5);
-                if (!success) event.setCancelled(true);
+                boolean success = handleRaiseButton(frame, frame.getRaiseAmount());
+                if (success) { 
+                    System.out.println(frame.getRaiseField().getText());
+                } else {
+                    event.setCancelled(true);
+                }
         }
     }
 
@@ -38,9 +42,10 @@ public class TurnButtonListener implements EventListener {
         gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched()).setFolded(true);
     }
 
-    private boolean handleRaiseButton(GameFrame gameFrame, int amt) {
+    private boolean handleRaiseButton(GameFrame gameFrame, Integer amount) {
         Player p = gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched());
-        if (p.incrementEscrowChips(amt)) {
+        if (p.incrementEscrowChips(amount)) {
+            gameFrame.raiseBetAmount(amount);
             return true;
         } else return false;
     }
