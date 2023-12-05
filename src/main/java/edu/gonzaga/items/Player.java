@@ -163,6 +163,10 @@ public class Player {
         return decrement && increment;
     }
 
+    public void resetEscrowChips() {
+        this.escrowChips = 0;
+    }
+
     public boolean isAllIn() {
         return this.isAllIn;
     }
