@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class GameFrame {
 
     private ArrayList<Player> players;
+    private int currRound = 1;
     private Boolean isRoundMode;
     private Integer numRounds;
 
@@ -450,7 +451,7 @@ public class GameFrame {
     private void doFlop() {
         long cooldown = 500;
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 3;) {
+        for (int i = 0; i < 3; ) {
             if (System.currentTimeMillis() - start < cooldown)
                 continue;
             start = System.currentTimeMillis();
@@ -495,7 +496,7 @@ public class GameFrame {
     private void doShowEarly() {
         long cooldown = 500;
         long start = System.currentTimeMillis();
-        for (int i = gameStage; i < 5;) {
+        for (int i = gameStage; i < 5; ) {
             if (System.currentTimeMillis() - start < cooldown)
                 continue;
             start = System.currentTimeMillis();
@@ -518,12 +519,13 @@ public class GameFrame {
 
     // TODO: handle round stuff here
     // TODO: calculate winning player, adding pot to them
-    // TODO: auto fold players with no moneys
-    // TODO: in round mode if currentRound == numRounds, endGame
-    // TODO: in bustMode if all players but one are out of money, endGame
+    // DONE TODO: auto fold players with no moneys
+    // DONE TODO: in round mode if currentRound == numRounds, endGame
+    // DONE TODO: in bustMode if all players but one are out of money, endGame
     private void doEndRound() {
         advanceStage();
         foldedPlayers = 0;
+        distributeChips();
         for (Player p : players) {
             if (p.getChips() <= 0) {
                 p.setFolded(true);
@@ -532,7 +534,27 @@ public class GameFrame {
                 p.setFolded(false);
             }
         }
+        if (isRoundMode && numRounds <= currRound) {
+            frame.setVisible(false);
+            new EndFrame(this);
+        } else currRound++;
+        if (!isRoundMode) {
+            int more_than_zero = 0;
+            for (Player p : players) {
+               if (p.getChips() >= 0) more_than_zero++;
+            }
+            if (more_than_zero == 1)  {
+                frame.setVisible(false);
+                new EndFrame(this);
+            }
+        }
         System.out.println("" + currentPot + " chips will be added to winning player when we implement");
+    }
+
+    private void distributeChips() {
+        for (Player p : players) {
+            if (p.isFolded()) continue;
+        }
     }
 
     private void endPlayerTurn() {
@@ -555,7 +577,7 @@ public class GameFrame {
                 }
                 break;
             }
-            
+
 
             currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
             player = players.get(currentPlayerWatched);
@@ -566,7 +588,7 @@ public class GameFrame {
         } while (player.isFolded() || player.isAllIn());
         p = playerPanels.get(currentPlayerWatched);
 
-        
+
         raiseField.setText("0");
         callButton.setText(player.getEscrowChips() >= currentBet ? "Check" : ((player.getEscrowChips() + player.getChips()) <= currentBet ? "All In!" : "Call: " + (currentBet - player.getEscrowChips())));
 
