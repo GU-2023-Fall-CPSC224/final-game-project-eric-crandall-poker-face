@@ -251,10 +251,22 @@ public class GameFrame {
         });
     }
 
+    // TODO: delete
     private void addTempEndButtonListener() {
         this.tempEndButton.addActionListener(e -> {
             frame.setVisible(false);
             new EndFrame(this);
+        });
+    }
+
+    private void addVolumeSliderHandler() {
+        volumeSlider.addChangeListener(e -> {
+            JSlider slider = (JSlider) e.getSource();
+            if (slider.getValue() == slider.getMinimum()) {
+                SoundThread.getInstance().setVolume(0);
+                return;
+            }
+            SoundThread.getInstance().setVolume(slider.getValue());
         });
     }
 
@@ -264,6 +276,7 @@ public class GameFrame {
         //delete eventually
         addTurnButtonEvents();
 
+        addVolumeSliderHandler();
         addExitButtonListener();
         addTempEndButtonListener();
 
