@@ -5,6 +5,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.*;
+import javax.imageio.ImageIO;
 import java.util.ArrayList;
 import edu.gonzaga.utils.CardImages;
 
@@ -68,7 +69,8 @@ public class PlayerPanel {
     private void genPanel() {
         panel = new JPanel(new BorderLayout());
 
-        JPanel playerInfoPanel = new JPanel(new GridLayout(2, 1));
+        JPanel playerInfoPanel = new JPanel(new GridLayout(1, 2));
+        JPanel playerInfoPanel2 = new JPanel(new GridLayout(2, 1));
 
         JLabel playerLabel = new JLabel(player.getName());
         playerLabel.setFont(playerLabel.getFont().deriveFont(28.0f));
@@ -76,10 +78,18 @@ public class PlayerPanel {
         scoreLabel = new JLabel("Score: " + player.getChips() + " Chips");
         scoreLabel.setFont(scoreLabel.getFont().deriveFont(22.0f));
 
-        playerInfoPanel.add(playerLabel);
-        playerInfoPanel.add(scoreLabel);
+        Image Cimg = this.player.getIcon().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        ImageIcon scaledImage = new ImageIcon(Cimg);
+        JLabel playerIcon = new JLabel(scaledImage);
 
-        playerInfoPanel.setPreferredSize(new Dimension(220, smallCardDimension.height));
+        playerInfoPanel.add(playerLabel);
+        playerInfoPanel.add(playerIcon);
+        playerInfoPanel.setPreferredSize(new Dimension(220, smallCardDimension.height/2));
+        
+        playerInfoPanel2.add(playerInfoPanel);
+        playerInfoPanel2.add(scoreLabel);
+        playerInfoPanel2.setPreferredSize(new Dimension(220, smallCardDimension.height));
+
 
         showCardButton = new JButton("Show");
         showCardButton.setFont(showCardButton.getFont().deriveFont(20.0f));
@@ -91,12 +101,13 @@ public class PlayerPanel {
         cardPanel.add(cardLabels.get(1));
 
         playerInfoPanel.setBackground(new Color(0x643e36));
+        playerInfoPanel2.setBackground(new Color(0x643e36));
         cardPanel.setBackground(new Color(0x643e36));
 
-        playerInfoPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+        playerInfoPanel2.setBorder(BorderFactory.createLineBorder(Color.darkGray));
         cardPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
-        panel.add(BorderLayout.WEST, playerInfoPanel);
+        panel.add(BorderLayout.WEST, playerInfoPanel2);
         panel.add(BorderLayout.EAST, cardPanel);
 
         panel.setBackground(new Color(0x35654d));
