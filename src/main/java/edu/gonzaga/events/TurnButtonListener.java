@@ -3,10 +3,10 @@ package edu.gonzaga.events;
 import edu.gonzaga.MainGame;
 import edu.gonzaga.events.annotations.EventMethod;
 import edu.gonzaga.events.backend.EventListener;
-import edu.gonzaga.events.backend.Listener;
+// import edu.gonzaga.events.backend.Listener; not currently used 
 import edu.gonzaga.items.GameFrame;
 import edu.gonzaga.items.Player;
-import edu.gonzaga.items.PlayerPanel;
+// import edu.gonzaga.items.PlayerPanel; not curretnly 
 
 public class TurnButtonListener implements EventListener {
 

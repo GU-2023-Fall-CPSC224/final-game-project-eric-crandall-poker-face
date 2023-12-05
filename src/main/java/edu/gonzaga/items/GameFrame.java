@@ -206,7 +206,7 @@ public class GameFrame {
     private JPanel genSouthPanel() {
         JPanel newPanel = new JPanel(new BorderLayout());
 
-        Player player = players.get(currentPlayerWatched);
+        // Player player = players.get(currentPlayerWatched);
 
         volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
         volumeSlider.setBackground(new Color(0x643e36));

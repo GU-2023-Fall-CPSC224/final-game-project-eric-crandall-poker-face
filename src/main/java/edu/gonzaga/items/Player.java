@@ -6,7 +6,6 @@
 package edu.gonzaga.items;
 
 import java.awt.image.BufferedImage;
-import edu.gonzaga.utils.PlayerIcons;
 
 public class Player {
     private String name;

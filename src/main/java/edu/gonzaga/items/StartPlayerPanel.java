@@ -1,17 +1,11 @@
 package edu.gonzaga.items;
 
-import edu.gonzaga.utils.PlayerIcons;
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.util.ArrayList;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.awt.*;
 
 public class StartPlayerPanel {
     private Player player;
-    private PlayerIcons playerIcons;
 
     JPanel panel;
 
