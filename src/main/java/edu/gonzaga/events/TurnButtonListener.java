@@ -41,11 +41,18 @@ public class TurnButtonListener implements EventListener {
 
     private boolean handleCallButton(GameFrame gameFrame, int amt) {
         Player p = gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched());
+        if (gameFrame.getCurrentBet() == 0) {
+            System.out.println(p.getName() + " Checked");
+        } else {
+            System.out.println(p.getName() + " Called");
+        }
         return p.incrementEscrowChips(amt);
     }
 
     private void handleFoldButton(GameFrame gameFrame) {
-        gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched()).setFolded(true);
+        Player p = gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched());
+        p.setFolded(true);
+        System.out.println(p.getName() + " Folded");
     }
 
     private boolean handleRaiseButton(GameFrame gameFrame, Integer amount) {
@@ -53,6 +60,7 @@ public class TurnButtonListener implements EventListener {
         int amt = amount + (gameFrame.getCurrentBet() - p.getEscrowChips());
         if (p.incrementEscrowChips(amt)) {
             gameFrame.raiseBetAmount(amount);
+            System.out.println(p.getName() + " Raised " + amount + " Chips");
             return true;
         } else return false;
     }
