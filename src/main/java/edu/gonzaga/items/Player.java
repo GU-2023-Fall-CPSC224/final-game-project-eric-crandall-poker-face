@@ -6,12 +6,16 @@
 package edu.gonzaga.items;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import edu.gonzaga.items.Scorer;
 
 public class Player {
     private String name;
     private Card c1;
     private Card c2;
     private BufferedImage icon;
+    private Scorer scorer;
 
     private int escrowChips = 0;
 
@@ -39,8 +43,55 @@ public class Player {
         this.c2 = new Card();
         this.chips = 100;
         this.icon = null;
+        this.scorer = new Scorer();
     }
- 
+    
+    /* Method Name: addCardListToScorer()
+     * Returns: N/A
+     * Desc: Adds an inputed card to players scorer
+     * Events: N/A
+     */
+    public void addCardListToScorer(ArrayList<Card> newCards) {
+        this.scorer.addCardListToHand(newCards);
+    }
+
+    /* Method Name: addHandToScorer()
+     * Returns: N/A
+     * Desc: Adds an players c1 and c2 to players scorer
+     * Events: N/A
+     */
+    public void addHandToScorer() {
+        this.scorer.addCardtoHand(c1);
+        this.scorer.addCardtoHand(c2);
+    }
+
+    /* Method Name: runScorerChecks()
+     * Returns: N/A
+     * Desc: calls players scorer.runChecks()
+     * Events: N/A
+     */
+    public void runScorerChecks() {
+        this.scorer.runChecks();
+    }
+
+    /* Method Name: callCompareScores()
+     * Returns: Integer
+     * Desc: calls players scorer.compareScores(), accepts another players scorer to do so. Returns 0, 1, or -1
+     * Events: N/A
+     */
+    public Integer callCompareScores(Scorer otherScorer) {
+        return this.scorer.compareScores(otherScorer);
+    }
+
+    /* Method Name: getScorer()
+     * Returns: Scorer
+     * Desc: returns this.scorer
+     * Events: N/A
+     */
+    public Scorer getScorer() {
+        return this.scorer;
+    }
+
     /* Method Name: getName()
      * Returns: A String
      * Desc: returns this players name as a string
@@ -89,6 +140,10 @@ public class Player {
 
     public int getChips() {
         return this.chips;
+    }
+
+    public void addToChips(Integer chipsToAdd) {
+        this.chips = this.chips + chipsToAdd;
     }
 
     public int getEscrowChips() {
