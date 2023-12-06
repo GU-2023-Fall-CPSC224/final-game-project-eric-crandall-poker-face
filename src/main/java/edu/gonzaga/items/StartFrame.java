@@ -50,13 +50,11 @@ public class StartFrame {
     JLabel playersLabel = new JLabel("Players: ");
     JTextField playersField = new JTextField(1);
 
-    // TODO: make hidden if playing until bust
     JLabel roundsLabel = new JLabel("Rounds: ");
     JTextField roundsField = new JTextField(1);
 
     ArrayList<StartPlayerPanel> startPlayerPanels = new ArrayList<>();
 
-    // TODO: 12/1/2023 Add this to frame...
     JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
 
     public StartFrame(ArrayList<Player> players) {
@@ -108,7 +106,6 @@ public class StartFrame {
         frame.getContentPane().add(BorderLayout.SOUTH, startSouthPanel);
     }
 
-    // TODO: preserve player data when going back
     private void setupNameFrame() {
         players = new ArrayList<>();
         startPlayerPanels = new ArrayList<>();
@@ -118,7 +115,6 @@ public class StartFrame {
             Player player = new Player();
             
             player.setIcon(icons.getIcons().get(i));
-            // TODO: change to randomly generated name
             player.setName("Player " + (i + 1));
             players.add(player);
 
@@ -147,7 +143,6 @@ public class StartFrame {
         return newPanel;
     }
 
-    // TODO: add image for center of start frame
     private JPanel genStartCenterPanel() {
         BufferedImage image = null;
         try {
@@ -163,11 +158,9 @@ public class StartFrame {
         return newPanel;
     }
 
-    // TODO: have panels display top down instead of evenly displaced
     private JPanel genNameCenterPanel() {
 
-        JPanel newPanel = new JPanel(new GridLayout(7, 1));
-        //JPanel newPanel = new JPanel(new GridLayout(MAX_NUM_PLAYERS, 1));
+        JPanel newPanel = new JPanel(new GridLayout(MAX_NUM_PLAYERS, 1));
         for (int i = 0; i < numPlayers; i++) {
             StartPlayerPanel panel = startPlayerPanels.get(i);
             newPanel.add(panel.getPanel());
@@ -246,7 +239,6 @@ public class StartFrame {
     }
 
     public void updateNumRounds(Integer roundsValue) {
-        // TODO: add upper bounds
         if (roundsValue > 0) {
             this.numRounds = roundsValue;
         }
@@ -298,9 +290,6 @@ public class StartFrame {
         });
     }
 
-    // TODO: 11/13/2023 Pull object out of method and into variables with getters
-    // and setters for better accessibility.
-
     private void addNextButtonHandler() {
         nextButton.addActionListener(ae -> {
             String playersInput = playersField.getText();
@@ -328,19 +317,6 @@ public class StartFrame {
             frame.repaint();
         });
     }
-
-    /*
-     * private void addSoundButtonHandler() {
-     * soundButton.addActionListener(ae -> {
-     * SoundThread sound = SoundThread.getInstance();
-     * if (sound.isPlaying()) {
-     * sound.stopSong();
-     * } else {
-     * sound.startSong();
-     * }
-     * });
-     * }
-     */
 
     private void addPlayButtonHandler() {
         playButton.addActionListener(ae -> {

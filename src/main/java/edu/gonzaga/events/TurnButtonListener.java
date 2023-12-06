@@ -34,6 +34,10 @@ public class TurnButtonListener implements EventListener {
                 break;
             case RAISE_BUTTON:
                 boolean success = handleRaiseButton(frame, frame.getRaiseAmount());
+                if (frame.getRaiseAmount() < 1) {
+                    event.setCancelled(true);
+                    break;
+                }
                 if (!success) event.setCancelled(true);
                 break;
         }

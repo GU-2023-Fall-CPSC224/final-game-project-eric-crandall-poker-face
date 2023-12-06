@@ -53,7 +53,6 @@ public class GameFrame {
     JPanel actionPanel;
 
     JButton exitButton;
-    JButton tempEndButton;
 
     JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
 
@@ -120,8 +119,7 @@ public class GameFrame {
             }
         });
         raiseButton.addActionListener(ae -> {
-            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
-                    TurnButtonEvent.ButtonType.RAISE_BUTTON);
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.RAISE_BUTTON);
             EventManager.callEvent(event);
             if (!event.isCancelled()) {
                 if (players.get(currentPlayerWatched).getChips() <= currentBet) {
@@ -156,58 +154,43 @@ public class GameFrame {
     }
 
     private JPanel genNorthPanel() {
-        // temporary, eventually move or delete
         for (int i = 0; i < players.size(); i++) {
             PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
             playerPanels.add(panel);
         }
 
-        // also temporary
         PlayerPanel p = playerPanels.get(0);
 
         return p.getPanel();
     }
 
-    // TODO: delete
-    ArrayList<JLabel> tempLabels = new ArrayList<>();
-
     private JPanel genCenterPanel() {
-        // TODO: revert to commented out code
-        // JPanel newPanel = new JPanel();
-        JPanel newPanel = new JPanel(new GridLayout(2, 1));
+        JPanel newPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
 
-        cardsPanel = new JPanel(new GridLayout(1, 5, 2, 1));
-
+        cardsPanel = new JPanel(new GridLayout(1, 5, 3, 1));
         for (Integer index = 0; index < 5; index++) {
             JLabel cardLabel = new JLabel(cardImages.getFacedownImage());
             cardLabel.setPreferredSize(cardDimension);
             cardsPanel.add(cardLabel);
             cardsList.add(cardLabel);
         }
+        cardsPanel.setBackground(new Color(0x35654d));
 
-        newPanel.add(cardsPanel);
+        newPanel.add(cardsPanel, c);
+        c.gridy = 1;
 
-        // TODO: delete
-        //
-        JPanel tempPlayerInfo = new JPanel(new GridLayout(1, 7));
-        for (int i = 0; i < players.size(); i++) {
-            JLabel playerInfo = new JLabel("" + (i + 1) + ": " + players.get(i).getChips());
-            tempLabels.add(playerInfo);
-            tempPlayerInfo.add(playerInfo);
-        }
-        newPanel.add(tempPlayerInfo);
-        //
-
+        JPanel spacerPanel = new JPanel();
+        spacerPanel.setPreferredSize(new Dimension(0, 150));
+        newPanel.add(spacerPanel, c);
         newPanel.setBackground(new Color(0x35654d));
 
         return newPanel;
     }
 
-    // temporary, replace with betting/turn options
     private JPanel genSouthPanel() {
         JPanel newPanel = new JPanel(new BorderLayout());
-
-        // Player player = players.get(currentPlayerWatched);
 
         volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
         volumeSlider.setBackground(new Color(0x643e36));
@@ -246,24 +229,17 @@ public class GameFrame {
         actionPanel.setBackground(new Color(0x643e36));
         actionPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
-        JPanel tempButtonPanel = new JPanel();
-
         exitButton = new JButton("Exit Game");
-        tempEndButton = new JButton("Test End Game");
-
-        tempButtonPanel.add(tempEndButton);
-        tempButtonPanel.add(exitButton);
-
-        newPanel.add(BorderLayout.WEST, volumeSlider);
-        tempButtonPanel.setBackground(new Color(0x643e36));
-        tempButtonPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+        exitButton.setPreferredSize(new Dimension(100, 50));
+        exitButton.setFont(exitButton.getFont().deriveFont(16.0f));
+        exitButton.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         newPanel.add(BorderLayout.WEST, volumeSlider);
         newPanel.add(BorderLayout.CENTER, actionPanel);
-        newPanel.add(BorderLayout.EAST, tempButtonPanel);
+        newPanel.add(BorderLayout.EAST, exitButton);
 
         Dimension d = newPanel.getPreferredSize();
-        newPanel.setPreferredSize(new Dimension(d.width, 60));
+        newPanel.setPreferredSize(new Dimension(d.width, 50));
         newPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
         return newPanel;
@@ -273,14 +249,6 @@ public class GameFrame {
         this.exitButton.addActionListener(e -> {
             frame.dispose();
             System.exit(0);
-        });
-    }
-
-    // TODO: delete
-    private void addTempEndButtonListener() {
-        this.tempEndButton.addActionListener(e -> {
-            frame.setVisible(false);
-            new EndFrame(this);
         });
     }
 
@@ -303,7 +271,6 @@ public class GameFrame {
 
         addVolumeSliderHandler();
         addExitButtonListener();
-        addTempEndButtonListener();
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(false);
@@ -393,10 +360,6 @@ public class GameFrame {
 
     public JButton getExitButton() {
         return exitButton;
-    }
-
-    public JButton getTempEndButton() {
-        return tempEndButton;
     }
 
     public JTextField getRaiseField() {
@@ -509,7 +472,6 @@ public class GameFrame {
         doEndRound();
     }
 
-    // TODO: move to advance stage??
     private void calculatePot() {
         for (Player p : players) {
             currentPot += p.getEscrowChips();
@@ -561,9 +523,6 @@ public class GameFrame {
         PlayerPanel p = playerPanels.get(currentPlayerWatched);
         p.updateScoreLabel();
         frame.getContentPane().remove(p.getPanel());
-
-        // TODO: delete
-        tempLabels.get(currentPlayerWatched).setText("" + (currentPlayerWatched + 1) + ": " + players.get(currentPlayerWatched).getChips());
 
         Player player = players.get(currentPlayerWatched);
 

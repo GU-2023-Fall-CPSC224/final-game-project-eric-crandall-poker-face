@@ -23,7 +23,7 @@ public class CardImages {
     ImageIcon smallFacedownImage;
 
     Dimension smallImageDimension = new Dimension(75, 105);
-    Dimension imageDimension = new Dimension(120, 168);
+    Dimension imageDimension = new Dimension(140, 196);
 
     public Dimension getSmallImageDimension() {
         return smallImageDimension;
