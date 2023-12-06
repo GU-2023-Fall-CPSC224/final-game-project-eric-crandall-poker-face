@@ -1,12 +1,10 @@
-/** Class Name: Deck
- *  Desc: Deck contains an array list of Cards. By default, deck has 52 cards (1 of each different faceValue and suit combo)
- *        Methods are used to draw cards from deck, shuffle deck, create a new deck, etc
- *  Notes: 0.0
+/**
+ * Class Name: Deck
+ * Desc: Deck contains an array list of Cards. By default, deck has 52 cards (1 of each different faceValue and suit combo)
+ * Methods are used to draw cards from deck, shuffle deck, create a new deck, etc
+ * Notes: 0.0
  */
 package edu.gonzaga.items;
-
-import edu.gonzaga.events.DrawCardEvent;
-import edu.gonzaga.events.backend.EventManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +16,7 @@ public class Deck {
      * Creates the array list of cards and adds the 52 unique cards to the deck
      */
     public Deck() {
-        cards = new ArrayList<>(); 
+        cards = new ArrayList<>();
         createDeck();
     }
 
@@ -53,16 +51,11 @@ public class Deck {
     /* Method Name: drawCard()
      * Returns: Top [Card] on deck
      * Desc: Removes the card at cards[0] and saves it to new Card drawn. Returns the drawn card
-     * Events: 
+     * Events:
      */
     public Card drawCard() {
         Card drawn = cards.get(0);
-        DrawCardEvent event = new DrawCardEvent(drawn);
-        EventManager.callEvent(event);
-        if (!event.isCancelled()) {
-            cards.remove(0);
-            return drawn;
-        }
-        return null;
+        cards.remove(0);
+        return drawn;
     }
 }

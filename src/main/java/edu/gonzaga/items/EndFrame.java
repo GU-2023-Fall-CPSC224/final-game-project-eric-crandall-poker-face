@@ -3,6 +3,7 @@ package edu.gonzaga.items;
 import edu.gonzaga.MainGame;
 import edu.gonzaga.events.gui.CloseWindowListener;
 import edu.gonzaga.events.gui.HydraListener;
+import edu.gonzaga.utils.SoundThread;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 //TODO: load images faster
 public class EndFrame {
     
-    private ArrayList<Player> players;
+    private final ArrayList<Player> players;
 
     private final JFrame frame;
 
@@ -60,6 +61,7 @@ public class EndFrame {
         playButton.addActionListener(ae -> {
             new StartFrame(players);
             frame.dispose();
+            SoundThread.getInstance().restartAudio();
         });
 
         exitButton.addActionListener(ae -> {
@@ -75,7 +77,7 @@ public class EndFrame {
         northLabel.setFont(northLabel.getFont().deriveFont(24.0f));
 
         Player winningPlayer = players.get(0);
-        Boolean isTie = false;
+        boolean isTie = false;
         for (int i = 1; i < players.size(); i++) {
             Player p = players.get(i);
             if (p.getChips() == winningPlayer.getChips()) {
@@ -99,9 +101,7 @@ public class EndFrame {
     private JPanel genCenterPanel() {
         JPanel newPanel = new JPanel(new GridLayout(7, 1));
 
-        for (int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
-
+        for (Player p : players) {
             JPanel panel = new JPanel();
             JLabel playerLabel = new JLabel(p.getName() + ":  " + p.getChips() + " Chips");
             playerLabel.setFont(playerLabel.getFont().deriveFont(18.0f));

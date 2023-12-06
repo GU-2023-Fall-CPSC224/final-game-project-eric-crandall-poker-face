@@ -45,7 +45,7 @@ public class CardImages {
                     Card card = new Card();
                     card.setFaceValue(FaceValue.values()[j]);
                     card.setSuit(Suit.values()[i]);
-                    ImageIcon icon = null;
+                    ImageIcon icon;
                     try {
                         icon = getSmallCardImage(card);
                     } catch (ConcurrentModificationException ignored) {

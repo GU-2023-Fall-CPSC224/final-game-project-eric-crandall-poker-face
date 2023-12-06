@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.*;
 
 public class StartPlayerPanel {
-    private Player player;
+    private final Player player;
 
     JPanel panel;
 
@@ -13,9 +13,6 @@ public class StartPlayerPanel {
     JLabel playerIconLabel;
     JLabel playerNumberLabel = new JLabel("Player x:");
     JTextField playerNameField;
-
-    // TODO: place in right of screen and when clicked, cycle through a list of available icons
-    JButton placeholderPlayerIcon;
 
     public StartPlayerPanel(Player player) {
         this.player = player;
