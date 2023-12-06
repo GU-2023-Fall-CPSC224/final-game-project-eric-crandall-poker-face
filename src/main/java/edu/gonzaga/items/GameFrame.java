@@ -18,12 +18,13 @@ import java.util.concurrent.TimeUnit;
 //TODO: add table of all player names and chips
 public class GameFrame {
 
-    private final ArrayList<Player> players;
+    private ArrayList<Player> players;
     private int currRound = 1;
-    private final boolean isRoundMode;
-    private final int numRounds;
+    private Boolean isRoundMode;
+    private Integer numRounds;
 
-    private final Deck deck = new Deck();
+    private Deck deck = new Deck();
+
     CardImages cardImages;
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
 
@@ -32,6 +33,7 @@ public class GameFrame {
     ArrayList<Card> tableCards = new ArrayList<>();
 
     Dimension cardDimension;
+    Dimension turnButtonDimension = new Dimension(80, 25);
 
     private int currentPlayerWatched = 0;
     private int currentBet = 0;
@@ -81,6 +83,10 @@ public class GameFrame {
         this.cardDimension = cardImages.getImageDimension();
         initFrame(frame);
         SoundThread.getInstance().restartAudio();
+    }
+
+    public JFrame getFrame() {
+        return this.frame;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -148,9 +154,8 @@ public class GameFrame {
     }
 
     private JPanel genNorthPanel() {
-        // temporary, eventually move or delete
-        for (Player player : players) {
-            PlayerPanel panel = new PlayerPanel(player, cardImages);
+        for (int i = 0; i < players.size(); i++) {
+            PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
             playerPanels.add(panel);
         }
 
@@ -165,8 +170,7 @@ public class GameFrame {
         c.gridy = 0;
 
         cardsPanel = new JPanel(new GridLayout(1, 5, 3, 1));
-
-        for (int index = 0; index < 5; index++) {
+        for (Integer index = 0; index < 5; index++) {
             JLabel cardLabel = new JLabel(cardImages.getFacedownImage());
             cardLabel.setPreferredSize(cardDimension);
             cardsPanel.add(cardLabel);
@@ -286,6 +290,14 @@ public class GameFrame {
         }
     }
 
+    public Boolean isRoundMode() {
+        return this.isRoundMode;
+    }
+
+    public Integer getNumRounds() {
+        return numRounds;
+    }
+
     public Integer getRaiseAmount() throws NumberFormatException {
         return Integer.parseInt(raiseField.getText());
     }
@@ -294,11 +306,69 @@ public class GameFrame {
         return this.currentBet;
     }
 
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public CardImages getCardImages() {
+        return cardImages;
+    }
+
+    public ArrayList<PlayerPanel> getPlayerPanels() {
+        return playerPanels;
+    }
+
+    public Dimension getCardDimension() {
+        return cardDimension;
+    }
+
+    public Dimension getTurnButtonDimension() {
+        return turnButtonDimension;
+    }
 
     public int getCurrentPlayerWatched() {
         return currentPlayerWatched;
     }
 
+    public JButton getCallButton() {
+        return callButton;
+    }
+
+    public JButton getFoldButton() {
+        return foldButton;
+    }
+
+    public JButton getRaiseButton() {
+        return raiseButton;
+    }
+
+    public JPanel getNorthPanel() {
+        return northPanel;
+    }
+
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public JPanel getSouthPanel() {
+        return southPanel;
+    }
+
+    public JPanel getCardsPanel() {
+        return cardsPanel;
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
+    }
+
+    public JTextField getRaiseField() {
+        return raiseField;
+    }
+
+    public void setCurrentPlayerWatched(int currentPlayerWatched) {
+        this.currentPlayerWatched = currentPlayerWatched;
+    }
 
     public void raiseBetAmount(int betAmount) {
         currentBet += betAmount;
@@ -312,7 +382,7 @@ public class GameFrame {
     }
 
     int gameStage = 0;
-    private final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
+    private ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
 
     private void advanceStage() {
         currentBet = 0;
@@ -440,55 +510,12 @@ public class GameFrame {
                 new EndFrame(this);
             }
         }
-        System.out.println(currentPot + " chips will be added to winning player when we implement");
+        System.out.println("" + currentPot + " chips will be added to winning player when we implement");
     }
 
     private void distributeChips() {
-        int winningIndex = 0, compareOutput;
-        boolean isTie = false;
-        ArrayList<Integer> tieIndexs = new ArrayList<>();
-
         for (Player p : players) {
             if (p.isFolded()) continue;
-            p.addHandToScorer();
-            p.addCardListToScorer(tableCards);
-            p.runScorerChecks();
-        }
-
-        //Finding the index of winning players
-        // Winning index is set to default, so we start from index 1
-        for (int i = 1; i < players.size(); i++) {
-            if (players.get(i).isFolded()) continue;
-            
-            compareOutput = players.get(i).callCompareScores(players.get(winningIndex).getScorer());
-
-            if(compareOutput == 0) {
-                winningIndex = i;
-                isTie = false;
-                tieIndexs.clear();
-            } else if (compareOutput == -1) {
-                isTie = true;
-                if(tieIndexs.isEmpty()) {
-                    tieIndexs.add(i);
-                    tieIndexs.add(winningIndex);
-                } else {
-                    tieIndexs.add(i);
-                }
-            } else if (compareOutput == 1) {
-                //Aint gotta do jack
-                //This if statment is unessisary but it makes me feel better
-            }
-        }
-
-        if(isTie) {
-            Integer dividedPot = currentPot/(tieIndexs.size());
-            for (int tieIndex : tieIndexs) {
-                players.get(tieIndex).addToChips(dividedPot);
-            }
-            this.currentPot = 0;
-        } else {
-            players.get(winningIndex).addToChips(currentPot);
-            this.currentPot = 0;
         }
     }
 
