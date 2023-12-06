@@ -46,6 +46,7 @@ public class Scorer {
         }
         this.dupes = temp;
     }
+
     /* Method Name: addCardtoHand()
      * Returns: N/A (Void)
      * Desc: Accepts a card and adds it to hands arrayList of cards
@@ -53,6 +54,17 @@ public class Scorer {
      */
     public void addCardtoHand(Card newCard) {
         this.hand.add(newCard);
+    }
+
+    /* Method Name: addCardListToHand()
+     * Returns: N/A (Void)
+     * Desc: Accepts a card and adds it to hands arrayList of cards
+     * Events: N/A
+     */
+    public void addCardListToHand(ArrayList<Card> newCards) {
+        for(int i = 0; i < newCards.size(); i++) {
+            this.hand.add(newCards.get(i));
+        }
     }
 
     /* Method Name: getHighCardVal()

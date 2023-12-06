@@ -514,8 +514,53 @@ public class GameFrame {
     }
 
     private void distributeChips() {
+        Integer winningIndex = 0, compareOutput = -1;
+        Boolean isTie = false;
+        ArrayList<Integer> tieIndexs = new ArrayList<Integer>();
+
         for (Player p : players) {
             if (p.isFolded()) continue;
+            p.addHandToScorer();
+            p.addCardListToScorer(tableCards);
+            p.runScorerChecks();
+        }
+
+        //Finding the index of winning players
+        // Winning index is set to default, so we start from index 1
+        for (int i = 1; i < players.size(); i++) {
+            if (players.get(i).isFolded()) continue;
+            
+            compareOutput = players.get(i).callCompareScores(players.get(winningIndex).getScorer());
+
+            if(compareOutput == 0) {
+                winningIndex = i;
+                isTie = false;
+                tieIndexs.clear();
+            } else if (compareOutput == -1) {
+                isTie = true;
+                if(tieIndexs.isEmpty()) {
+                    tieIndexs.add(i);
+                    tieIndexs.add(winningIndex);
+                } else {
+                    tieIndexs.add(i);
+                }
+            } else if (compareOutput == 1) {
+                //Aint gotta do jack
+                //This if statment is unessisary but it makes me feel better
+            }
+        }
+
+        if(isTie) {
+            Integer dividedPot = currentPot/(tieIndexs.size());
+            for(int i = 0; i < tieIndexs.size(); i++) {
+                players.get(tieIndexs.get(i)).addToChips(dividedPot);
+            }
+            this.currentPot = 0;
+            return;
+        } else {
+            players.get(winningIndex).addToChips(currentPot);
+            this.currentPot = 0;
+            return;
         }
     }
 
