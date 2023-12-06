@@ -13,7 +13,7 @@ public class Player {
     private Card c1;
     private Card c2;
     private BufferedImage icon;
-    private Scorer scorer;
+    private final Scorer scorer;
 
     private int escrowChips = 0;
 
@@ -148,13 +148,12 @@ public class Player {
         return this.escrowChips;
     }
 
+    @SuppressWarnings("unused")
     public void setChips(int chips) {
         this.chips = chips;
     }
 
     /**
-     *
-     * @param amt
      * @return false if amt is invalid
      */
     private boolean decrementChips(int amt) {
@@ -162,16 +161,15 @@ public class Player {
         if (amt > this.chips) {
             this.chips = 0;
             return true;
-        };
+        }
         this.chips -= amt;
         return true;
     }
 
     /**
-     *
-     * @param amt
      * @return false if amt is invalid
      */
+    @SuppressWarnings("unused")
     private boolean incrementChips(int amt) {
         if (amt <= 0) return false;
         this.chips += amt;
@@ -179,10 +177,9 @@ public class Player {
     }
 
     /**
-     *
-     * @param amt
      * @return false if amt is invalid
      */
+    @SuppressWarnings("unused")
     private boolean decrementEscrow(int amt) {
         if (amt <= 0) return false;
         if (amt > this.escrowChips) return false;
@@ -191,8 +188,6 @@ public class Player {
     }
 
     /**
-     *
-     * @param amt
      * @return false if amt is invalid
      */
     private boolean incrementEscrow(int amt) {

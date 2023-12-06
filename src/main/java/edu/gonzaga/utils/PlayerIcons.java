@@ -12,13 +12,13 @@ package edu.gonzaga.utils;
  import javax.imageio.ImageIO;
  
  public class PlayerIcons {
-     private ArrayList<BufferedImage> icons;
+     private final ArrayList<BufferedImage> icons;
  
      /* Default Value Constructor
       * Intializes an empty arraylist of buffered images
       */
      public PlayerIcons() {
-         icons = new ArrayList<BufferedImage>();
+         icons = new ArrayList<>();
          loadIcons();
      }
  
@@ -28,7 +28,7 @@ package edu.gonzaga.utils;
       */
      public void loadIcons() {
          if (!this.icons.isEmpty()) return;
-         int temp = 0;
+         int temp;
          for(int i = 0; i < 7; i++) {
              temp = i + 1;
              try {

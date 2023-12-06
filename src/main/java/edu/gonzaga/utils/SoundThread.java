@@ -19,6 +19,7 @@ public class SoundThread extends Thread {
         return INSTANCE != null ? INSTANCE : new SoundThread();
     }
 
+    @SuppressWarnings("all")
     private final File file = new File("src/main/resources/audio/PokerFace.wav");
     private Clip clip;
     private final AudioInputStream ais;
@@ -81,6 +82,7 @@ public class SoundThread extends Thread {
     }
 
 
+    @SuppressWarnings("unused")
     public boolean isPlaying() {
         return this.clip.isRunning();
     }
@@ -92,11 +94,11 @@ public class SoundThread extends Thread {
         gc.setValue(gain);
     }
 
+    @SuppressWarnings("unused")
     public float getVolume() {
         FloatControl gc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         float range = gc.getMaximum() - gc.getMinimum();
-        float volume = (gc.getValue() - gc.getMinimum()) / range;
-        return volume;
+        return (gc.getValue() - gc.getMinimum()) / range;
     }
 
     public void restartAudio() {

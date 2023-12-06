@@ -58,7 +58,7 @@ public class TurnButtonEvent extends Event implements Cancellable {
     public enum ButtonType {
         CALL_BUTTON,
         FOLD_BUTTON,
-        RAISE_BUTTON;
+        RAISE_BUTTON
     }
 
 }

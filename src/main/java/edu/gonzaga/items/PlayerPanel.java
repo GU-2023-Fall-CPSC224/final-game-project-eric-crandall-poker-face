@@ -1,15 +1,13 @@
 package edu.gonzaga.items;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import java.awt.*;
-import java.util.ArrayList;
 import edu.gonzaga.utils.CardImages;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
 public class PlayerPanel {
-    private Player player;
+    private final Player player;
 
     private JPanel panel = new JPanel();
     private JLabel scoreLabel;
@@ -17,8 +15,8 @@ public class PlayerPanel {
 
     // not functional buttons
     private ArrayList<JLabel> cardLabels;
-    private CardImages cardImages;
-    private Dimension smallCardDimension;
+    private final CardImages cardImages;
+    private final Dimension smallCardDimension;
 
     public PlayerPanel(Player player, CardImages cardImages) {
         this.player = player;
@@ -38,7 +36,7 @@ public class PlayerPanel {
 
     private void initCardLabels() {
         cardLabels = new ArrayList<>();
-        for (Integer i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             JLabel cardLabel = new JLabel(cardImages.getSmallFacedownImage());
             cardLabel.setPreferredSize(smallCardDimension);
             cardLabels.add(cardLabel);
@@ -47,20 +45,17 @@ public class PlayerPanel {
 
     // implement with hand class
     private void addShowCardButtonHandler() {
-        showCardButton.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JButton button = (JButton) e.getSource();
-                ButtonModel model = button.getModel();
-                if (model.isPressed()) {
-                    // playerhand.setVisible(true)
-                    cardLabels.get(0).setIcon(cardImages.getSmallCardImage(player.getCardOne()));
-                    cardLabels.get(1).setIcon(cardImages.getSmallCardImage(player.getCardTwo()));
-                } else {
-                    // playerhand.setVisible(false)
-                    cardLabels.get(0).setIcon(cardImages.getSmallFacedownImage());
-                    cardLabels.get(1).setIcon(cardImages.getSmallFacedownImage());
-                }
+        showCardButton.addChangeListener(e -> {
+            JButton button = (JButton) e.getSource();
+            ButtonModel model = button.getModel();
+            if (model.isPressed()) {
+                // playerhand.setVisible(true)
+                cardLabels.get(0).setIcon(cardImages.getSmallCardImage(player.getCardOne()));
+                cardLabels.get(1).setIcon(cardImages.getSmallCardImage(player.getCardTwo()));
+            } else {
+                // playerhand.setVisible(false)
+                cardLabels.get(0).setIcon(cardImages.getSmallFacedownImage());
+                cardLabels.get(1).setIcon(cardImages.getSmallFacedownImage());
             }
         });
     }

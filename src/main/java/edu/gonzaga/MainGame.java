@@ -39,28 +39,13 @@ public class MainGame {
 
     private static EventManager manager;
 
-    public static EventExecutor getExecutor() {
-        return executor;
-    }
-
-    private static EventExecutor executor;
-
     public static void main(String[] args) {
-        executor = new EventExecutor();
+        EventExecutor executor = new EventExecutor();
         manager = new EventManager(executor);
         sound = SoundThread.getInstance();
         sound.startSong();
 
         ArrayList<Player> players = new ArrayList<>();
-
-        /*
-        Player p = new Player();
-        p.setName("Cartman");
-        Player p1 = new Player();
-        p1.setName("Butters");
-        players.add(p);
-        players.add(p1);
-        */
 
         new StartFrame(players);
         new TurnButtonListener();

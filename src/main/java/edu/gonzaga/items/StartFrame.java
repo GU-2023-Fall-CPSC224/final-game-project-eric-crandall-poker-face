@@ -151,7 +151,10 @@ public class StartFrame {
             e.printStackTrace();
         }
         JPanel newPanel = new JPanel();
-        JLabel centerLabel = new JLabel(new ImageIcon(image));
+        JLabel centerLabel = null;
+        if (image != null) {
+            centerLabel = new JLabel(new ImageIcon(image));
+        }
 
         newPanel.add(centerLabel);
 
@@ -246,10 +249,8 @@ public class StartFrame {
 
     public Integer getIntegerValueOfInput(String s) {
         try {
-            Integer i = Integer.valueOf(s);
-            return i;
+            return Integer.valueOf(s);
         }
-
         catch (NumberFormatException er) {
             return -1;
         }

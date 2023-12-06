@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class Scorer {
     //Realizing now I prob should have just made hand a Hand, but I'm not gonna go back to change it 
-    private ArrayList<Card> hand;           // An array list of 7 cards (2 from player, 5 from community)
+    private final ArrayList<Card> hand;           // An array list of 7 cards (2 from player, 5 from community)
     private FaceValue highCardVal;          // Contains the face value of the highest card used in hand 
     private FaceValue specialCardVal;       // The face value of the highest card used in a specific combo (can be different that highCard)
     private Integer precedence;             // Precedence value of hand, higher precendence beats lower precedence.
@@ -25,12 +25,11 @@ public class Scorer {
      * Creates an empty arraylist of cards, sets precedence to 0, and the face value for high/special cards to blank/NULL
      */
     public Scorer() {
-        this.hand = new ArrayList<Card>();
+        this.hand = new ArrayList<>();
         this.precedence = 0;
         this.highCardVal = FaceValue.BLANK;
         this.specialCardVal = FaceValue.BLANK;
-        Integer temp[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        this.dupes = temp;
+        this.dupes = new Integer[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
 
     /* Method Name: countDupes()
@@ -39,10 +38,10 @@ public class Scorer {
      * Events: N/A
      */
     public void countDupes() {
-        Integer temp[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        Integer[] temp = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        for(int i = 0; i < hand.size(); i++) {
-            temp[this.hand.get(i).getFaceValue().getValue()-2]++; //minus 2 to get indexing to align with ordinal values
+        for (Card card : hand) {
+            temp[card.getFaceValue().getValue() - 2]++; //minus 2 to get indexing to align with ordinal values
         }
         this.dupes = temp;
     }
@@ -62,9 +61,7 @@ public class Scorer {
      * Events: N/A
      */
     public void addCardListToHand(ArrayList<Card> newCards) {
-        for(int i = 0; i < newCards.size(); i++) {
-            this.hand.add(newCards.get(i));
-        }
+        this.hand.addAll(newCards);
     }
 
     /* Method Name: getHighCardVal()
@@ -246,12 +243,11 @@ public class Scorer {
         this.precedence = 0;
     }
 
-/*********
- * 
+/**
  * Below this line are all the individual methods repsonsible for checking for different card combos.
  * They have been seperated for readability purposes
  * 
- *********/ 
+ */
 
     /* Method Name: checkHighCard()
      * Returns: Void (N/A) 
@@ -292,7 +288,7 @@ public class Scorer {
     public boolean check2Pair() {
         boolean found1 = false;
         for(int i = 0; i < 13; i++) {
-            if(this.dupes[i] == 2 && found1 == true) {
+            if(this.dupes[i] == 2 && found1) {
                 if(this.specialCardVal == FaceValue.BLANK) {
                     this.specialCardVal = FaceValue.intToFaceVal(i+2);
                 } else if(this.specialCardVal.getValue() < i+2) {
@@ -330,7 +326,7 @@ public class Scorer {
      * Events: N/A
      */
     public boolean checkStraight() {
-        Integer numInRow = 0;
+        int numInRow = 0;
         for(int i = 0; i < 13; i++) {
             if(dupes[i] > 0) {
                 numInRow++;
@@ -353,14 +349,14 @@ public class Scorer {
      * Events: N/A
      */
     public boolean checkFlush() {
-        Integer numEachSuit[] = {0, 0, 0, 0}; //indexing: Hearts, Diamons, Spades, Clubs in that order
-        for(int i = 0; i < hand.size(); i++){
-            Suit temp = hand.get(i).getSuit();
-            if(temp == Suit.HEARTS) {
+        int[] numEachSuit = {0, 0, 0, 0}; //indexing: Hearts, Diamons, Spades, Clubs in that order
+        for (Card card : hand) {
+            Suit temp = card.getSuit();
+            if (temp == Suit.HEARTS) {
                 numEachSuit[0]++;
-            } else if(temp == Suit.DIAMONDS) {
+            } else if (temp == Suit.DIAMONDS) {
                 numEachSuit[1]++;
-            } else if(temp == Suit.SPADES) {
+            } else if (temp == Suit.SPADES) {
                 numEachSuit[2]++;
             } else {
                 numEachSuit[3]++;
@@ -387,7 +383,7 @@ public class Scorer {
         boolean trips = false;
 
         for(int i = 0; i < 13; i++) {
-            if(dupes[i] == 3 && trips == false) { //There will be some cases where there a two trips in hand instead of a pair and a trips. this check is to account for that case.
+            if(dupes[i] == 3 && !trips) { //There will be some cases where there a two trips in hand instead of a pair and a trips. this check is to account for that case.
                 trips = true;
                 this.specialCardVal = FaceValue.intToFaceVal(i+2);
             } else if (dupes[i] >= 2) {
@@ -424,7 +420,7 @@ public class Scorer {
      * Events: N/A
      */
     public boolean checkStraightFlush() {
-        Integer numInRow = 1;
+        int numInRow = 1;
         //First check if theres a straight and a flush in hand, if one doesnt appear it cant be a straight flush
         if(! this.checkStraight() || !this.checkFlush()){
             return false;
@@ -434,7 +430,7 @@ public class Scorer {
         this.sortHandSuits();
 
         Suit currSuit = hand.get(0).getSuit();
-        Integer prevFaceValue = hand.get(0).getFaceValue().getValue();
+        int prevFaceValue = hand.get(0).getFaceValue().getValue();
         for(int i = 1; i < hand.size(); i++) {
             if(hand.get(i).getSuit() == currSuit && hand.get(i).getFaceValue().getValue() == prevFaceValue + 1) {
                 prevFaceValue++;
@@ -461,7 +457,7 @@ public class Scorer {
      * Events: N/A
      */
     public boolean checkRoyalFlush() {
-        Suit suits[] = {Suit.CLUBS, Suit.DIAMONDS, Suit.HEARTS, Suit.SPADES, Suit.CLUBS}; //These are all placeholder suit values
+        Suit[] suits = {Suit.CLUBS, Suit.DIAMONDS, Suit.HEARTS, Suit.SPADES, Suit.CLUBS}; //These are all placeholder suit values
         //Check to see that 10-A are in hand
         for(int i = 8; i < 13; i++) { //index 8 represents 10 in dupes
             if(this.dupes[i] == 0) {
@@ -474,19 +470,19 @@ public class Scorer {
         this.sortHandSuits();
 
         //Checking suit values of 10-A
-        for(int i = 0; i < hand.size(); i++) {
-            if(this.hand.get(i).getFaceValue() == FaceValue.TEN) {
-                suits[0] = this.hand.get(i).getSuit();
-            } else if(this.hand.get(i).getFaceValue() == FaceValue.JACK) {
-                suits[1] = this.hand.get(i).getSuit();
-            } else if(this.hand.get(i).getFaceValue() == FaceValue.QUEEN) {
-                suits[2] = this.hand.get(i).getSuit();
-            } else if(this.hand.get(i).getFaceValue() == FaceValue.KING) {
-                suits[3] = this.hand.get(i).getSuit();
-            } else if(this.hand.get(i).getFaceValue() == FaceValue.ACE) {
-                suits[4] = this.hand.get(i).getSuit();
-            
-                if(suits[0] == suits[1] && suits[1] == suits[2]  && suits[2] == suits[3] && suits[3] == suits[4]) {
+        for (Card card : hand) {
+            if (card.getFaceValue() == FaceValue.TEN) {
+                suits[0] = card.getSuit();
+            } else if (card.getFaceValue() == FaceValue.JACK) {
+                suits[1] = card.getSuit();
+            } else if (card.getFaceValue() == FaceValue.QUEEN) {
+                suits[2] = card.getSuit();
+            } else if (card.getFaceValue() == FaceValue.KING) {
+                suits[3] = card.getSuit();
+            } else if (card.getFaceValue() == FaceValue.ACE) {
+                suits[4] = card.getSuit();
+
+                if (suits[0] == suits[1] && suits[1] == suits[2] && suits[2] == suits[3] && suits[3] == suits[4]) {
                     this.precedence = 9;
                     return true;
                     //No special card value needed
