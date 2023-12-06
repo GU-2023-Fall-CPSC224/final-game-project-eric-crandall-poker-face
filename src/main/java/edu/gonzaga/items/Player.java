@@ -8,8 +8,6 @@ package edu.gonzaga.items;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import edu.gonzaga.items.Scorer;
-
 public class Player {
     private String name;
     private Card c1;
