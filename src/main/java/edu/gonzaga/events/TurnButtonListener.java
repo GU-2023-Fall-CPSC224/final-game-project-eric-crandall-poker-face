@@ -63,8 +63,8 @@ public class TurnButtonListener implements EventListener {
         Player p = gameFrame.getPlayers().get(gameFrame.getCurrentPlayerWatched());
         int amt = amount + (gameFrame.getCurrentBet() - p.getEscrowChips());
         if (p.incrementEscrowChips(amt)) {
-            gameFrame.raiseBetAmount(amount);
-            System.out.println(p.getName() + " Raised " + amount + " Chips");
+            // gameFrame.raiseBetAmount(amount);
+            // System.out.println(p.getName() + " Raised " + amount + " Chips");
             return true;
         } else return false;
     }

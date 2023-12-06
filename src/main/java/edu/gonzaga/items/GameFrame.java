@@ -24,7 +24,6 @@ public class GameFrame {
     private Integer numRounds;
 
     private Deck deck = new Deck();
-
     CardImages cardImages;
     ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
 
@@ -39,6 +38,7 @@ public class GameFrame {
     private int currentBet = 0;
     private int currentPot = 0;
 
+    JLabel infoLabel;
     JLabel betLabel;
     JTextField raiseField;
     JButton callButton;
@@ -93,9 +93,15 @@ public class GameFrame {
         return this.players;
     }
 
-    // TODO: cannot raise if raise field < 1
     private void addTurnButtonEvents() {
         callButton.addActionListener(ae -> {
+            int amt = 0;
+            int chips = players.get(currentPlayerWatched).getChips();
+            if (currentBet >= chips) {
+                amt = chips;
+            } else {
+                amt = currentBet - players.get(currentPlayerWatched).getEscrowChips();
+            }
             TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
                     TurnButtonEvent.ButtonType.CALL_BUTTON);
             EventManager.callEvent(event);
@@ -103,6 +109,7 @@ public class GameFrame {
                 if (!players.get(currentPlayerWatched).isAllIn()) {
                     numChecks++;
                 }
+                currentPot += amt;
                 endPlayerTurn();
             } else
                 System.out.println("Check cancelled");
@@ -119,14 +126,29 @@ public class GameFrame {
             }
         });
         raiseButton.addActionListener(ae -> {
-            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this, TurnButtonEvent.ButtonType.RAISE_BUTTON);
+            int amount = getRaiseAmount();
+            int chips = players.get(currentPlayerWatched).getChips();
+            if (currentBet + amount >= chips) {
+                amount = chips;
+            } else {
+                amount += currentBet - players.get(currentPlayerWatched).getEscrowChips();
+            }
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
+                    TurnButtonEvent.ButtonType.RAISE_BUTTON);
             EventManager.callEvent(event);
             if (!event.isCancelled()) {
                 if (players.get(currentPlayerWatched).getChips() <= currentBet) {
-                    numChecks = 0;
+                    if (players.get(currentPlayerWatched).isAllIn()) {
+                        numChecks = 0;
+                    } else {
+                        numChecks = 1;
+                    }
                 } else {
                     numChecks = 1;
                 }
+                currentPot += amount;
+                raiseBetAmount(amount - currentBet);
+                System.out.println(players.get(currentPlayerWatched).getName() + " Raised " + (amount - currentBet) + " Chips");
                 endPlayerTurn();
             }
         });
@@ -143,6 +165,7 @@ public class GameFrame {
         } else {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
+        frame.setBackground(new Color(0x35654d));
 
         this.northPanel = genNorthPanel();
         this.centerPanel = genCenterPanel();
@@ -159,7 +182,7 @@ public class GameFrame {
             playerPanels.add(panel);
         }
 
-        PlayerPanel p = playerPanels.get(0);
+        PlayerPanel p = playerPanels.get(currentPlayerWatched);
 
         return p.getPanel();
     }
@@ -181,9 +204,13 @@ public class GameFrame {
         newPanel.add(cardsPanel, c);
         c.gridy = 1;
 
-        JPanel spacerPanel = new JPanel();
-        spacerPanel.setPreferredSize(new Dimension(0, 150));
-        newPanel.add(spacerPanel, c);
+        JPanel infoPanel = new JPanel();
+        infoLabel = new JLabel("Pot: " + currentPot + " Chips");
+        infoLabel.setFont(infoLabel.getFont().deriveFont(18.0f));
+        infoPanel.setPreferredSize(new Dimension(300, 150));
+        infoPanel.setBackground(new Color(0x35654d));
+        infoPanel.add(infoLabel);
+        newPanel.add(infoPanel, c);
         newPanel.setBackground(new Color(0x35654d));
 
         return newPanel;
@@ -387,12 +414,15 @@ public class GameFrame {
     private void advanceStage() {
         currentBet = 0;
         currentPlayerWatched = 0;
-        while (currentPlayerWatched < players.size() && (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn())) {
+        while (currentPlayerWatched < players.size()
+                && (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn())) {
             currentPlayerWatched++;
         }
         numChecks = 0;
         betLabel.setText("Current Bet: " + currentBet);
-        calculatePot();
+        for (Player p : players) {
+            p.resetEscrowChips();
+        }
         setButtonsEnabled(false);
     }
 
@@ -412,12 +442,12 @@ public class GameFrame {
     }
 
     private void doFlop() {
-        long cooldown = 500;
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < 3; ) {
-            if (System.currentTimeMillis() - start < cooldown)
-                continue;
-            start = System.currentTimeMillis();
+        for (int i = 0; i < 3;) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             JLabel l = cardsList.get(i);
             Card card = deck.drawCard();
             tableCards.add(card);
@@ -457,65 +487,148 @@ public class GameFrame {
     }
 
     private void doShowEarly() {
-        long cooldown = 500;
-        long start = System.currentTimeMillis();
-        for (int i = gameStage; i < 5; ) {
-            if (System.currentTimeMillis() - start < cooldown)
-                continue;
-            start = System.currentTimeMillis();
+        setButtonsEnabled(false);
+
+        if (gameStage > 0) {
+            gameStage += 2;
+        }
+        for (int i = gameStage; i < 5;) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             JLabel l = cardsList.get(i);
             Card card = deck.drawCard();
             tableCards.add(card);
             l.setIcon(cardImages.getCardImage(card));
             i++;
         }
-        doEndRound();
-    }
-
-    private void calculatePot() {
-        for (Player p : players) {
-            currentPot += p.getEscrowChips();
-            p.resetEscrowChips();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        service.schedule(this::doEndRound, 0L, TimeUnit.MILLISECONDS);
     }
 
-    // TODO: handle round stuff here
-    // TODO: calculate winning player, adding pot to them
-    // DONE TODO: auto fold players with no moneys
-    // DONE TODO: in round mode if currentRound == numRounds, endGame
-    // DONE TODO: in bustMode if all players but one are out of money, endGame
     private void doEndRound() {
-        advanceStage();
+        setButtonsEnabled(false);
         foldedPlayers = 0;
+        allInPlayers = 0;
+
         distributeChips();
-        for (Player p : players) {
-            if (p.getChips() <= 0) {
-                p.setFolded(true);
-                foldedPlayers++;
-            } else {
-                p.setFolded(false);
-            }
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
+        players.forEach(Player::resetRound);
+        advanceStage();
+
         if (isRoundMode && numRounds <= currRound) {
             frame.setVisible(false);
             new EndFrame(this);
-        } else currRound++;
-        if (!isRoundMode) {
-            int more_than_zero = 0;
-            for (Player p : players) {
-               if (p.getChips() >= 0) more_than_zero++;
-            }
-            if (more_than_zero == 1)  {
-                frame.setVisible(false);
-                new EndFrame(this);
+            return;
+        } else
+            currRound++;
+
+        int more_than_zero = 0;
+        for (Player p : players) {
+            if (p.getChips() > 0) {
+                more_than_zero++;
+            } else {
+                foldedPlayers++;
             }
         }
-        System.out.println("" + currentPot + " chips will be added to winning player when we implement");
+
+        if (more_than_zero == 1) {
+            frame.setVisible(false);
+            new EndFrame(this);
+            return;
+        }
+
+        gameStage = 0;
+
+        deck = new Deck();
+        deck.shuffle();
+        tableCards = new ArrayList<>();
+
+        players.forEach(p -> p.setCards(deck.drawCard(), deck.drawCard()));
+        playerPanels.forEach(panel -> panel.updateScoreLabel());
+        cardsList = new ArrayList<>();
+
+        setButtonsEnabled(true);
+
+        frame.getContentPane().remove(this.northPanel);
+        frame.getContentPane().remove(this.centerPanel);
+
+        this.northPanel = genNorthPanel();
+        this.centerPanel = genCenterPanel();
+
+        frame.getContentPane().add(BorderLayout.NORTH, northPanel);
+        frame.getContentPane().add(BorderLayout.CENTER, centerPanel);
+
+        frame.validate();
+        frame.repaint();
     }
 
     private void distributeChips() {
+        int winningIndex = 0, compareOutput;
+        boolean isTie = false, startLoop = false;
+        ArrayList<Integer> tieIndexs = new ArrayList<>();
+
         for (Player p : players) {
-            if (p.isFolded()) continue;
+            p.resetEscrowChips();
+            if (p.isFolded())
+                continue;
+            p.addHandToScorer();
+            p.addCardListToScorer(tableCards);
+            p.runScorerChecks();
+        }
+
+        // Finding the index of winning players
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).isFolded())
+                continue;
+            if (!startLoop) {
+                winningIndex = i;
+                startLoop = true;
+                continue;
+            }
+
+            compareOutput = players.get(i).callCompareScores(players.get(winningIndex).getScorer());
+
+            if (compareOutput == 0) {
+                winningIndex = i;
+                isTie = false;
+                tieIndexs.clear();
+            } else if (compareOutput == -1) {
+                isTie = true;
+                if (tieIndexs.isEmpty()) {
+                    tieIndexs.add(i);
+                    tieIndexs.add(winningIndex);
+                } else {
+                    tieIndexs.add(i);
+                }
+            } else if (compareOutput == 1) {
+                // Aint gotta do jack
+                // This if statment is unessisary but it makes me feel better
+            }
+        }
+
+        if (isTie) {
+            Integer dividedPot = currentPot / (tieIndexs.size());
+            for (int tieIndex : tieIndexs) {
+                players.get(tieIndex).addToChips(dividedPot);
+            }
+            this.currentPot = 0;
+            infoLabel.setText("Tie!");
+        } else {
+            players.get(winningIndex).addToChips(currentPot);
+            infoLabel.setText(players.get(winningIndex).getName() + " Wins!");
+            this.currentPot = 0;
         }
     }
 
@@ -525,31 +638,32 @@ public class GameFrame {
         frame.getContentPane().remove(p.getPanel());
 
         Player player = players.get(currentPlayerWatched);
+        infoLabel.setText("Pot: " + currentPot + " Chips");
 
         do {
             if (numChecks + foldedPlayers + allInPlayers >= players.size()) {
                 if (player.isAllIn() || player.isFolded()) {
                     service.schedule(this::doShowEarly, 0L, TimeUnit.MILLISECONDS);
+                    break;
                 } else {
                     advanceStage();
                     advanceGame();
                 }
-                break;
-            }
-
-
-            currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
-            player = players.get(currentPlayerWatched);
-            if (player.getChips() <= currentBet && !player.isAllIn() && !player.isFolded()) {
-                break;
+            } else {
+                currentPlayerWatched = (currentPlayerWatched + 1) % players.size();
+                player = players.get(currentPlayerWatched);
+                if (player.getChips() <= currentBet && !player.isAllIn() && !player.isFolded()) {
+                    break;
+                }
             }
 
         } while (player.isFolded() || player.isAllIn());
         p = playerPanels.get(currentPlayerWatched);
 
-
         raiseField.setText("0");
-        callButton.setText(player.getEscrowChips() >= currentBet ? "Check" : ((player.getEscrowChips() + player.getChips()) <= currentBet ? "All In!" : "Call: " + (currentBet - player.getEscrowChips())));
+        callButton.setText(player.getEscrowChips() >= currentBet ? "Check"
+                : ((player.getEscrowChips() + player.getChips()) <= currentBet ? "All In!"
+                        : "Call: " + (currentBet - player.getEscrowChips())));
 
         northPanel = p.getPanel();
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);
