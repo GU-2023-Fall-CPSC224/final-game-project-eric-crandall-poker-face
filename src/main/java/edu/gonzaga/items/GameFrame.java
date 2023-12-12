@@ -1,3 +1,10 @@
+/** Class Name: GameFrame
+ *  Desc: This Class creates a JFrame which displays pre-game information and settings. Contains two "sections" of information: 
+ *        Start and Name sections. Start section is where game version and player/round numbers are determined. Name section is 
+ *        Where player names are determined. 
+ *  Notes: Documented by Gabe Hoing
+ */
+
 package edu.gonzaga.items;
 
 import edu.gonzaga.MainGame;
@@ -15,56 +22,69 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-//TODO: add table of all player names and chips
 public class GameFrame {
-
+    // List of player objects and their associated PlayerPanels.
     private ArrayList<Player> players;
-    private int currRound = 1;
-    private Boolean isRoundMode;
-    private Integer numRounds;
+    private ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
 
+    // Deck of cards and associated images.
     private Deck deck = new Deck();
-    CardImages cardImages;
-    ArrayList<PlayerPanel> playerPanels = new ArrayList<>();
+    private CardImages cardImages;
 
-    ArrayList<JLabel> cardsList = new ArrayList<>();
+    // List of Cards used in the center table and their associated JLabel
+    // representations.
+    private ArrayList<JLabel> cardsList = new ArrayList<>();
+    private ArrayList<Card> tableCards = new ArrayList<>();
 
-    ArrayList<Card> tableCards = new ArrayList<>();
+    // Dimensions for buttons and labels within the GUI window.
+    private Dimension cardDimension;
+    private Dimension turnButtonDimension = new Dimension(80, 25);
 
-    Dimension cardDimension;
-    Dimension turnButtonDimension = new Dimension(80, 25);
+    // Variables representing various data values of the round.
+    private int currRound = 1;
+    private int numRounds;
+    private boolean isRoundMode;
 
     private int currentPlayerWatched = 0;
     private int currentBet = 0;
     private int currentPot = 0;
 
-    JLabel infoLabel;
-    JLabel betLabel;
-    JTextField raiseField;
-    JButton callButton;
-    JButton foldButton;
-    JButton raiseButton;
-
-    JPanel northPanel;
-    JPanel centerPanel;
-    JPanel southPanel;
-
-    JPanel cardsPanel;
-    JPanel actionPanel;
-
-    JButton exitButton;
-
-    JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
-
-    private final JFrame frame;
     private int numChecks = 0;
     private int foldedPlayers = 0;
     private static int allInPlayers = 0;
 
-    public static void incrementAllIn() {
-        allInPlayers++;
-    }
+    private int gameStage = 0;
 
+    // GUI window for the game and panels displaying its information
+    private final JFrame frame;
+    private JPanel northPanel;
+    private JPanel centerPanel;
+    private JPanel southPanel;
+
+    // Widgets further separating game information.
+    private JPanel cardsPanel;
+    private JPanel actionPanel;
+    private JLabel infoLabel;
+    private JLabel betLabel;
+
+    // Widgets controlling the game.
+    private JTextField raiseField;
+    private JButton callButton;
+    private JButton foldButton;
+    private JButton raiseButton;
+    private JButton exitButton;
+
+    // JSlider to control volume.
+    private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 35, 100, (int) SoundThread.DEFAULT_VOLUME);
+
+    // A scheduled ExecutorService object for animations and delay.
+    private ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
+
+    /*
+     * Constructor For GameFrame
+     * Sets initial game data and settings equal to values contained in accepted
+     * startFrame, then initializes the GUI window.
+     */
     public GameFrame(StartFrame startFrame) {
         this.players = startFrame.getPlayers();
         this.isRoundMode = startFrame.getIsRoundMode();
@@ -85,75 +105,33 @@ public class GameFrame {
         SoundThread.getInstance().restartAudio();
     }
 
+    /*
+     * Method Name: getFrame()
+     * Returns: A JFrame
+     * Desc: Returns this.frame, the pre-game GUI window.
+     * Events: N/A
+     */
     public JFrame getFrame() {
         return this.frame;
     }
 
+    /*
+     * Method Name: getPlayers()
+     * Returns: An ArrayList of Player objects.
+     * Desc: Returns the list of players who will be playing the game.
+     * Events: N/A
+     */
     public ArrayList<Player> getPlayers() {
         return this.players;
     }
 
-    private void addTurnButtonEvents() {
-        callButton.addActionListener(ae -> {
-            int amt = 0;
-            int chips = players.get(currentPlayerWatched).getChips();
-            if (currentBet >= chips) {
-                amt = chips;
-            } else {
-                amt = currentBet - players.get(currentPlayerWatched).getEscrowChips();
-            }
-            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
-                    TurnButtonEvent.ButtonType.CALL_BUTTON);
-            EventManager.callEvent(event);
-            if (!event.isCancelled()) {
-                if (!players.get(currentPlayerWatched).isAllIn()) {
-                    numChecks++;
-                }
-                currentPot += amt;
-                endPlayerTurn();
-            } else
-                System.out.println("Check cancelled");
-        });
-        foldButton.addActionListener(ae -> {
-            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
-                    TurnButtonEvent.ButtonType.FOLD_BUTTON);
-            EventManager.callEvent(event);
-            if (!event.isCancelled()) {
-                foldedPlayers++;
-                endPlayerTurn();
-            } else {
-                service.schedule(this::doShowEarly, 0L, TimeUnit.MILLISECONDS);
-            }
-        });
-        raiseButton.addActionListener(ae -> {
-            int amount = getRaiseAmount();
-            int chips = players.get(currentPlayerWatched).getChips();
-            if (currentBet + amount >= chips) {
-                amount = chips;
-            } else {
-                amount += currentBet - players.get(currentPlayerWatched).getEscrowChips();
-            }
-            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
-                    TurnButtonEvent.ButtonType.RAISE_BUTTON);
-            EventManager.callEvent(event);
-            if (!event.isCancelled()) {
-                if (players.get(currentPlayerWatched).getChips() <= currentBet) {
-                    if (players.get(currentPlayerWatched).isAllIn()) {
-                        numChecks = 0;
-                    } else {
-                        numChecks = 1;
-                    }
-                } else {
-                    numChecks = 1;
-                }
-                currentPot += amount;
-                raiseBetAmount(amount - currentBet);
-                System.out.println(players.get(currentPlayerWatched).getName() + " Raised " + (amount - currentBet) + " Chips");
-                endPlayerTurn();
-            }
-        });
-    }
-
+    /*
+     * Method Name: setupFrame()
+     * Returns: N/A (void)
+     * Desc: Sets up the GUI window's settings such as size and location, then
+     * generates the panels which display its information.
+     * Events: N/A
+     */
     private void setupFrame() {
         frame.setSize(520, 360);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -167,15 +145,24 @@ public class GameFrame {
         }
         frame.setBackground(new Color(0x35654d));
 
+        // Generate panels
         this.northPanel = genNorthPanel();
         this.centerPanel = genCenterPanel();
         this.southPanel = genSouthPanel();
 
+        // Add panels to window.
         frame.getContentPane().add(BorderLayout.NORTH, northPanel);
         frame.getContentPane().add(BorderLayout.CENTER, centerPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, southPanel);
     }
 
+    /*
+     * Method Name: genNorthPanel()
+     * Returns: A JPanel
+     * Desc: Creates and returns a JPanel representing the information at the top of
+     * the screen.
+     * Events: N/A
+     */
     private JPanel genNorthPanel() {
         for (int i = 0; i < players.size(); i++) {
             PlayerPanel panel = new PlayerPanel(players.get(i), cardImages);
@@ -187,6 +174,13 @@ public class GameFrame {
         return p.getPanel();
     }
 
+    /*
+     * Method Name: genCenterPanel()
+     * Returns: A JPanel
+     * Desc: Creates and returns a JPanel representing the information at the center
+     * of the screen.
+     * Events: N/A
+     */
     private JPanel genCenterPanel() {
         JPanel newPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -216,6 +210,13 @@ public class GameFrame {
         return newPanel;
     }
 
+    /*
+     * Method Name: genSouthPanel()
+     * Returns: A JPanel
+     * Desc: Creates and returns a JPanel representing the information at the bottom
+     * of the screen.
+     * Events: N/A
+     */
     private JPanel genSouthPanel() {
         JPanel newPanel = new JPanel(new BorderLayout());
 
@@ -272,13 +273,98 @@ public class GameFrame {
         return newPanel;
     }
 
+    /*
+     * Method Name: addTurnButtonEvents()
+     * Returns: N/A (void)
+     * Desc: Adds Action Listeners to player turn actions.
+     * Events: N/A
+     */
+    private void addTurnButtonEvents() {
+        // Adds an Action Listener to callButton handling a player calling / checking.
+        callButton.addActionListener(ae -> {
+            int amt = 0;
+            int chips = players.get(currentPlayerWatched).getChips();
+            if (currentBet >= chips) {
+                amt = chips;
+            } else {
+                amt = currentBet - players.get(currentPlayerWatched).getEscrowChips();
+            }
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
+                    TurnButtonEvent.ButtonType.CALL_BUTTON);
+            EventManager.callEvent(event);
+            if (!event.isCancelled()) {
+                if (!players.get(currentPlayerWatched).isAllIn()) {
+                    numChecks++;
+                }
+                currentPot += amt;
+                endPlayerTurn();
+            } else
+                System.out.println("Check cancelled");
+        });
+        // Adds an Action Listener to foldButton handling a player folding.
+        foldButton.addActionListener(ae -> {
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
+                    TurnButtonEvent.ButtonType.FOLD_BUTTON);
+            EventManager.callEvent(event);
+            if (!event.isCancelled()) {
+                foldedPlayers++;
+                endPlayerTurn();
+            } else {
+                service.schedule(this::doShowEarly, 0L, TimeUnit.MILLISECONDS);
+            }
+        });
+        // Adds an Action Listener to rasieButton handling a player raising.
+        raiseButton.addActionListener(ae -> {
+            int amount = getRaiseAmount();
+            int chips = players.get(currentPlayerWatched).getChips();
+            if (currentBet + amount >= chips) {
+                amount = chips;
+            } else {
+                amount += currentBet - players.get(currentPlayerWatched).getEscrowChips();
+            }
+            TurnButtonEvent event = new TurnButtonEvent((JButton) ae.getSource(), this,
+                    TurnButtonEvent.ButtonType.RAISE_BUTTON);
+            EventManager.callEvent(event);
+            if (!event.isCancelled()) {
+                if (players.get(currentPlayerWatched).getChips() <= currentBet) {
+                    if (players.get(currentPlayerWatched).isAllIn()) {
+                        numChecks = 0;
+                    } else {
+                        numChecks = 1;
+                    }
+                } else {
+                    numChecks = 1;
+                }
+                currentPot += amount;
+                raiseBetAmount(amount - currentBet);
+                System.out.println(
+                        players.get(currentPlayerWatched).getName() + " Raised " + (amount - currentBet) + " Chips");
+                endPlayerTurn();
+            }
+        });
+    }
+
+    /*
+     * Method Name: addExisButtonListener()
+     * Returns: N/A (void)
+     * Desc: Adds an Action Listener to exitButton.
+     * Events: N/A
+     */
     private void addExitButtonListener() {
+        // Disposes of the frame and exits the program.
         this.exitButton.addActionListener(e -> {
             frame.dispose();
             System.exit(0);
         });
     }
 
+    /*
+     * Method Name: addVolumeSliderHandler()
+     * Returns: N/A (void)
+     * Desc: Adds a change listener to volumeSlider which sets the SoundThread's
+     * volume equal to slider's current value.
+     * Events: N/A
+     */
     private void addVolumeSliderHandler() {
         volumeSlider.addChangeListener(e -> {
             JSlider slider = (JSlider) e.getSource();
@@ -290,26 +376,44 @@ public class GameFrame {
         });
     }
 
+    /*
+     * Method Name: initFrame()
+     * Returns: A JPanel
+     * Desc: Sets up this.frame and adds handlers before setting the accepted
+     * JFrame's visibility to true and maximizing.
+     * Events: N/A
+     */
     private void initFrame(JFrame frame) {
         setupFrame();
 
-        // delete eventually
         addTurnButtonEvents();
-
         addVolumeSliderHandler();
         addExitButtonListener();
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(false);
         frame.setVisible(true);
-
     }
 
+    /*
+     * Method Name: incrementAllIn()
+     * Returns: N/A (void)
+     * Desc: Increments the number of players which are all-in by one.
+     * Events: N/A
+     */
+    public static void incrementAllIn() {
+        allInPlayers++;
+    }
+
+    /*
+     * Method Name: initPlayerCards()
+     * Returns: N/A (void)
+     * Desc: Shuffles the deck and passes two cards to each player.
+     * Events: N/A
+     */
     private void initPlayerCards() {
-        // move somewhere down the road
         deck.shuffle();
 
-        // temporary adding cards to players, delete eventualy
         for (Player player : players) {
             Card c1 = deck.drawCard();
             Card c2 = deck.drawCard();
@@ -317,115 +421,266 @@ public class GameFrame {
         }
     }
 
+    /*
+     * Method Name: genCenterPanel()
+     * Returns: If roundMode is true or false
+     * Desc: Returns a boolean representing whether the game is in round or bust
+     * mode.
+     * Events: N/A
+     */
     public Boolean isRoundMode() {
         return this.isRoundMode;
     }
 
+    /*
+     * Method Name: getNumRounds()
+     * Returns: Number of rounds to play to
+     * Desc: Returns a integer representing the number of rounds specified to be
+     * played to
+     * Events: N/A
+     */
     public Integer getNumRounds() {
         return numRounds;
     }
 
+    /*
+     * Method Name: getRaiseAmount()
+     * Returns: The number of chips the bet is to be raised by.
+     * Desc: Returns the String value of raiseField to integer.
+     * Events: N/A
+     */
     public Integer getRaiseAmount() throws NumberFormatException {
         return Integer.parseInt(raiseField.getText());
     }
 
-    public int getCurrentBet() {
+    /*
+     * Method Name: getCurrentBet()
+     * Returns: The current bet
+     * Desc: Returns this.currentBet, an integer representing the current bet.
+     * Events: N/A
+     */
+    public Integer getCurrentBet() {
         return this.currentBet;
     }
 
+    /*
+     * Method Name: getDeck()
+     * Returns: A Deck object
+     * Desc: The object representation of the game's deck of cards.
+     * Events: N/A
+     */
     public Deck getDeck() {
         return deck;
     }
 
+    /*
+     * Method Name: getCardImages
+     * Returns: An object of card images.
+     * Desc: returns the object representation of the images associated with each
+     * card.
+     * Events: N/A
+     */
     public CardImages getCardImages() {
         return cardImages;
     }
 
+    /*
+     * Method Name: getPlayerPanels()
+     * Returns: An ArrayList of PlayerPanels
+     * Desc: Returns a list of PlayerPanels which display player information.
+     * Events: N/A
+     */
     public ArrayList<PlayerPanel> getPlayerPanels() {
         return playerPanels;
     }
 
+    /*
+     * Method Name: getCardDimension()
+     * Returns: Dimension cardDimension
+     * Desc: Returns the dimension of card labels and buttons.
+     * Events: N/A
+     */
     public Dimension getCardDimension() {
         return cardDimension;
     }
 
+    /*
+     * Method Name: genCenterPanel()
+     * Returns: Dimension turnButtonDimension
+     * Desc: Returns the dimension of the turn buttons.
+     * Events: N/A
+     */
     public Dimension getTurnButtonDimension() {
         return turnButtonDimension;
     }
 
+    /*
+     * Method Name: getCurrentPlayerWatched()
+     * Returns: Integer currentPlayerWatched
+     * Desc: Returns the integer index of the player whose turn it is.
+     * Events: N/A
+     */
     public int getCurrentPlayerWatched() {
         return currentPlayerWatched;
     }
 
+    /*
+     * Method Name: getCallButton()
+     * Returns: JButton callButton
+     * Desc: Returns the button a player presses to call / check.
+     * Events: N/A
+     */
     public JButton getCallButton() {
         return callButton;
     }
 
+    /*
+     * Method Name: getFoldButton()
+     * Returns: JButton foldButton
+     * Desc: Returns the button a player presses to fold.
+     * Events: N/A
+     */
     public JButton getFoldButton() {
         return foldButton;
     }
 
+    /*
+     * Method Name: getRaiseButton()
+     * Returns: JButton raiseButton
+     * Desc: Returns the button a player presses to raise.
+     * Events: N/A
+     */
     public JButton getRaiseButton() {
         return raiseButton;
     }
 
+    /*
+     * Method Name: getNorthPanel()
+     * Returns: JPanel northPanel
+     * Desc: Returns the panel displaying infomation at the top of the screen.
+     * Events: N/A
+     */
     public JPanel getNorthPanel() {
         return northPanel;
     }
 
+    /*
+     * Method Name: getCenterPanel()
+     * Returns: JPanel centerPanel
+     * Desc: Returns the panel displaying infomation at the center of the screen.
+     * Events: N/A
+     */
     public JPanel getCenterPanel() {
         return centerPanel;
     }
 
+    /*
+     * Method Name: getSouthPanel()
+     * Returns: JPanel southPanel
+     * Desc: Returns the panel displaying infomation at the bottom of the screen.
+     * Events: N/A
+     */
     public JPanel getSouthPanel() {
         return southPanel;
     }
 
+    /*
+     * Method Name: getCardsPanel()
+     * Returns: JPanel cardsPanel
+     * Desc: Returns the panel which displays the community cards.
+     * Events: N/A
+     */
     public JPanel getCardsPanel() {
         return cardsPanel;
     }
 
+    /*
+     * Method Name: getExitButton()
+     * Returns: JButton exitButton
+     * Desc: Returns the button used to exit the game early.
+     * Events: N/A
+     */
     public JButton getExitButton() {
         return exitButton;
     }
 
+    /*
+     * Method Name: getRaiseField()
+     * Returns: JTextField raiseField
+     * Desc: Returns the text field which determines the raise amount.
+     * Events: N/A
+     */
     public JTextField getRaiseField() {
         return raiseField;
     }
 
+    /*
+     * Method Name: setCurrentPlayerWatched()
+     * Returns: N/A (void)
+     * Desc: Sets the integer index representing which player's turn it currently is
+     * equal to the accepted integer value.
+     * Events: N/A
+     */
     public void setCurrentPlayerWatched(int currentPlayerWatched) {
         this.currentPlayerWatched = currentPlayerWatched;
     }
 
+    /*
+     * Method Name: raiseBetAmount()
+     * Returns: N/A (void)
+     * Desc: Adds the accepted integer value to the current bet and sets betLabel's
+     * text field to display this new value.
+     * Events: N/A
+     */
     public void raiseBetAmount(int betAmount) {
         currentBet += betAmount;
         betLabel.setText("Current Bet: " + currentBet);
     }
 
+    /*
+     * Method Name: setButtonsEnabled()
+     * Returns: N/A (void)
+     * Desc: Enables or disables the turn control buttons depending on the value of
+     * the accepted boolean.
+     * Events: N/A
+     */
     public void setButtonsEnabled(Boolean isEnabled) {
         callButton.setEnabled(isEnabled);
         raiseButton.setEnabled(isEnabled);
         foldButton.setEnabled(isEnabled);
     }
 
-    int gameStage = 0;
-    private ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
-
+    /*
+     * Method Name: advanceStage()
+     * Returns: N/A (void)
+     * Desc: Advances the stage of the round by resetting turn values, then
+     * iterating through the list of players to find the
+     * index of the first player elegible to play before finally disabling turn
+     * buttons.
+     * Events: N/A
+     */
     private void advanceStage() {
         currentBet = 0;
         currentPlayerWatched = 0;
+        numChecks = 0;
+        betLabel.setText("Current Bet: " + currentBet);
         while (currentPlayerWatched < players.size()
                 && (players.get(currentPlayerWatched).isFolded() || players.get(currentPlayerWatched).isAllIn())) {
             currentPlayerWatched++;
         }
-        numChecks = 0;
-        betLabel.setText("Current Bet: " + currentBet);
         for (Player p : players) {
             p.resetEscrowChips();
         }
         setButtonsEnabled(false);
     }
 
+    /*
+     * Method Name: advanceGame()
+     * Returns: N/A (void)
+     * Desc: Schedules turn actions depending on which stage the round currently is
+     * in.
+     * Events: N/A
+     */
     private void advanceGame() {
         if (gameStage == 0) {
             service.schedule(this::doFlop, 0L, TimeUnit.MILLISECONDS);
@@ -441,7 +696,15 @@ public class GameFrame {
         }
     }
 
+    /*
+     * Method Name: doFlop()
+     * Returns: N/A (void)
+     * Desc: Does the "flop" of Texas Hold'em by discarding a card then flipping the
+     * next three over before enabling turn buttons.
+     * Events: N/A
+     */
     private void doFlop() {
+        deck.drawCard();
         for (int i = 0; i < 3;) {
             try {
                 Thread.sleep(500);
@@ -458,7 +721,15 @@ public class GameFrame {
         setButtonsEnabled(true);
     }
 
+    /*
+     * Method Name: doTurn()
+     * Returns: N/A (void)
+     * Desc: Does the "turn" of Texas Hold'em by discarding a card then flipping a
+     * card over then enabling turn buttons.
+     * Events: N/A
+     */
     private void doTurn() {
+        deck.drawCard();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -472,6 +743,13 @@ public class GameFrame {
         setButtonsEnabled(true);
     }
 
+    /*
+     * Method Name: doRiver()
+     * Returns: N/A (void)
+     * Desc: Does the "river" of Texas Hold'em by discarding a card then flipping a
+     * card over before enabling turn buttons.
+     * Events: N/A
+     */
     private void doRiver() {
         try {
             Thread.sleep(500);
@@ -486,13 +764,37 @@ public class GameFrame {
         setButtonsEnabled(true);
     }
 
+    /*
+     * Method Name: doShowEarly()
+     * Returns: N/A (void)
+     * Desc: "Shows" cards early by progressing the events of flop, turn, and river in the case of no players being able to go.
+     * Events: N/A
+     */
     private void doShowEarly() {
         setButtonsEnabled(false);
 
-        if (gameStage > 0) {
-            gameStage += 2;
+        int cardIndex = 0;
+        if (gameStage == 0) {
+            deck.drawCard();
+            for (int i = 0; i < 3;) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                JLabel l = cardsList.get(i);
+                Card card = deck.drawCard();
+                tableCards.add(card);
+                l.setIcon(cardImages.getCardImage(card));
+                i++;
+            }
+            cardIndex = 3;
+        } else {
+            cardIndex = gameStage + 2;
         }
-        for (int i = gameStage; i < 5;) {
+
+        for (int i = cardIndex; i < 5;) {
+            deck.drawCard();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -504,6 +806,7 @@ public class GameFrame {
             l.setIcon(cardImages.getCardImage(card));
             i++;
         }
+
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -512,6 +815,12 @@ public class GameFrame {
         service.schedule(this::doEndRound, 0L, TimeUnit.MILLISECONDS);
     }
 
+    /*
+     * Method Name: doEndRound()
+     * Returns: N/A (void)
+     * Desc: Resets round values and calculate scores. Then calculates if any of the criteria for the game ending have been reached. 
+     * Events: N/A
+     */
     private void doEndRound() {
         setButtonsEnabled(false);
         foldedPlayers = 0;
@@ -574,6 +883,12 @@ public class GameFrame {
         frame.repaint();
     }
 
+    /*
+     * Method Name: distributeChips()
+     * Returns: N/A (void)
+     * Desc: "Distributes" the chips to the calculated winning player(s). 
+     * Events: N/A
+     */
     private void distributeChips() {
         int winningIndex = 0, compareOutput;
         boolean isTie = false, startLoop = false;
@@ -613,11 +928,11 @@ public class GameFrame {
                     tieIndexs.add(i);
                 }
             } else if (compareOutput == 1) {
-                // Aint gotta do jack
-                // This if statment is unessisary but it makes me feel better
+                // Else statement for readability
             }
         }
 
+        // Calculates if a tie is reached and splits chips evenly between all winning players
         if (isTie) {
             Integer dividedPot = currentPot / (tieIndexs.size());
             for (int tieIndex : tieIndexs) {
@@ -632,6 +947,13 @@ public class GameFrame {
         }
     }
 
+    /*
+     * Method Name: endPlayerTurn
+     * Returns: N/A (void)
+     * Desc: Ends a player's turn by updating the text within various information labels before finding the next elegible player.
+     *       If criteria is met, instead advances to the next stage or ends round early. 
+     * Events: N/A
+     */
     private void endPlayerTurn() {
         PlayerPanel p = playerPanels.get(currentPlayerWatched);
         p.updateScoreLabel();

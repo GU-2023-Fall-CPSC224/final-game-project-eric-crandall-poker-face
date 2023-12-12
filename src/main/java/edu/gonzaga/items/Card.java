@@ -1,7 +1,7 @@
 /** Class Name: Card
  *  Desc: A card keeps track of a face value and a suit. Various member methods allow for the
  *        retrieval, manipulation, and comparison of card values 
- *  Notes: :P
+ *  Notes: Documented by McEwan Bain
  */
 package edu.gonzaga.items;
 

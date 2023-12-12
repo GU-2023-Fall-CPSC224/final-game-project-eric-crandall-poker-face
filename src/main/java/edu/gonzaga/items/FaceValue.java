@@ -1,7 +1,7 @@
 /** Enum Name: FaceValue
  *  Desc: Enumerated Values used to deal with the face calues of cards
  *        Methods are used to get the value and strings of a FaceValue
- *  Notes: :]
+ *  Notes: Documented by McEwan Bain
  */
 package edu.gonzaga.items;
 

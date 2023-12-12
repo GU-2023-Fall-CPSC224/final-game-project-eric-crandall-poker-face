@@ -2,7 +2,7 @@
  * Class Name: Deck
  * Desc: Deck contains an array list of Cards. By default, deck has 52 cards (1 of each different faceValue and suit combo)
  * Methods are used to draw cards from deck, shuffle deck, create a new deck, etc
- * Notes: 0.0
+ * Notes: Documented by McEwan Bain
  */
 package edu.gonzaga.items;
 

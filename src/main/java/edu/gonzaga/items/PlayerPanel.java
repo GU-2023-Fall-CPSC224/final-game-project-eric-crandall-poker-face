@@ -1,3 +1,10 @@
+/** Class Name: PlayerPanel
+ *  Desc: This panel creates and manages Panels which hold the current player's information.
+ *        The panel includes the player's name and icon, current chips, and their cards. The 
+ *        cards are hidden by default, but are "flipped" when a button is held down.
+ *  Notes: Documented by Gabe Hoing
+ */
+
 package edu.gonzaga.items;
 
 import edu.gonzaga.utils.CardImages;
@@ -7,33 +14,52 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class PlayerPanel {
-    private final Player player;
+    private final Player player; // Player PlayePanel is representing.
 
-    private JPanel panel = new JPanel();
-    private JLabel scoreLabel;
-    private JButton showCardButton;
+    private JPanel panel = new JPanel(); // JPanel representation of PlayerPanel.
 
-    // not functional buttons
-    private ArrayList<JLabel> cardLabels;
-    private final CardImages cardImages;
-    private final Dimension smallCardDimension;
 
+    private JLabel scoreLabel; // Label which displays the player's current chips.
+    private JButton showCardButton; // Button which reveals the player's cards.
+    private ArrayList<JLabel> cardLabels; // List of JLabels containing the images representing the player's cards.
+
+    private final CardImages cardImages; // Object containing image representations of cards.
+    private final Dimension smallCardDimension; // Dimension value for card images and labels. 
+
+    /* Constructor For PlayerPanel
+     * Sets this.player and this.cardImages equal to the accepted values. 
+     * Sets this.smallCardDimension equal to cardImages value for this dimension and generates the panel. 
+     */
     public PlayerPanel(Player player, CardImages cardImages) {
         this.player = player;
         this.cardImages = cardImages;
         this.smallCardDimension = cardImages.getSmallImageDimension();
         genPanel();
-        
     }
 
+    /* Method Name: getPanel()
+     * Returns: A JPanel
+     * Desc: Returns this.panel, the JPanel representation of PlayerPanel.
+     * Events: N/A
+     */
     public JPanel getPanel() {
-        return panel;
+        return this.panel;
     }
 
+    /* Method Name: updateScoreLabel()
+     * Returns: N/A (void)
+     * Desc: Updates scoreLabel's text string to this.player's current Chips amount.
+     * Events: N/A
+     */
     public void updateScoreLabel() {
         scoreLabel.setText("Score: " + player.getChips() + " Chips");
     }
 
+    /* Method Name: initCardLabels()
+     * Returns: N/A (void)
+     * Desc: initializes cardLabels to cardImages' faceDown image, setting their size equal to this.smallCardDimension
+     * Events: N/A
+     */
     private void initCardLabels() {
         cardLabels = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
@@ -43,23 +69,31 @@ public class PlayerPanel {
         }
     }
 
-    // implement with hand class
+    /* Method Name: addShowCardButtonHandler()
+     * Returns: N/A (void)
+     * Desc: Adds a change listener to showCardButton. Sets each cardLabel's image to the associated card image when pressed.
+     *       Otherwise sets the image to cardImages' facedown image.
+     * Events: N/A
+     */
     private void addShowCardButtonHandler() {
         showCardButton.addChangeListener(e -> {
             JButton button = (JButton) e.getSource();
             ButtonModel model = button.getModel();
             if (model.isPressed()) {
-                // playerhand.setVisible(true)
                 cardLabels.get(0).setIcon(cardImages.getSmallCardImage(player.getCardOne()));
                 cardLabels.get(1).setIcon(cardImages.getSmallCardImage(player.getCardTwo()));
             } else {
-                // playerhand.setVisible(false)
                 cardLabels.get(0).setIcon(cardImages.getSmallFacedownImage());
                 cardLabels.get(1).setIcon(cardImages.getSmallFacedownImage());
             }
         });
     }
 
+    /* Method Name: genPanel()
+     * Returns: N/A (void)
+     * Desc: Generates panel by initializing its widgets and stylizing them, then adding handlers. 
+     * Events: N/A
+     */
     private void genPanel() {
         panel = new JPanel(new BorderLayout());
 

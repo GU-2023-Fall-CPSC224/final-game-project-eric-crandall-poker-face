@@ -7,7 +7,7 @@
  *       Scorer's are also able to compare themselves with other scorers. 
  *       
  * Notes: *A *Special* Card is the highest card used in making a combintation (I.E. three in a pair of three's)
- *        ;)
+ *        Documented by McEwan Bain
  */
 package edu.gonzaga.items;
 

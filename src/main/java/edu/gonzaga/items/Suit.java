@@ -1,7 +1,7 @@
 /** Enum Name: Suit
  *  Desc: Creates a list of Enumerated Values for Suits (Spades, Clubs, Hearts, Diamonds)
  *        Methods are used to get get the string value of a suit
- *  Notes: -_-
+ *  Notes: Documented by McEwan Bain
  */
 package edu.gonzaga.items;
 
